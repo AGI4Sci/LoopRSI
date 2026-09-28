@@ -414,6 +414,14 @@ def build_memory_manager(config: Dict[str, Any], decisions_root: str) -> "Memory
     ret_cfg = mem_cfg.get("retrieval") or {}
     emb_cfg = ret_cfg.get("embedding") or {}
     embedder, actual_backend = _build_embedder(emb_cfg.get("backend"), emb_cfg.get("model"))
+    if actual_backend == "dense" and embedder is not None:
+        try:
+            print(f"[memory] embedding backend=dense model={emb_cfg.get('model')} "
+                  f"hidden={embedder.hidden}")
+        except Exception:
+            print("[memory] embedding backend=dense")
+    else:
+        print(f"[memory] embedding backend={actual_backend}")
     manager = MemoryManager(
         store=MemoryStore(out_root),
         decisions_root=decisions_root,
