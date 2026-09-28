@@ -1,0 +1,28 @@
+{
+  "schema_version": "vcc25-flow-verification/v1",
+  "status": "verified",
+  "heuresis_eligible": true,
+  "verified_on": "2026-08-18",
+  "contract_version": "vcc25.flow_matching_activation.v1",
+  "method": "pseudobulk_flow_matching",
+  "scope": "activation_smoke_and_full_three_seed_heldout_guide",
+  "activation_verified": true,
+  "scientific_status": "active_but_not_yet_competitive",
+  "scientific_note": "The conditional-flow phenotype is active and reproducible, but its three-seed mean is below the established CRPM result. Exposure permits bounded Heuresis optimization; it is not recorded as a new best method.",
+  "validation": {
+    "protocol": "heldout_guide",
+    "epochs": 250,
+    "seeds": [20250805, 20250806, 20250807],
+    "mean_delta_pearson": [0.5678547995257213, 0.40970416783982033, 0.32420987631979903],
+    "mean": 0.43392294789511354
+  },
+  "implementation_sha256": {
+    "tasks/vcc25/implementation/train.py": "b7d329014f0d312b2ed7715715d4db528c36715ade7ab99d0850e6394da88429",
+    "tasks/vcc25/implementation/crpm/flow.py": "ce562cd690c80e80fe2f834a29f949ba7d5e7cbc49064602bb2c32a105cfb4f3"
+  },
+  "result_sha256": {
+    "seed_20250805": "1aa1396b7d3aa361dc792af88b3e5a98c8411aa01ebfcc9fe123c632a030d7f2",
+    "seed_20250806": "58f862f518db9a19525f6343b97d18050e0b698e3d7d741fa377b70c6fcf1bc7",
+    "seed_20250807": "527de3077e7d792fc21a782f5d1cf83b60e43367d21391a8eb4dd6aa21038ad5"
+  }
+}

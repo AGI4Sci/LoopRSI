@@ -1,0 +1,22 @@
+# RSI Step0 replay config.
+# Deterministic replay of one round; same layout as minimal.yaml (design doc).
+run:
+  mode: replay
+  seed: 42
+  task_id: vcc25_h1
+  rounds: 1
+
+router:
+  policy: guided
+  model: deepseek-v4-flash
+
+reward:
+  metric: pearson_delta
+  baseline: 0.30614
+  lambda_c: 1.0e-6
+  lambda_t: 1.0e-6
+  use_cost_aware_reward: false
+
+trajectory:
+  schema_version: rsi_trajectory/v1
+  output_dir: output/rsi_step0/trajectories

@@ -1,0 +1,26 @@
+{
+  "candidate_id": "candidate_m_six_direction_gate",
+  "controls": {
+    "shuffled_context_delta_correlation": 0.6052186060180877,
+    "shuffled_feature_delta_correlation": 0.605751017558345
+  },
+  "execution": {
+    "failed_pre_model_job": "vcc-candidate-m-six-direction-20260913-31104265",
+    "failed_pre_model_reason": "missing_gpfs2_mount",
+    "h200_host": "gpu-lg-cmc-h-h200-0025.host.h.pjlab.org.cn",
+    "successful_job": "vcc-candidate-m-six-direction-mounted-202609-37140"
+  },
+  "official_h1_prediction_generated": false,
+  "promotion": {
+    "delta_correlation": 0.605987240699966,
+    "margin": -0.0027067593000340553,
+    "reference": 0.608694,
+    "status": "rejected"
+  },
+  "protocol_id": "vcc-h1-candidate-m-six-direction-gate-v1",
+  "result_artifact": {
+    "path": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_m_six_direction_20260913/result.json",
+    "sha256": "709008cf936bf30bdcb026203bf847be20a2d358d242f315eb066b24bede8e95"
+  },
+  "test_expression_used": false
+}

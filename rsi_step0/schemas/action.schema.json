@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rsi.step0/schemas/action.schema.json",
+  "title": "RSI Step0 Action",
+  "type": "object",
+  "required": [
+    "action_id",
+    "run_id",
+    "round",
+    "step",
+    "operator",
+    "mode",
+    "target",
+    "decision",
+    "budget",
+    "provenance"
+  ],
+  "properties": {
+    "action_id": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "round": {
+      "type": "integer"
+    },
+    "step": {
+      "type": "integer"
+    },
+    "operator": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "improve",
+        "crossover",
+        "tune",
+        "evaluate",
+        "question",
+        "implement",
+        "debug",
+        "schedule"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "thinking",
+        "execution",
+        "scheduling"
+      ]
+    },
+    "target": {
+      "type": "string"
+    },
+    "decision": {
+      "type": "object"
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "max_seconds",
+        "max_gpu_seconds",
+        "max_cost"
+      ],
+      "properties": {
+        "max_seconds": {
+          "type": "number"
+        },
+        "max_gpu_seconds": {
+          "type": "number"
+        },
+        "max_cost": {
+          "type": "number"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "parent_action_id",
+        "model",
+        "seed"
+      ],
+      "properties": {
+        "parent_action_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": "string",
+          "enum": [
+            "glm",
+            "deepseek",
+            "trained_pi",
+            "deterministic"
+          ]
+        },
+        "seed": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

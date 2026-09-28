@@ -1,0 +1,73 @@
+schema_version: omni-ar-regression/v1
+suite_id: vcc25_methods_regression
+task_name: vcc25
+policy:
+  mode: regression
+  allow_search: false
+  preserve_best: true
+  note: Preserve CRPM and the validated frequency-shrinkage pseudo-bulk best.
+cases:
+  - case_id: guide_crpm
+    proposal:
+      hypothesis: The established guide-aware CRPM path remains executable on the held-out-guide protocol.
+      change_scope: [model]
+      parameters:
+        method: guide_crpm
+        epochs: 15
+        batch_size: 1024
+        rank: 32
+        guide_shrinkage_type: constant
+      expected_effect:
+        mean_delta_pearson: {direction: unchanged, minimum_change: -0.05}
+      acceptance_criteria:
+        mean_delta_pearson: {operator: ">=", value: 0.54}
+      resource_request: {gpu_count: 1, cpu: 8, memory_mb: 20000, max_runtime_minutes: 60}
+    expected_parameters:
+      dataset_ref: vcc25@2
+      prepared_artifact: full_512g
+      method: guide_crpm
+      epochs: 15
+      batch_size: 1024
+      rank: 32
+      guide_shrinkage_type: constant
+  - case_id: pseudobulk_preserved_best
+    proposal:
+      hypothesis: The validated count-weighted pseudo-bulk configuration remains executable without further task-specific tuning.
+      change_scope: [model]
+      parameters:
+        method: pseudobulk
+        epochs: 250
+        batch_size: 256
+        rank: 16
+        learning_rate: 0.01
+        shrinkage: 0.001
+        guide_shrinkage: 0.0005
+        guide_shrinkage_type: frequency
+        delta_loss_weight: 0.3
+        aggregate_count_power: 1.0
+      expected_effect:
+        mean_delta_pearson: {direction: unchanged, minimum_change: -0.05}
+      acceptance_criteria:
+        mean_delta_pearson: {operator: ">=", value: 0.61}
+      resource_request: {gpu_count: 1, cpu: 8, memory_mb: 20000, max_runtime_minutes: 60}
+    expected_parameters:
+      dataset_ref: vcc25@2
+      prepared_artifact: full_512g
+      method: pseudobulk
+      epochs: 250
+      batch_size: 256
+      rank: 16
+      guide_shrinkage_type: frequency
+      aggregate_count_power: 1.0
+historical_anchors:
+  - anchor_id: guide_crpm_old_result
+    artifact: regression_anchors/vcc25/vcc25_full_paired_guide_metrics.json
+    checks:
+      - {source: metrics.guide_aware_crpm.mean_delta_pearson, expected: 0.5914501826785145, absolute_tolerance: 0.000000000001}
+      - {source: metrics.guide_aware_crpm.mse, expected: 0.4657457768917084, absolute_tolerance: 0.000000000001}
+  - anchor_id: pseudobulk_frequency_shrinkage_current_best
+    artifact: regression_anchors/vcc25/optimization_summary.json
+    checks:
+      - {source: summary.mean_delta_pearson.mean, expected: 0.6671778121469067, absolute_tolerance: 0.000000000001}
+      - {source: summary.mse.mean, expected: 0.4626801709334056, absolute_tolerance: 0.000000000001}
+      - {source: summary.top_k_delta_overlap.mean, expected: 0.4266666666666667, absolute_tolerance: 0.000000000001}

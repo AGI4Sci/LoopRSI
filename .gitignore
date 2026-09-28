@@ -1,0 +1,21 @@
+# Generated / heavy artifacts (never push to GitHub)
+output/
+datasets/
+__pycache__/
+*.pyc
+*.pyo
+*.log
+.rjobignore
+
+# Cluster bootstrapped runtime deps (wheels + extracted site-packages)
+runtime_wheels/
+tasks/vcc25/implementation/runtime_py312/
+tasks/vcc25/implementation/runtime_deps/
+.venv_embed/
+.venv*/
+
+# Generated rjob package copies
+rjob_packages/
+
+# Embedding model binaries (weights). Provenance is in models/README.md.
+models/bge-small-zh-v1.5-onnx/onnx/

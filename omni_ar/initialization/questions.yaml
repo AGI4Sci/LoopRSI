@@ -1,0 +1,81 @@
+schema_version: omni-ar-initialization-questions/v1
+questions:
+  - id: research_goal
+    type: single_choice
+    title: 这次研究主要想完成什么？
+    required: true
+    default: improve
+    allow_custom: true
+    options:
+      - {id: reproduce, label: 复现已有结果}
+      - {id: improve, label: 稳定提升当前方法}
+      - {id: explore, label: 探索新的模型或机制}
+      - {id: diagnose, label: 分析现有方法为什么失败}
+  - id: priorities
+    type: multiple_choice
+    title: 你最看重哪些方面？
+    required: true
+    default: [metric_quality, stability]
+    allow_custom: true
+    options:
+      - {id: metric_quality, label: 主指标更高}
+      - {id: stability, label: 多次运行更稳定}
+      - {id: efficiency, label: 训练更快或占用更低}
+      - {id: interpretability, label: 更容易解释}
+      - {id: novelty, label: 方法具有创新性}
+  - id: exploration_level
+    type: single_choice
+    title: 希望系统进行多大程度的改动？
+    required: true
+    default: balanced
+    options:
+      - {id: conservative, label: 保守，小范围修改}
+      - {id: balanced, label: 平衡，允许组合多种机制}
+      - {id: aggressive, label: 激进，允许探索新架构}
+  - id: requested_scopes
+    type: multiple_choice
+    title: 希望优先探索哪些方向？
+    required: true
+    default: [representation, objective, sampling, inference]
+    source: adapter.operation_capabilities
+  - id: evaluation_protocol
+    type: single_choice
+    title: 使用哪个评估协议？
+    required: true
+    source: adapter.protocols
+  - id: success_criteria
+    type: multiple_choice
+    title: 什么情况下算成功？
+    required: true
+    default: [outperform_baseline, budget_compliance]
+    options:
+      - {id: runnable, label: 完整运行}
+      - {id: outperform_baseline, label: 超过 baseline}
+      - {id: minimum_improvement, label: 至少提升指定数值}
+      - {id: multi_seed_stability, label: 多随机种子稳定提升}
+      - {id: budget_compliance, label: 满足实验预算}
+  - id: minimum_improvement
+    type: number
+    title: 主指标希望至少提升多少？
+    required: true
+    default: 0.005
+    visible_when: {success_criteria_contains: minimum_improvement}
+  - id: resource_profile
+    type: single_choice
+    title: 这次使用什么实验预算？
+    required: true
+    default: standard
+    options:
+      - {id: quick, label: 快速测试}
+      - {id: standard, label: 标准实验}
+      - {id: deep, label: 深度探索}
+  - id: rough_idea
+    type: free_text
+    title: 你有没有初步研究想法？可以留空由系统提出方向。
+    required: false
+    default: ""
+  - id: forbidden_directions
+    type: free_text
+    title: 有哪些不希望尝试的方向？
+    required: false
+    default: ""

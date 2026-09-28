@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rsi.step0/schemas/scheduler.schema.json",
+  "title": "RSI Step0 ScheduleAction",
+  "type": "object",
+  "required": [
+    "decision",
+    "reason",
+    "budget_delta",
+    "next_task_id"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "continue",
+        "converge",
+        "switch_direction",
+        "stop"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "budget_delta": {
+      "type": "number"
+    },
+    "next_task_id": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

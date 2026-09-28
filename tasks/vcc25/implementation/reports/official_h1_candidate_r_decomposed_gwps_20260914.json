@@ -1,0 +1,56 @@
+{
+  "candidate_id": "candidate_r_promoted_decomposed_gwps",
+  "status": "pass",
+  "validation": {
+    "protocol_id": "vcc-h1-candidate-r-decomposed-gwps-transport-v1",
+    "delta_correlation": 0.6125796296773004,
+    "promotion_reference": 0.608694,
+    "promotion_margin": 0.0038856296773004395,
+    "shuffled_target": 0.6113878890060053,
+    "shuffled_context": 0.6108459726276613,
+    "target_coverage": 0.94,
+    "result_sha256": "5d77f6b9c3355488bd268c6371b9b574c12cdd4baa23fd209ce47a0b09b146d2"
+  },
+  "official_h1": {
+    "targets": 100,
+    "genes": 18080,
+    "metric_counts": 100,
+    "metric_null_counts": 0,
+    "single_seed_pearson_delta": {
+      "20260907": 0.04849461542442441,
+      "20260908": 0.07254043848253787,
+      "20260909": 0.0642776713334024
+    },
+    "single_seed_mean": 0.061770908413454895,
+    "ensemble_metrics": {
+      "pearson_delta": 0.09667230970226229,
+      "overlap_at_N": 0.07954751555369179,
+      "de_spearman_lfc_sig": 0.25332288586716756,
+      "de_spearman_sig": -0.11427216976756553,
+      "pr_auc": 0.16468093135598455,
+      "mae": 0.035481813196092844,
+      "discrimination_score_l1": 0.5229
+    },
+    "improvement_over_candidate_g": {
+      "absolute": 0.003996429704129695,
+      "relative_percent": 4.3122651807678825
+    },
+    "lingshu_local_fraction_percent": 38.96799297057835,
+    "lingshu_paper_fraction_percent": 31.59225807263474
+  },
+  "artifacts": {
+    "root": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_r_official_20260914",
+    "ensemble_prediction_sha256": "204a49388e1b701443bb9c58c2dde71cd0174d0982df4bbe3c6f6814bcec7f47",
+    "ensemble_aggregate_sha256": "4d9dcd64558eeb735b629e93f6214ca1276e2fb91c255aea57d5255c0d24f5d3"
+  },
+  "jobs": {
+    "validation": "vcc-candidate-r-decomp-gwps-20260914-38288583",
+    "three_seed_execution": "vcc-candidate-r-canonical-resume-20260914-98470554",
+    "ensemble": "vcc-candidate-r-ensemble-final-20260914-20270625"
+  },
+  "information_policy": {
+    "h1_test_expression_used_for_training_or_selection": false,
+    "external_source": "Replogle K562 genome-wide Perturb-seq",
+    "external_artifact_sha256": "d3202c7f7a35c701cb5c131be6afaa1c7cebe5b8cc29df163ef8b4b7b7d48812"
+  }
+}

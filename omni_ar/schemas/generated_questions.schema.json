@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omni-ar.local/schemas/generated_questions.schema.json",
+  "title": "OMNI-AR generated question plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "summary", "questions"],
+  "properties": {
+    "schema_version": {"const": "omni-ar-generated-questions/v1"},
+    "summary": {"type": "string", "minLength": 1},
+    "generator": {"type": "object"},
+    "task_resolution": {"type": "object"},
+    "binding_questions": {"type": "array", "items": {"type": "object"}},
+    "task_resolution": {"type": "object"},
+    "questions": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "title", "why", "options", "default"],
+        "properties": {
+          "id": {"enum": ["task_objective", "research_goal", "priorities", "exploration_level", "requested_scopes", "evaluation_protocol", "success_criteria", "resource_profile", "research_details", "forbidden_directions"]},
+          "type": {"enum": ["single_choice", "multiple_choice", "free_text"]},
+          "title": {"type": "string", "minLength": 1},
+          "why": {"type": "string", "minLength": 1},
+          "source": {"enum": ["llm", "task_adapter", "fixed_safety_check"]},
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "label"],
+              "properties": {"id": {"type": "string", "minLength": 1}, "label": {"type": "string", "minLength": 1}}
+            }
+          },
+          "default": {"type": ["string", "array"], "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "rsi.msg.v1",
+  "title": "Hierarchical loop message envelope (rsi.msg.v1)",
+  "type": "object",
+  "required": ["schema", "msg_id", "from_layer", "to_layer", "kind", "round", "hop", "route", "payload"],
+  "properties": {
+    "schema": {"const": "rsi.msg.v1"},
+    "msg_id": {"type": "string", "pattern": "^msg_"},
+    "parent_msg_id": {"type": ["string", "null"]},
+    "from_layer": {"enum": ["L1", "L2", "L3", "L4", "L5"]},
+    "to_layer": {"enum": ["L1", "L2", "L3", "L4", "L5"]},
+    "kind": {"enum": ["step", "transfer", "exit"]},
+    "round": {"type": "integer"},
+    "hop": {"type": "integer"},
+    "route": {"enum": ["adjacent", "direct"]},
+    "exit_reason": {"enum": ["converge", "budget", "threshold", "user", null]},
+    "payload": {
+      "type": "object",
+      "properties": {
+        "context": {"type": "object"},
+        "action": {"type": "object"},
+        "outcome": {"type": "object"},
+        "cost": {"type": "object"},
+        "time": {"type": "object"}
+      },
+      "required": ["context", "action", "outcome", "cost", "time"]
+    },
+    "created_at": {"type": "string"}
+  }
+}

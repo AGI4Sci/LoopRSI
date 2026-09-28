@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omni-ar.local/schemas/proposal.schema.json",
+  "title": "OMNI-AR Auto-Research Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "proposal_id", "task_name", "round", "verdict",
+    "evidence_gaps", "idea_variants", "ablation_plan", "sweep_trials",
+    "codex_tasks", "priority_order", "risks"
+  ],
+  "properties": {
+    "schema_version": {"const": "omni-ar-proposal/v1"},
+    "proposal_id": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"},
+    "task_name": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "round": {"type": "integer", "minimum": 0},
+    "verdict": {"type": "string", "minLength": 1},
+    "evidence_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "gap", "why_it_matters"],
+        "properties": {
+          "claim": {"type": "string"},
+          "gap": {"type": "string"},
+          "why_it_matters": {"type": "string"}
+        }
+      }
+    },
+    "idea_variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "hypothesis", "required_code_changes", "validation_plan", "expected_signal"],
+        "properties": {
+          "name": {"$ref": "#/$defs/name"},
+          "hypothesis": {"type": "string"},
+          "required_code_changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["file_hint", "change", "risk"],
+              "properties": {
+                "file_hint": {"$ref": "#/$defs/path"},
+                "change": {"type": "string"},
+                "risk": {"enum": ["low", "medium", "high"]}
+              }
+            }
+          },
+          "validation_plan": {"type": "array", "items": {"type": "string"}},
+          "expected_signal": {"type": "string"}
+        }
+      }
+    },
+    "ablation_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "cli_overrides", "tests_claim", "expected_signal"],
+        "properties": {
+          "name": {"$ref": "#/$defs/name"},
+          "cli_overrides": {"type": "object", "additionalProperties": {"type": ["string", "number", "integer", "boolean", "null"]}},
+          "tests_claim": {"type": "string"},
+          "expected_signal": {"type": "string"}
+        }
+      }
+    },
+    "sweep_trials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["name", "purpose"],
+        "properties": {
+          "name": {"$ref": "#/$defs/name"},
+          "command": {"type": "string"},
+          "entrypoint": {"enum": ["train", "evaluate", "run_baseline", "run_trial"]},
+          "cli_overrides": {"type": "object"},
+          "purpose": {"type": "string", "minLength": 1},
+          "expected_signal": {"type": "string"}
+        },
+        "anyOf": [{"required": ["command"]}, {"required": ["entrypoint"]}]
+      }
+    },
+    "codex_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "task", "allowed_paths", "acceptance_checks"],
+        "properties": {
+          "name": {"$ref": "#/$defs/name"},
+          "task": {"type": "string"},
+          "allowed_paths": {"type": "array", "items": {"$ref": "#/$defs/path"}},
+          "acceptance_checks": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "priority_order": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "name": {"type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"},
+    "path": {"type": "string", "minLength": 1, "not": {"pattern": "(^/|(^|/)\\.\\.(/|$))"}}
+  }
+}

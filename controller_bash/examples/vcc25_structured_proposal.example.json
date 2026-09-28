@@ -1,0 +1,28 @@
+{
+  "schema_version": "omni-ar-proposal/v2",
+  "proposal_id": "vcc25-round-3-guide-dropout",
+  "task_name": "vcc25",
+  "round": 3,
+  "verdict": "Test one model regularization change while preserving the declared training budget.",
+  "evidence_gaps": [],
+  "experiment_proposals": [
+    {
+      "hypothesis": "Small guide dropout improves held-out-guide generalization.",
+      "change_scope": ["model"],
+      "parameters": {"guide_dropout": 0.1},
+      "expected_effect": {
+        "mean_delta_pearson": {"direction": "increase", "minimum_change": 0.005}
+      },
+      "acceptance_criteria": {
+        "mean_delta_pearson": {"operator": ">=", "value": 0.69}
+      },
+      "resource_request": {
+        "gpu_count": 1,
+        "cpu": 8,
+        "memory_mb": 20000,
+        "max_runtime_minutes": 60
+      }
+    }
+  ],
+  "risks": ["A single seed is insufficient for a final scientific claim."]
+}

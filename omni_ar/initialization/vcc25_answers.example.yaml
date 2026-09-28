@@ -1,0 +1,12 @@
+research_goal: explore
+priorities: [metric_quality, stability, novelty]
+exploration_level: balanced
+requested_scopes: [representation, objective, sampling, inference]
+evaluation_protocol: heldout_guide
+success_criteria: [outperform_baseline, minimum_improvement, budget_compliance]
+minimum_improvement: 0.005
+resource_profile: standard
+rough_idea: 探索扰动损失与 guide 分层表示的组合，同时保持固定数据、划分和评估协议。
+forbidden_directions: 不使用外部数据，不修改 held-out-guide 划分，不绕过 phenotype activation contract。
+requested_mutations: []
+confirmation: true

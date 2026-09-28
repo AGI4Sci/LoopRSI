@@ -1,0 +1,93 @@
+schema_version: omni-ar-task/v2
+
+task:
+  name: vcc25
+  type: regression
+  modality: single_cell
+  description: Predict single-cell gene-expression responses to held-out genetic perturbations.
+
+workspace:
+  base: repository
+  project_root: tasks/vcc25
+  implementation_dir: implementation
+
+adapter:
+  module: tasks/vcc25/adapter.py
+  class_name: VCC25TaskAdapter
+  trial_defaults:
+    dataset_ref: vcc25@2
+    prepared_artifact: full_512g
+    method: pseudobulk
+    split_strategy: heldout_guide
+    device: cuda
+    seed: 20250805
+    epochs: 250
+    max_steps: 0
+    batch_size: 256
+    rank: 16
+    learning_rate: 0.01
+    weight_decay: 0.0001
+    shrinkage: 0.001
+    guide_shrinkage: 0.0005
+    guide_shrinkage_type: frequency
+    delta_loss_weight: 0.3
+    aggregate_count_power: 1.0
+  actions:
+    prepare_data: python -m tasks.vcc25.adapter prepare_data --output {result_path}
+    validate_data: python -m tasks.vcc25.adapter validate_data --output {result_path}
+    run_baseline: python -m tasks.vcc25.adapter run_baseline --output {result_path}
+    run_trial: python -m tasks.vcc25.adapter run_trial --output {result_path}
+    evaluate: python -m tasks.vcc25.adapter evaluate --output {result_path}
+    summarize_results: python -m tasks.vcc25.adapter summarize_results --output {result_path}
+
+entrypoints:
+  train: python -m tasks.vcc25.adapter run_trial --output {result_path}
+  evaluate: python -m tasks.vcc25.adapter evaluate --output {result_path}
+
+data:
+  dataset_ref: vcc25@2
+  default_artifact: full_512g
+  runtime_artifacts:
+    - go_bp_hierarchy
+    - go_bp_nodes
+    - go_bp_edges
+    - go_bp_unmapped_targets
+    - go_bp_lineage
+  bindings:
+    source: {artifact: raw_h5}
+    train: {split: train}
+    validation: {split: validation}
+    test: {split: test}
+    runtime: {artifact: full_512g}
+
+metrics:
+  primary:
+    name: mean_delta_pearson
+    direction: maximize
+    source: metrics.mean_delta_pearson
+    role: primary
+  secondary:
+    - name: mse
+      direction: minimize
+      source: metrics.mse
+      role: diagnostic
+    - name: delta_mse
+      direction: minimize
+      source: metrics.delta_mse
+      role: diagnostic
+    - name: top_k_delta_overlap
+      direction: maximize
+      source: metrics.top_k_delta_overlap
+      role: diagnostic
+
+search:
+  path_scope: implementation
+  editable_paths: [crpm, train.py, scripts, tests]
+  protected_paths: [data, artifacts, reports]
+  interface_editable_paths: [tasks/vcc25/adapter.py]
+
+resources:
+  gpu_count: 1
+  gpu_type: H200
+  max_runtime_minutes: 180
+  max_trials_per_round: 3

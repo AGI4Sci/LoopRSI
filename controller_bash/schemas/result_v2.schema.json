@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omni-ar.local/schemas/result_v2.schema.json",
+  "title": "OMNI-AR Domain-Agnostic Trial Result v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "task", "trial_id", "metrics",
+    "baseline_metrics", "resource_usage", "protocol", "artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "omni-ar-result/v2"},
+    "status": {"enum": ["ok", "failed", "skipped", "simulated"]},
+    "task": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "trial_id": {"type": "string", "minLength": 1},
+    "metrics": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"},
+      "additionalProperties": {"$ref": "#/$defs/metricRecord"}
+    },
+    "baseline_metrics": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$"},
+      "additionalProperties": {"type": ["number", "null"]}
+    },
+    "resource_usage": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["budget", "within_budget"],
+      "properties": {
+        "runtime_seconds": {"type": ["number", "null"], "minimum": 0},
+        "gpu_count": {"type": ["integer", "null"], "minimum": 0},
+        "cpu": {"type": ["integer", "null"], "minimum": 0},
+        "memory_mb": {"type": ["integer", "null"], "minimum": 0},
+        "budget": {"type": "object", "additionalProperties": true},
+        "within_budget": {"type": ["boolean", "null"]}
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["seed", "stability"],
+      "properties": {
+        "seed": {"type": ["integer", "null"]},
+        "stability": {"$ref": "#/$defs/stabilityRecord"}
+      }
+    },
+    "artifacts": {"type": "object", "additionalProperties": true},
+    "features": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["status", "dataset_ref", "dataset_manifest_sha256", "records"],
+      "properties": {
+        "status": {"enum": ["not_requested", "active", "invalid"]},
+        "dataset_ref": {"type": ["string", "null"]},
+        "dataset_manifest_sha256": {"type": ["string", "null"]},
+        "records": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "error": {"type": "string"}
+  },
+  "$defs": {
+    "metricRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value", "direction", "role", "baseline_value",
+        "beats_baseline", "constraint_satisfied"
+      ],
+      "properties": {
+        "value": {"type": "number"},
+        "direction": {"enum": ["maximize", "minimize"]},
+        "role": {"enum": ["primary", "constraint", "diagnostic"]},
+        "baseline_value": {"type": ["number", "null"]},
+        "beats_baseline": {"type": ["boolean", "null"]},
+        "constraint_satisfied": {"type": ["boolean", "null"]}
+      }
+    },
+    "stabilityRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "num_seeds", "mean", "std", "min", "max"],
+      "properties": {
+        "status": {"enum": ["unavailable", "single_seed", "multi_seed"]},
+        "num_seeds": {"type": "integer", "minimum": 0},
+        "mean": {"type": ["number", "null"]},
+        "std": {"type": ["number", "null"], "minimum": 0},
+        "min": {"type": ["number", "null"]},
+        "max": {"type": ["number", "null"]}
+      }
+    }
+  }
+}

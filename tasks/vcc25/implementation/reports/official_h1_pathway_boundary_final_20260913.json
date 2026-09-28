@@ -1,0 +1,35 @@
+{
+  "artifact_sha256": "6921cff6128d73505fa8e5a5624e1ea14950706e11375e4a9a8eeb6c94018320",
+  "best_configuration": {
+    "calibration": 0.75,
+    "direction_loss": true,
+    "gate_power": 0.0,
+    "k": 150,
+    "pathway_alpha": 1.0,
+    "representation": "pca",
+    "scale": 1.5,
+    "shuffle_go": false,
+    "temperature": 0.25
+  },
+  "folds": 3,
+  "h200_job": "vcc-pathway-boundary-final-20260913-36156454",
+  "metrics": {
+    "de_direction_mean": 0.909887157296547,
+    "delta_correlation_mean": 0.6057826298993478,
+    "mse_mean": 0.1746543581528301
+  },
+  "official_test_prediction_generated": false,
+  "pathway_gate": {
+    "gain_vs_embedding_only": 0.0005764390542992714,
+    "gain_vs_shuffled_control": 0.0008386430567444147,
+    "passed": true
+  },
+  "promotion_margin": -0.002911370100652122,
+  "promotion_reference": 0.608694,
+  "protocol_id": "vcc-h1-pathway-conditioned-delta-basis-v1",
+  "search_policy": "single_predeclared_boundary_extension_after_k64_scale1.25_boundary_optimum",
+  "seeds": [20260907, 20260908, 20260909],
+  "source_artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_pathway_boundary_final_20260913/result.json",
+  "status": "rejected",
+  "test_expression_used": false
+}

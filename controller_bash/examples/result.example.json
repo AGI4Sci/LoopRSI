@@ -1,0 +1,68 @@
+{
+  "schema_version": "omni-ar-result/v2",
+  "status": "ok",
+  "task": "example_task",
+  "trial_id": "example-task-round-0:matched_evaluation",
+  "metrics": {
+    "quality": {
+      "value": 0.72,
+      "direction": "maximize",
+      "role": "primary",
+      "baseline_value": 0.68,
+      "beats_baseline": true,
+      "constraint_satisfied": null
+    },
+    "latency": {
+      "value": 41.2,
+      "direction": "minimize",
+      "role": "constraint",
+      "baseline_value": 45.0,
+      "beats_baseline": true,
+      "constraint_satisfied": true
+    }
+  },
+  "baseline_metrics": {"quality": 0.68, "latency": 45.0},
+  "resource_usage": {
+    "runtime_seconds": 42.5,
+    "gpu_count": 1,
+    "cpu": 8,
+    "memory_mb": 16000,
+    "budget": {"gpu_count": 1, "cpu": 8, "memory_mb": 20000, "max_runtime_minutes": 10},
+    "within_budget": true
+  },
+  "protocol": {
+    "seed": 7,
+    "split": "validation",
+    "stability": {
+      "status": "single_seed",
+      "num_seeds": 1,
+      "mean": 0.72,
+      "std": null,
+      "min": 0.72,
+      "max": 0.72
+    }
+  },
+  "artifacts": {
+    "raw_result": "artifacts/raw_trial.json",
+    "checkpoint": "artifacts/model.pt"
+  },
+  "features": {
+    "status": "active",
+    "dataset_ref": "example-data@1",
+    "dataset_manifest_sha256": "0123456789abcdef",
+    "records": [{
+      "feature_id": "reviewed_basic_v1",
+      "selected": true,
+      "enabled": true,
+      "activation_status": "active",
+      "builder": {"id": "reviewed_basic", "version": "1"},
+      "fit_scope": "training_partition_only",
+      "input_hashes": {"manifest": "abcdef0123456789"},
+      "feature_file_hashes": {},
+      "data_usage_scope": {"split": "validation", "n_train": 100, "n_eval": 20},
+      "required_activation_diagnostics": ["recipe_hash", "fit_scope_valid"],
+      "activation_diagnostics": {"recipe_hash": "abcdef", "fit_scope_valid": true},
+      "task_binding": null
+    }]
+  }
+}

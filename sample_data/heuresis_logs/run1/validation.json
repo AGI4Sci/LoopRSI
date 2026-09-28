@@ -1,0 +1,8 @@
+{
+  "run_id": "run1",
+  "round": 1,
+  "proposal_id": "p1",
+  "split": "holdout",
+  "metrics": {"pearson_delta": 0.421},
+  "pass": true
+}

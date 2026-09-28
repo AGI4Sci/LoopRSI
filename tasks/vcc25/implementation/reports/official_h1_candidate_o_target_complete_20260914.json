@@ -1,0 +1,34 @@
+{
+  "candidate": "candidate_o_target_complete",
+  "protocol_id": "vcc-h1-candidate-o-target-complete-nested-gate-v1",
+  "status": "rejected",
+  "information_policy": "vcc_official",
+  "same_target_external_context_allowed": true,
+  "contexts_used": [
+    "Replogle K562 essential day6",
+    "Replogle RPE1 day7"
+  ],
+  "external_artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/datasets/scperturb-context-20260913/derived/h1_k562_rpe1_target_complete_delta.npz",
+  "external_artifact_sha256": "0b6d03f27c7a36d814e4942c66b64375f6c4e55e03ecf9c8c904ab799efe81e5",
+  "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_o_target_complete_20260914/result.json",
+  "result_sha256": "acb517a4328a3f0e76c5d8998f510c66b255b2095568034910d53a82a7d778a2",
+  "successful_h200_job": "vcc-candidate-o-target-complete-final-202609-fd3bf",
+  "superseded_jobs": {
+    "stopped_packaging_download": "vcc-candidate-o-target-complete-20260914-70436236",
+    "failed_pre_model_path": "vcc-candidate-o-target-complete-mounted-2026-eea8d"
+  },
+  "nested_multifold_delta_correlation": 0.6041941759933709,
+  "target_coverage": 0.36,
+  "shuffled_target_delta_correlation": 0.6020530231585877,
+  "gain_vs_shuffled_target": 0.0021411528347832,
+  "shuffled_context_delta_correlation": 0.6021508661055117,
+  "gain_vs_shuffled_context": 0.0020433098878592,
+  "promotion_reference": 0.608694,
+  "promotion_margin": -0.0044998240066291,
+  "h1_validation_expression_used_for_training": false,
+  "h1_test_expression_used": false,
+  "official_test_prediction_generated": false,
+  "official_best_updated": false,
+  "official_best_pearson_delta": 0.0926758799981326,
+  "conclusion": "Same-target external responses add a weak signal over both shuffled controls, but 36% validation coverage is insufficient to pass the fixed nested promotion gate."
+}

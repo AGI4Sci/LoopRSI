@@ -1,0 +1,13 @@
+{
+  "dataset_id": "scperturb-replogle-k562-gwps-vcc-official-target-complete-20260914-v1",
+  "sources": [
+    {
+      "context": "K562_gwps_day8",
+      "control_labels": ["control"],
+      "official_targets_only": true,
+      "path": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/datasets/replogle-2022/ReplogleWeissman2022_K562_gwps.h5ad",
+      "perturbation_column": "perturbation",
+      "sha256": "d3269d9c863d96555eba768b42ab330cc1b57493cd33b4ac8fe7fbab8278f104"
+    }
+  ]
+}

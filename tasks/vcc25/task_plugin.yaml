@@ -1,0 +1,19 @@
+{
+  "schema_version": "ai4ai-task-plugin/v1",
+  "task": {"id": "vcc25", "task_spec": "tasks/vcc25/task_spec_official_h1.yaml"},
+  "skills": {
+    "bundle": "skills/vcc25",
+    "entrypoints": [
+      "skills.vcc25.lingshu:LingshuAlignmentSkill",
+      "skills.vcc25.lingshu:LingshuDataProcessingInsightSkill",
+      "skills.vcc25.lingshu:LingshuModelDesignInsightSkill"
+    ],
+    "routing_policy": "stage_capability_v1"
+  },
+  "dataset": {"adapter": "tasks.vcc25.official_h1_adapter:VCC25OfficialH1TaskAdapter", "task_spec": "tasks/vcc25/task_spec_official_h1.yaml"},
+  "candidate": {"adapter": "tasks.vcc25.official_h1_adapter:VCC25CandidateAdapter"},
+  "evaluator": {"plugin": "tasks.vcc25.native_evaluator:OfficialH1Evaluator", "contract": "tasks/vcc25/implementation/official_h1_contract.py"},
+  "policies": {"stability": "skills.vcc25.stability_policy:finalize", "leakage": "tasks.vcc25.leakage", "archive": "generic.archive.v1"},
+  "runtime": {"python": "3.12", "support_files": ["tasks", "controller_bash", "ai4ai", "datasets/__init__.py", "datasets/adapter_contract.py", "datasets/registry.py", "datasets/registry.yaml", "datasets/vcc25_adapter.py", "datasets/generic_adapter.py", "tasks/vcc25/official_h1_adapter.py", "tasks/vcc25/official_h1_contract.py", "rjob_packages/v59_scmg_latent_imputation_20260920"], "declared_dependencies": ["controller_bash/scripts/task_contract.py", "tasks/vcc25/official_h1_adapter.py", "tasks/vcc25/official_h1_contract.py"], "official_h1_cell_eval_profile": {"memory_mib_validated": 81920, "cpu": 8, "gpu": 1, "pool": "deepdivegzy_gpu_pool", "charged_group": "deepdivegzy_gpu_pool", "private_machine": "group", "mount": "gpfs://gpfs2/beam-gpfs02:/mnt/shared-gpfs2/beam-gpfs02", "image": "registry.h.pjlab.org.cn/ailab-deepdivegzy-deepdivegzy_gpu/slime:v0"}}
+  ,"compatibility": {"legacy_execution": "compatibility.legacy.vcc25.legacy_execution:LegacyVCCExecutionShim"}
+}

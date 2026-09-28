@@ -1,0 +1,5 @@
+metric: mean_delta_pearson
+objective: max
+baseline: 0.42721297036055766
+reference_method: global_mean
+protocol: heldout_guide

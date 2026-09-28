@@ -1,0 +1,40 @@
+{
+  "arms": {
+    "off": {
+      "hypotheses": [
+        "Increasing CRPM rank to 32 and adding guide dropout at 0.1 improves held-out guide generalization by capturing more perturbation patterns while regularizing guide-specific residuals against overfitting",
+        "Enabling target-batch interaction with huber loss captures batch-specific perturbation effects while reducing sensitivity to outlier cells in pseudo-bulk aggregates",
+        "Expanding prototype flow matching capacity to condition_dim=128 and hidden_dim=384 with depth=4 and 16 inference steps improves perturbation transport modeling over the previous condition_dim=64 configuration that scored 0.6106"
+      ],
+      "proposal_count": 3,
+      "proposal_sha256": "3571f309186b34c9cae9b45f5b06b6bf8bd52c53272600845f3773b0bd51ada1",
+      "repeated_known_failed_family_count": 1,
+      "skill_injection_count": 0,
+      "validation_status": "ok"
+    },
+    "on": {
+      "hypotheses": [
+        "Doubling rank to 32 and increasing delta loss weight to 0.5 will improve mean delta Pearson by capturing more perturbation signal and focusing training on DE-relevant genes",
+        "Applying guide dropout at 0.15 during training will regularize guide-specific residuals and improve generalization to held-out guides",
+        "Learning target-specific batch response weights with interaction shrinkage 0.001 will reduce batch-confounded prediction errors for held-out guides"
+      ],
+      "proposal_count": 3,
+      "proposal_sha256": "d4df43df4fc09e43e1ff323700c08df2a86bf44df7343dec983a4df881a3d200",
+      "repeated_known_failed_family_count": 0,
+      "skill_injection_count": 2,
+      "validation_status": "ok"
+    }
+  },
+  "causal_limit": "One paired nondeterministic planner sample measures direction/legality, not a numerical scientific-score treatment effect.",
+  "finding": "Skill ON preserved proposal validity while avoiding the known underperforming flow-matching family proposed by Skill OFF.",
+  "fixed_conditions": {
+    "code_changes": 0,
+    "proposal_budget": 3,
+    "round": 0,
+    "task_spec": "tasks/vcc25/task_spec.yaml",
+    "temperature": 0.1,
+    "trial_execution": false
+  },
+  "protocol_id": "vcc25-skill-on-off-paired-planner-ablation-v1",
+  "status": "pass"
+}

@@ -1,0 +1,55 @@
+{
+  "artifacts": {
+    "aggregate_csv": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc_skill_candidate_g_3seeds_20260912/ensemble/cell_eval_target_metrics/agg_results.csv",
+    "aggregate_sha256": "90a6c875de362f312d6a85e96acb348a83c7c4fa26d0ba774b3d38acb1d20761",
+    "prediction_h5ad": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc_skill_candidate_g_3seeds_20260912/ensemble/official_h1_prediction.h5ad",
+    "prediction_sha256": "7fe6b3c809daf5dcb6280e082d98c57d8ca1314f3a4b743cf16303fd14a8d392"
+  },
+  "candidate_id": "candidate_g_promoted_delta_model",
+  "comparison": {
+    "candidate_g_best_single_seed_pearson_delta": 0.07245154612697662,
+    "candidate_g_single_seed_mean_pearson_delta": 0.06256788878235967,
+    "ensemble_improvement_over_best_single_seed": 0.2791428886239551,
+    "ensemble_improvement_over_single_seed_mean": 0.48120516452940554,
+    "fraction_of_lingshu_local": 0.37357057582570796,
+    "lingshu_local_pearson_delta": 0.24808131580837134
+  },
+  "genes": 18080,
+  "metric_counts": {
+    "de_spearman_lfc_sig": 100,
+    "de_spearman_sig": 100,
+    "discrimination_score_l1": 100,
+    "mae": 100,
+    "overlap_at_N": 100,
+    "pearson_delta": 100,
+    "pr_auc": 100
+  },
+  "metric_null_counts": {
+    "de_spearman_lfc_sig": 0,
+    "de_spearman_sig": 0,
+    "discrimination_score_l1": 0,
+    "mae": 0,
+    "overlap_at_N": 0,
+    "pearson_delta": 0,
+    "pr_auc": 0
+  },
+  "metrics": {
+    "de_spearman_lfc_sig": 0.16616902769205918,
+    "de_spearman_sig": -0.1441400085313859,
+    "discrimination_score_l1": 0.5219999999999999,
+    "mae": 0.051097043678164485,
+    "overlap_at_N": 0.12933913059277433,
+    "pearson_delta": 0.0926758799981326,
+    "pr_auc": 0.1633928013987433
+  },
+  "protocol_id": "vcc-h1-candidate-g-three-seed-ensemble-v1",
+  "scientific_evidence": true,
+  "seeds": [
+    20260907,
+    20260908,
+    20260909
+  ],
+  "status": "pass",
+  "targets": 100,
+  "test_expression_used_for_selection": false
+}

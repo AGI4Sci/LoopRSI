@@ -1,0 +1,79 @@
+{
+  "schema_version": "vcc25-hierarchy-verification/v1",
+  "status": "rejected_multiseed",
+  "verified_on": "2026-08-18",
+  "scope": "activation_smoke_and_full_single_seed_negative_control",
+  "scientific_performance_claim": false,
+  "heuresis_eligible": false,
+  "rejection_reason": "Across seeds 20250805/06/07, the real root-target-guide hierarchy was not consistently better than either the no-hierarchy reference or shuffled-parent control.",
+  "multiseed_validation": {
+    "seeds": [20250805, 20250806, 20250807],
+    "baseline_mean": 0.6770423843978052,
+    "real_hierarchy_mean": 0.67560982340858,
+    "shuffled_hierarchy_mean": 0.6765936846248158,
+    "mean_real_minus_baseline": -0.0014325609892251734,
+    "mean_real_minus_shuffle": -0.0009838612162358003,
+    "paired_real_minus_baseline": [0.0007253807892622088, 0.01502930917422729, -0.02005237293116502],
+    "paired_real_minus_shuffle": [0.0053546812750795425, -0.010224547283072871, 0.0019182823592859277]
+  },
+  "contract_version": "vcc25.guide_hierarchy_activation.v1",
+  "method": "pseudobulk_hierarchy",
+  "hierarchy_mode": "root_target_guide",
+  "fixed_protocol": {
+    "dataset_ref": "vcc25@2",
+    "prepared_artifact": "full_512g",
+    "split_strategy": "heldout_guide",
+    "seed": 20250805,
+    "optimizer_steps": 8
+  },
+  "real_hierarchy": {
+    "job_name": "hcx-round-0-t000-experiment-000-f2306dbc-26929369",
+    "result": "research_initializations/vcc25-20260817-guide-hierarchy/live_run_20260817/hierarchy_smoke_20260818/artifacts/controller_trials/round_0/trial_000.json",
+    "result_sha256": "0b092938166d0157e01aafc6be4173638c95fe662c6152e43055157d937cb323",
+    "guide_parent_match_rate": 1.0,
+    "gradient_norm_max": 0.0008009126224118536,
+    "parameter_update_l2": 1.800499677658081,
+    "contribution_abs_sum": 105.3284261226654
+  },
+  "shuffled_hierarchy": {
+    "job_name": "hcx-round-0-t001-experiment-001-ee1519b2-30448946",
+    "result": "research_initializations/vcc25-20260817-guide-hierarchy/live_run_20260817/hierarchy_smoke_20260818/artifacts/controller_trials/round_0/trial_001.json",
+    "result_sha256": "0a36103e31bc4a58e3085360a8979019b07a434c7c246481665d5f18411ff1fd",
+    "guide_parent_match_rate": 0.1746031746031746,
+    "gradient_norm_max": 0.0007879333737960589,
+    "parameter_update_l2": 1.7405160665512085,
+    "contribution_abs_sum": 101.08175468444824
+  },
+  "full_validation": {
+    "protocol": "heldout_guide",
+    "seed": 20250805,
+    "epochs": 250,
+    "optimizer_steps": 8500,
+    "baseline": {
+      "method": "pseudobulk",
+      "mean_delta_pearson": 0.69391108890981,
+      "result": "research_initializations/vcc25-20260817-guide-hierarchy/live_run_20260817/hierarchy_full_20260818/artifacts/controller_trials/round_0/trial_000.json",
+      "result_sha256": "cf210f8aead7b8535d18a1ca58929cf046d74d84bc6673cbcd408b665e722bd3"
+    },
+    "real_hierarchy": {
+      "mean_delta_pearson": 0.6946364696990722,
+      "delta_vs_baseline": 0.0007253807892622093,
+      "guide_parent_match_rate": 1.0,
+      "result": "research_initializations/vcc25-20260817-guide-hierarchy/live_run_20260817/hierarchy_full_20260818/artifacts/controller_trials/round_0/trial_001.json",
+      "result_sha256": "61b9d3185b4b06e0f6171273b14a11e8f41ab758ad1feea4718bf9e86da7ba81"
+    },
+    "shuffled_hierarchy": {
+      "mean_delta_pearson": 0.6892817884239927,
+      "delta_vs_real_hierarchy": -0.005354681275079542,
+      "guide_parent_match_rate": 0.1746031746031746,
+      "result": "research_initializations/vcc25-20260817-guide-hierarchy/live_run_20260817/hierarchy_full_20260818/artifacts/controller_trials/round_0/trial_002.json",
+      "result_sha256": "8bb5fbe519cfe700d7fefc63acbbbba1a1f6f8e9f3e0f2836bcfc092f025515e"
+    },
+    "interpretation": "The real mapping slightly exceeds the same-budget no-hierarchy reference and exceeds the shuffled-parent control; this is single-seed evidence, not a multi-seed performance claim."
+  },
+  "implementation_sha256": {
+    "tasks/vcc25/implementation/train.py": "c44ffd54b64dc27f0a3f7dcb0c30e2a14205d1fbbf5b966922cf7d366748c4a6",
+    "tasks/vcc25/implementation/crpm/model.py": "22fecf0346c5392e38f6736382d663775b21812f1724a30815cef9dc01d13769",
+    "tasks/vcc25/adapter.py": "97ea5e095d5ee509aae93fe46173773f754444e441c192aab63ca98b62383705"
+  }
+}

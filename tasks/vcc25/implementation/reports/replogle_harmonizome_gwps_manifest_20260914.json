@@ -1,0 +1,20 @@
+{
+  "artifact_sha256": "931fffd3dd03f548184fbff9a50e5ac1b0c43d33085005a1c103391c8eaddc4b",
+  "context": "K562_gwps_harmonizome",
+  "dataset_id": "harmonizome-replogle-k562-genomewide-signatures-v1",
+  "h1_genes": 18080,
+  "h1_test_expression_used": false,
+  "h1_validation_expression_used": false,
+  "information_policy": "vcc_official_external_only",
+  "mapped_h1_genes": 7214,
+  "official_target_coverage": {
+    "test": 83,
+    "train": 110,
+    "validation": 37
+  },
+  "source": "https://maayanlab.cloud/Harmonizome/dataset/Replogle+et+al.,+Cell,+2022+K562+Genome-wide+Perturb-seq+Gene+Perturbation+Signatures",
+  "source_genes": 7800,
+  "source_sha256": "949902f0d362ab07d6e89e932ac9a9d7535d9389d91fb75f5266998a8cd242be",
+  "targets_retained": 230,
+  "test_expression_used": false
+}

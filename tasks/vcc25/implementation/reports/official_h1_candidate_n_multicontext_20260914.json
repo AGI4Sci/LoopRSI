@@ -1,0 +1,32 @@
+{
+  "candidate": "candidate_n_multicontext",
+  "protocol_id": "vcc-h1-candidate-n-multicontext-nested-gate-v1",
+  "status": "rejected",
+  "contexts_used": [
+    "Replogle K562 essential day6",
+    "Replogle RPE1 day7"
+  ],
+  "external_artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/datasets/scperturb-context-20260913/derived/h1_k562_rpe1_multicontext_delta.npz",
+  "external_artifact_sha256": "750227a8d6fb723cd53a7620781cb4d9ee13e384fc82b9015f72221b39ff3bed",
+  "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_n_multicontext_20260913/result.json",
+  "result_sha256": "c71dce0c3523be1460599299df6a48746397c340cdaa93b981815d7b600250c8",
+  "successful_h200_job": "vcc-candidate-n-multicontext-v2-20260913-55457660",
+  "superseded_stopped_job": "vcc-candidate-n-multicontext-20260913-91209996",
+  "nested_multifold_delta_correlation": 0.6041937838814655,
+  "outer_fold_delta_correlations": [
+    0.6123647666505648,
+    0.5811273448752942,
+    0.6190892401185374
+  ],
+  "shuffled_target_delta_correlation": 0.6039986423850604,
+  "gain_vs_shuffled_target": 0.0001951414964051,
+  "shuffled_context_delta_correlation": 0.6041249962386931,
+  "gain_vs_shuffled_context": 0.0000687876427724,
+  "promotion_reference": 0.608694,
+  "promotion_margin": -0.0045002161185345,
+  "test_expression_used": false,
+  "official_test_prediction_generated": false,
+  "official_best_updated": false,
+  "official_best_pearson_delta": 0.0926758799981326,
+  "conclusion": "Two-context shared response encoding did not produce a robust gain over shuffled controls and failed the fixed nested promotion gate."
+}

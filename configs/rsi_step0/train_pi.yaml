@@ -1,0 +1,23 @@
+# RSI Step0 pi training config (design doc).
+# Offline backend: SFT/RL dataset construction from trajectories, no torch needed.
+run:
+  mode: train
+  seed: 42
+  task_id: vcc25_h1
+  rounds: 3
+
+train:
+  backend: offline
+  epochs: 3
+  batch_size: 128
+  lr: 3.0e-5
+  warmup_fraction: 0.1
+  context_length: 32768
+
+# W2 trains only the draft/improve/crossover operator subset (contracts.W2_TRAIN_OPERATORS).
+operators: [draft, improve, crossover]
+
+data:
+  trajectory_dir: output/rsi_step0/trajectories
+  sft_out: output/rsi_step0/datasets/sft
+  rl_out: output/rsi_step0/datasets/rl

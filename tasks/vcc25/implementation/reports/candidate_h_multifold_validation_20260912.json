@@ -1,0 +1,46 @@
+{
+  "findings": {
+    "best_neighbor_attention": {
+      "calibration": 1.0,
+      "direction_loss": true,
+      "gate_power": 0.0,
+      "k": 16,
+      "representation": "pca",
+      "scale": 1.0,
+      "temperature": 1.0
+    },
+    "calibration_selected_by_mse": 0.75,
+    "de_gate_selected": 0.0,
+    "pca_plus_direction_loss": 0.5887327806807676,
+    "random_projection_plus_direction_loss": 0.5880357944087153
+  },
+  "folds": 3,
+  "job_id": "vcc-h1-candidate-h-screen-33006704",
+  "promotion_decision": "fail_closed_no_official_h1_run",
+  "protocol_id": "vcc-h1-candidate-h-multifold-promotion-v1",
+  "seeds": [
+    20260907,
+    20260908,
+    20260909
+  ],
+  "selected_config": {
+    "calibration": 0.75,
+    "direction_loss": true,
+    "gate_power": 0.0,
+    "k": 16,
+    "representation": "pca",
+    "scale": 1.0,
+    "temperature": 1.0
+  },
+  "source_sha256": "d48e724be089e07a2bd1d041775f3fcdf0b28186c0936fd4050cb0082be9eb6a",
+  "source_summary": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc_candidate_h_screen_20260912/summary.json",
+  "status": "rejected",
+  "test_expression_used": false,
+  "validation": {
+    "de_direction_mean": 0.900056574989878,
+    "delta_correlation_mean": 0.5952953579677679,
+    "mse_mean": 0.17407332728003072,
+    "promotion_margin": -0.013398642032232067,
+    "reference_delta_correlation": 0.608694
+  }
+}

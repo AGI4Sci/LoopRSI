@@ -1,0 +1,55 @@
+{
+  "schema_version": "vcc25-go-hierarchy-prototype-flow-verification/v1",
+  "status": "rejected_performance",
+  "heuresis_eligible": false,
+  "verified_on": "2026-08-19",
+  "contract_version": "vcc25.go_hierarchy_prototype_flow_activation.v1",
+  "method": "pseudobulk_go_hierarchy_prototype_flow",
+  "scope": "full_data_heldout_guide_gpu_activation_smoke_with_degree_control",
+  "activation_verified": true,
+  "scientific_status": "activation_verified_but_hierarchy_effect_rejected",
+  "rejection_reason": "In the fixed full-data three-way comparison, the real GO hierarchy was worse than both the matched no-hierarchy candidate and the degree-preserving annotation control.",
+  "validation": {
+    "dataset_ref": "vcc25@2",
+    "prepared_artifact": "full_512g",
+    "protocol": "heldout_guide",
+    "seed": 20250805,
+    "optimizer_steps": 8,
+    "real_mean_delta_pearson": 0.5966607435764703,
+    "degree_control_mean_delta_pearson": 0.5966615606072477,
+    "note": "Activation passed; hierarchy effect requires the planned longer fixed-budget paired screen."
+  },
+  "full_validation": {
+    "dataset_ref": "vcc25@2",
+    "prepared_artifact": "full_512g",
+    "protocol": "heldout_guide",
+    "seed": 20250805,
+    "epochs": 250,
+    "batch_size": 256,
+    "flow_depth": 4,
+    "flow_condition_dim": 64,
+    "flow_inference_steps": 16,
+    "prototype_rank": 8,
+    "prototype_blend": 0.3,
+    "hierarchy_dropout": 0.1,
+    "hierarchy_depth_weight_power": 1.5,
+    "no_hierarchy": 0.6106046487844411,
+    "real_hierarchy": 0.5872957266409313,
+    "degree_preserving_control": 0.6740558770637822,
+    "real_minus_no_hierarchy": -0.02330892214350977,
+    "real_minus_degree_control": -0.0867601504228509
+  },
+  "implementation_sha256": {
+    "tasks/vcc25/implementation/train.py": "6faa1cc34e1b7d581354df337b5721cca485b455b2ac7af42c2608cb2304946c",
+    "tasks/vcc25/implementation/crpm/flow.py": "612571ae537b5c9f1e279a0259b9a4d14ce6cdcc6ef41ada6369e7dd272bc93c",
+    "tasks/vcc25/implementation/crpm/prototype.py": "46d3c7bbaad45acd7dd4526d3866cbd57cf3a26193c744e856e1bdf1bf2b601a",
+    "datasets/vcc25/annotations/go-bp-20260818/edge_table.csv": "0532034deacf13a119032c5221c5bec6289dbaa5e4d25d91be558801af763f95"
+  },
+  "result_sha256": {
+    "activation_real": "4754ab7a603aeec22daeb6b0ccb5448444009cc12ff0ece7339dec16ed9d7c71",
+    "activation_degree_control": "566bb2bcffa9dc4258362f356809fa0eaf227d1f832dad5fd204a62463b4eb33",
+    "full_no_hierarchy": "75cb678f332f2572a3bfb123d8ee239320f64033014606213937f4dd394625a7",
+    "full_real": "9aace3b6478e038c284e66b78ba57a5344c682f3720bafc560a94d489fe4c189",
+    "full_degree_control": "6d463f210cd0e517ad5a241cd087a7230da0c67c3a341bfa8ae6a8829732be90"
+  }
+}

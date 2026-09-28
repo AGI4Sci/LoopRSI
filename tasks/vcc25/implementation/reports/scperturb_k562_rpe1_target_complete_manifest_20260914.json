@@ -1,0 +1,23 @@
+{
+  "artifact_sha256": "0b6d03f27c7a36d814e4942c66b64375f6c4e55e03ecf9c8c904ab799efe81e5",
+  "contexts": [
+    {"context": "K562_essential_day6", "excluded_targets": [], "mapped_h1_genes": 7837, "source_cells": 310385, "source_genes": 8563, "source_sha256": "412fd0df8c4ccea9f4db91cd88033c49200838b29d40945e48574be588b48789", "targets_retained": 2057},
+    {"context": "RPE1_day7", "excluded_targets": [], "mapped_h1_genes": 8167, "source_cells": 247914, "source_genes": 8749, "source_sha256": "8e8a3af6397ddf051ead2a7e4fec271ebe6e8aad19ecde74aff9f0a87029837b", "targets_retained": 2393}
+  ],
+  "dataset_id": "scperturb-k562-rpe1-vcc-official-target-complete-20260914-v1",
+  "excluded_test_targets": [],
+  "excluded_validation_targets": [],
+  "h1_genes": 18080,
+  "h1_test_expression_used": false,
+  "h1_validation_expression_used": false,
+  "information_policy": "vcc_official",
+  "official_target_coverage": {
+    "test": {"K562_essential_day6": 28, "RPE1_day7": 31, "union": 31, "total": 100},
+    "train": {"K562_essential_day6": 35, "RPE1_day7": 50, "union": 50, "total": 150},
+    "validation": {"K562_essential_day6": 18, "RPE1_day7": 18, "union": 18, "total": 50}
+  },
+  "official_target_identity_counts": {"validation": 50, "test": 100},
+  "rows": 4450,
+  "same_target_external_context_allowed": true,
+  "test_expression_used": false
+}

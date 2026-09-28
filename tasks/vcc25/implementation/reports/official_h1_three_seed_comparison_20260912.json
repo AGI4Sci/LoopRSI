@@ -1,0 +1,79 @@
+{
+  "protocol": {
+    "cell_eval_commit": "6928cf8bd7a706040ccfd13119e4085726dee64a",
+    "cell_eval_version": "0.8.2",
+    "genes": 18080,
+    "heldout_targets": 100,
+    "prediction_rows": 170846,
+    "profile": "canonical_target_metrics",
+    "uses_test_expression": false
+  },
+  "runs": [
+    {
+      "agg_results_sha256": "946d4bca34c695f3ec534a2749a6884d1f7685646b99e790c65f88df0f8ec66f",
+      "evaluator_job": "vcc-h1-target-s20260907-51226499",
+      "metrics_mean": {
+        "de_spearman_lfc_sig": 0.11857639714030611,
+        "de_spearman_sig": -0.15523190589236247,
+        "discrimination_score_l1": 0.5209,
+        "mae": 0.05394688695669174,
+        "overlap_at_N": 0.1427346289743113,
+        "pearson_delta": 0.02907007496803999,
+        "pr_auc": 0.16978897547600139
+      },
+      "null_count": 0,
+      "results_rows": 100,
+      "results_sha256": "57efe60688435d137425829d7c4402f0127c2a78a72e926388e82ffe9aaf39df",
+      "seed": 20260907,
+      "training_job": "vcc-skill-h1-s20260907-v11-12657636"
+    },
+    {
+      "agg_results_sha256": "53279f42636251fb1edaa462ed791c7591b12796acfc59cc7ab9b7f53d0e38ec",
+      "evaluator_job": "vcc-h1-target-s20260908-49427976",
+      "metrics_mean": {
+        "de_spearman_lfc_sig": 0.13657595227617203,
+        "de_spearman_sig": -0.2128698913925252,
+        "discrimination_score_l1": 0.5245,
+        "mae": 0.05405645705759525,
+        "overlap_at_N": 0.14273297239223082,
+        "pearson_delta": 0.059843444509897384,
+        "pr_auc": 0.17013076494857782
+      },
+      "null_count": 0,
+      "results_rows": 100,
+      "results_sha256": "d7dc84c930c49dd6aa5ce8257307b7d1f29463e5d6852eaecdce4ac02d813172",
+      "seed": 20260908,
+      "training_job": "vcc-skill-h1-s20260908-v11-26182788"
+    },
+    {
+      "agg_results_sha256": "1f782c570270e2f29e72d136b7c8c6e2c18e4fc5ab7ab0b09925c19580c3944c",
+      "evaluator_job": "vcc-h1-target-s20260909-52148679",
+      "metrics_mean": {
+        "de_spearman_lfc_sig": 0.1109174468467019,
+        "de_spearman_sig": -0.13684441148940482,
+        "discrimination_score_l1": 0.5255000000000001,
+        "mae": 0.052770268432796,
+        "overlap_at_N": 0.14461625684413215,
+        "pearson_delta": 0.04577660243259743,
+        "pr_auc": 0.1701553893347279
+      },
+      "null_count": 0,
+      "results_rows": 100,
+      "results_sha256": "1373803e8f075f7aaf769231fbda5e7d40aa79c72a31a56bd01766fd50305910",
+      "seed": 20260909,
+      "training_job": "vcc-skill-h1-s20260909-v11-50744695"
+    }
+  ],
+  "summary": {
+    "best_seed": 20260908,
+    "best_pearson_delta": 0.059843444509897384,
+    "best_fraction_of_lingshu_local": 0.241225117316465,
+    "best_fraction_of_lingshu_paper": 0.19556681212384766,
+    "best_minus_lingshu_local": -0.18823787129847397,
+    "best_minus_lingshu_paper": -0.24615655549010262,
+    "lingshu_local_pearson_delta": 0.24808131580837134,
+    "lingshu_paper_pearson_delta": 0.306,
+    "pearson_delta_mean": 0.0448967073035116,
+    "pearson_delta_sample_std": 0.015405542178663198
+  }
+}

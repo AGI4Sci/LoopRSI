@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ai4ai-task-plugin/v1",
+  "type": "object",
+  "required": ["schema_version", "task", "skills", "dataset", "candidate", "evaluator", "policies", "runtime"],
+  "properties": {
+    "schema_version": {"const": "ai4ai-task-plugin/v1"},
+    "task": {"type": "object", "required": ["id"], "properties": {"id": {"type": "string"}}, "additionalProperties": true},
+    "skills": {"type": "object"},
+    "dataset": {"type": "object"},
+    "candidate": {"type": "object"},
+    "evaluator": {"type": "object"},
+    "policies": {"type": "object"},
+    "runtime": {"type": "object"}
+  },
+  "additionalProperties": false
+}

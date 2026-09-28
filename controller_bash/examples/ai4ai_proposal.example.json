@@ -1,0 +1,47 @@
+{
+  "schema_version": "omni-ar-proposal/v2",
+  "proposal_id": "example-task-round-0-matched-ablation",
+  "task_name": "example_task",
+  "round": 0,
+  "verdict": "The baseline is runnable, but the main hypothesis is not yet isolated.",
+  "evidence_gaps": [
+    {
+      "claim": "The proposed component improves the primary metric.",
+      "gap": "No matched ablation exists.",
+      "why_it_matters": "The observed change may come from the training budget."
+    }
+  ],
+  "experiment_proposals": [
+    {
+      "hypothesis": "The component improves quality at matched compute.",
+      "change_scope": [
+        "model"
+      ],
+      "parameters": {
+        "use_component": true,
+        "method": "example_baseline"
+      },
+      "expected_effect": {
+        "quality": {
+          "direction": "increase",
+          "minimum_change": 0.01
+        }
+      },
+      "acceptance_criteria": {
+        "quality": {
+          "operator": ">=",
+          "value": 0.5
+        }
+      },
+      "resource_request": {
+        "gpu_count": 1,
+        "cpu": 8,
+        "memory_mb": 20000,
+        "max_runtime_minutes": 60
+      }
+    }
+  ],
+  "risks": [
+    "A single seed is engineering evidence only."
+  ]
+}

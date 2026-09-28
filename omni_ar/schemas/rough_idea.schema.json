@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omni-ar.local/schemas/rough_idea.schema.json",
+  "title": "OMNI-AR Rough Idea",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "initialization_id", "task", "dataset", "research_goal", "priorities", "search_policy", "evaluation", "constraints", "resources", "user_notes", "confirmation", "provenance"],
+  "properties": {
+    "schema_version": {"enum": ["omni-ar-rough-idea/v1", "omni-ar-rough-idea/v2"]},
+    "initialization_id": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"},
+    "task": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "type", "modality", "task_spec"],
+      "properties": {
+        "name": {"type": "string"}, "type": {"type": "string"}, "modality": {"type": "string"},
+        "task_spec": {"type": ["string", "null"]},
+        "binding_status": {"enum": ["bound", "unbound"]}
+      }
+    },
+    "dataset": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ref", "manifest_sha256", "usage_mode"],
+      "properties": {
+        "ref": {"type": ["string", "null"]},
+        "manifest_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "usage_mode": {"type": ["string", "null"]},
+        "binding_status": {"enum": ["bound", "unbound"]}
+      }
+    },
+    "research_goal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "custom_answer"],
+      "properties": {"mode": {"enum": ["reproduce", "improve", "explore", "diagnose", "custom"]}, "custom_answer": {"type": "string"}}
+    },
+    "priorities": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "search_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exploration_level", "requested_scopes", "allowed_scopes", "rejected_scopes"],
+      "properties": {
+        "exploration_level": {"enum": ["conservative", "balanced", "aggressive"]},
+        "requested_scopes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "allowed_scopes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "rejected_scopes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "evaluation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["protocol", "supported_protocols", "primary_metric", "secondary_metrics", "baseline", "reference_results", "acceptance_reference", "minimum_improvement", "success_criteria"],
+      "properties": {
+        "protocol": {"type": ["string", "null"]}, "supported_protocols": {"type": "array", "items": {"type": "string"}},
+        "primary_metric": {"type": "object"}, "secondary_metrics": {"type": "array", "items": {"type": "object"}},
+        "baseline": {"type": ["object", "null"]},
+        "reference_results": {"type": "array", "items": {"type": "object"}},
+        "acceptance_reference": {"type": ["object", "null"]},
+        "minimum_improvement": {"type": ["number", "null"]},
+        "success_criteria": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "constraints": {
+      "type": "object", "additionalProperties": false,
+      "required": ["protected_items", "requested_mutations", "conflicts", "require_budget_compliance", "require_phenotype_activation"],
+      "properties": {
+        "protected_items": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "requested_mutations": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "conflicts": {"type": "array", "items": {"type": "string"}},
+        "require_budget_compliance": {"type": "boolean"}, "require_phenotype_activation": {"type": "boolean"}
+      }
+    },
+    "resources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profile", "gpu_count", "max_runtime_minutes", "max_trials"],
+      "properties": {
+        "profile": {"enum": ["quick", "standard", "deep"]}, "gpu_count": {"type": "integer", "minimum": 0},
+        "max_runtime_minutes": {"type": "integer", "minimum": 1}, "max_trials": {"type": "integer", "minimum": 1}
+      }
+    },
+    "execution_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["external_services", "submit_rjob", "code_changes", "auto_retry", "max_attempts", "max_rounds", "max_trials_per_round", "max_gpus", "max_runtime_minutes"],
+      "properties": {
+        "external_services": {"type": "boolean"},
+        "submit_rjob": {"type": "boolean"},
+        "code_changes": {"type": "boolean"},
+        "auto_retry": {"type": "boolean"},
+        "max_attempts": {"type": "integer", "minimum": 1, "maximum": 5},
+        "max_rounds": {"type": "integer", "minimum": 1},
+        "max_trials_per_round": {"type": "integer", "minimum": 1},
+        "max_gpus": {"type": "integer", "minimum": 0},
+        "max_runtime_minutes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "user_notes": {
+      "type": "object", "additionalProperties": false,
+      "required": ["rough_idea", "forbidden_directions"],
+      "properties": {
+        "rough_idea": {"type": "string"},
+        "forbidden_directions": {"type": "string"},
+        "clarifications": {"type": "object", "additionalProperties": {"type": ["string", "number", "boolean", "array"], "items": {"type": "string"}}}
+      }
+    },
+    "confirmation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "confirmed_at"],
+      "properties": {"status": {"enum": ["confirmed", "pending", "rejected"]}, "confirmed_at": {"type": ["string", "null"]}}
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["created_at", "task_spec_sha256", "questions_sha256", "raw_answers_sha256"],
+      "properties": {
+        "created_at": {"type": "string"}, "task_spec_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "questions_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "raw_answers_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "question_plan_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "question_generator": {"type": "object"},
+        "task_resolution": {"type": "object"},
+        "constraint_sources": {"type": "object", "additionalProperties": {"type": "object"}},
+        "qa_transcript_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "research_context": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_description", "literature_queries"],
+      "properties": {
+        "task_description": {"type": "string"},
+        "literature_queries": {"type": "array", "minItems": 2, "maxItems": 4, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "execution_readiness": {
+      "type": "object", "additionalProperties": false,
+      "required": ["researchstudio_ready", "heuresis_ready", "training_ready", "blockers"],
+      "properties": {
+        "researchstudio_ready": {"type": "boolean"},
+        "heuresis_ready": {"type": "boolean"},
+        "training_ready": {"type": "boolean"},
+        "blockers": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

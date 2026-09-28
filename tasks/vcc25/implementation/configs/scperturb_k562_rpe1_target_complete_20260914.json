@@ -1,0 +1,20 @@
+{
+  "dataset_id": "scperturb-k562-rpe1-vcc-official-target-complete-20260914-v1",
+  "sources": [
+    {
+      "context": "K562_essential_day6",
+      "control_labels": ["control"],
+      "path": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/datasets/replogle-2022/ReplogleWeissman2022_K562_essential.h5ad",
+      "perturbation_column": "perturbation",
+      "sha256": "412fd0df8c4ccea9f4db91cd88033c49200838b29d40945e48574be588b48789"
+    },
+    {
+      "context": "RPE1_day7",
+      "control_column": "is_control",
+      "control_labels": [""],
+      "path": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/datasets/scperturb-context-20260913/replogle2022__rpe1_day7.h5ad",
+      "perturbation_column": "target",
+      "sha256": "8e8a3af6397ddf051ead2a7e4fec271ebe6e8aad19ecde74aff9f0a87029837b"
+    }
+  ]
+}

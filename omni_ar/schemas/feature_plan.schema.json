@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "omni-ar-feature-plan/v1",
+  "type": "object",
+  "required": ["schema_version", "status", "plan_id", "cache_key", "dataset_ref", "modality", "available_builders", "declared_features", "search_combinations", "selection_policy"],
+  "properties": {
+    "schema_version": {"const": "omni-ar-feature-plan/v1"},
+    "status": {"const": "ok"},
+    "plan_id": {"type": "string", "minLength": 8},
+    "cache_key": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "dataset_ref": {"type": "string"},
+    "modality": {"type": "string"},
+    "available_builders": {"type": "array"},
+    "recommended_builds": {"type": "array"},
+    "declared_features": {"type": "object"},
+    "search_combinations": {"type": "array", "minItems": 1},
+    "fallback": {"type": ["object", "null"]},
+    "selection_policy": {"type": "object"}
+  },
+  "additionalProperties": true
+}

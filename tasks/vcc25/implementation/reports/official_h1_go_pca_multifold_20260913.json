@@ -1,0 +1,32 @@
+{
+  "artifact_sha256": "c4eafe1425cded4ae9fb0b880b93666fddde45d4cf3471157d28c0bac6d6e447",
+  "best_configuration": {
+    "calibration": 0.75,
+    "direction_loss": true,
+    "gate_power": 0.0,
+    "k": 16,
+    "representation": "pca",
+    "scale": 1.0,
+    "temperature": 1.0
+  },
+  "folds": 3,
+  "go_gate": {
+    "coverage": 0.9767441860465116,
+    "delta_correlation_gain_vs_best_non_go": -0.000523893775315587,
+    "passed": false
+  },
+  "h200_job": "vcc-go-pca-multifold-20260913-v3-43650625",
+  "metrics": {
+    "de_direction_mean": 0.900056574989878,
+    "delta_correlation_mean": 0.5952953560671758,
+    "mse_mean": 0.17407332702159206
+  },
+  "official_test_prediction_generated": false,
+  "promotion_margin": -0.013398643932824195,
+  "promotion_reference": 0.608694,
+  "protocol_id": "vcc-h1-candidate-h-multifold-promotion-v1",
+  "seeds": [20260907, 20260908, 20260909],
+  "source_artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_go_pca_multifold_20260913/result.json",
+  "status": "rejected",
+  "test_expression_used": false
+}

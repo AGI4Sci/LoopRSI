@@ -1,0 +1,34 @@
+{
+  "artifact_sha256": "8320334bb12f39936d95cbc80c7be6cad6094b4a3d2470eee61d39fa4b7cfaf9",
+  "best_configuration": {
+    "calibration": 0.75,
+    "direction_loss": true,
+    "gate_power": 0.0,
+    "k": 16,
+    "pathway_alpha": 1.0,
+    "representation": "pca",
+    "scale": 1.0,
+    "shuffle_go": false,
+    "temperature": 1.0
+  },
+  "folds": 3,
+  "h200_job": "vcc-pathway-delta-multifold-20260913-72373886",
+  "metrics": {
+    "de_direction_mean": 0.9028310992538608,
+    "delta_correlation_mean": 0.5989443734519813,
+    "mse_mean": 0.17398837457054778
+  },
+  "official_test_prediction_generated": false,
+  "pathway_gate": {
+    "gain_vs_embedding_only": 0.003649017323697934,
+    "gain_vs_shuffled_control": 0.002650668351754204,
+    "passed": true
+  },
+  "promotion_margin": -0.009749626548018697,
+  "promotion_reference": 0.608694,
+  "protocol_id": "vcc-h1-pathway-conditioned-delta-basis-v1",
+  "seeds": [20260907, 20260908, 20260909],
+  "source_artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_pathway_delta_multifold_20260913/result.json",
+  "status": "rejected",
+  "test_expression_used": false
+}

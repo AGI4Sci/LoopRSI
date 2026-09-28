@@ -1,0 +1,32 @@
+{
+  "artifact_sha256": "af1a14f83b1744156c9f28801e0143b57981db58e6d2ee562fd4d4fe1f58817c",
+  "best_configuration": {
+    "basis_rank": 32,
+    "calibration": 0.75,
+    "confidence_power": 2.0,
+    "de_strength": 0.0,
+    "ridge": 1.0,
+    "scale": 1.5
+  },
+  "fold_salt": "candidate-i-new-folds-20260913",
+  "folds": 3,
+  "go_target_coverage": 0.9767441860465116,
+  "h200_job": "vcc-candidate-i-pathway-basis-20260913-18835550",
+  "metrics": {
+    "de_direction_mean": 0.912443190639511,
+    "delta_correlation_mean": 0.6009228143560912,
+    "mse_mean": 0.17406673558085078
+  },
+  "official_test_prediction_generated": false,
+  "promotion_margin": -0.007771185643908773,
+  "promotion_reference": 0.608694,
+  "protocol_id": "vcc-h1-candidate-i-pathway-basis-v1",
+  "seeds": [20260907, 20260908, 20260909],
+  "shuffled_go_control": {
+    "delta_correlation_mean": 0.597395918768341,
+    "gain": 0.0035268955877502117
+  },
+  "source_artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_i_pathway_basis_20260913/result.json",
+  "status": "rejected",
+  "test_expression_used": false
+}

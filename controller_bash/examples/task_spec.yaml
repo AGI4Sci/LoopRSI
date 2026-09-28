@@ -1,0 +1,65 @@
+schema_version: omni-ar-task/v1
+
+task:
+  name: example_task
+  type: regression
+  modality: tabular
+  description: Replace these fields with the case definition.
+
+workspace:
+  base: spec
+  project_root: .
+  implementation_dir: implementation
+
+adapter:
+  module: tasks/example/adapter.py
+  class_name: ExampleTaskAdapter
+  trial_defaults:
+    epochs: 5
+    batch_size: 64
+    seed: 7
+  actions:
+    prepare_data: python -m tasks.example.adapter prepare_data --output {result_path}
+    validate_data: python -m tasks.example.adapter validate_data --output {result_path}
+    run_baseline: python -m tasks.example.adapter run_baseline --output {result_path}
+    run_trial: python -m tasks.example.adapter run_trial --output {result_path}
+    evaluate: python -m tasks.example.adapter evaluate --output {result_path}
+    summarize_results: python -m tasks.example.adapter summarize_results --output {result_path}
+
+entrypoints:
+  train: python train.py --output {result_path}
+  evaluate: python evaluate.py --output {result_path}
+
+data:
+  train:
+    path: data/train.ext
+    format: replace_me
+  validation:
+    path: data/validation.ext
+    format: replace_me
+
+metrics:
+  primary:
+    name: quality
+    direction: maximize
+    source: metrics.quality
+    role: primary
+  secondary:
+    - name: error
+      direction: minimize
+      source: metrics.error
+      role: diagnostic
+
+search:
+  path_scope: implementation
+  editable_paths:
+    - model
+    - train.py
+  protected_paths:
+    - data
+    - artifacts
+
+resources:
+  gpu_count: 1
+  max_runtime_minutes: 60
+  max_trials_per_round: 3

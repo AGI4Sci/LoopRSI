@@ -1,0 +1,92 @@
+{
+  "artifacts": {
+    "edge_table.csv": {
+      "sha256": "26c7ca1ef6e4158ef7383f6e713aaf9d27fbb445144092d776e9f4f1c3b82285"
+    },
+    "node_table.csv": {
+      "sha256": "5a9158fddcf174373d54640ea3c9a3b6740375e574118a2bad5ab9e8dec3493b"
+    }
+  },
+  "coverage": {
+    "test": {
+      "coverage": 0.98,
+      "mapped": 98,
+      "targets": 100
+    },
+    "train": {
+      "coverage": 0.98,
+      "mapped": 147,
+      "targets": 150
+    },
+    "validation": {
+      "coverage": 0.98,
+      "mapped": 49,
+      "targets": 50
+    }
+  },
+  "generated_at": "2026-09-12T17:49:31.503413+00:00",
+  "negative_controls": [
+    "shuffle_target_annotations",
+    "degree_preserving_target_swap"
+  ],
+  "schema_version": "vcc25-official-h1-go-bp/v1",
+  "sources": {
+    "go_basic_obo": {
+      "header": {
+        "data-version": "releases/2026-07-26",
+        "ontology": "go"
+      },
+      "sha256": "b08d45b268b8c24ccb2513dbbbc7d4df9f6521c099b413f79eb31e06e0fa3bcc",
+      "url": "https://current.geneontology.org/ontology/go-basic.obo"
+    },
+    "goa_human_gaf": {
+      "header": {
+        "date-generated": "2026-01-05",
+        "evidence_counts": {
+          "EXP": 4,
+          "HDA": 5,
+          "HEP": 1,
+          "HMP": 2,
+          "IBA": 499,
+          "IC": 24,
+          "IDA": 1211,
+          "IEA": 1516,
+          "IEP": 16,
+          "IGI": 77,
+          "IMP": 750,
+          "IPI": 3,
+          "ISS": 551,
+          "NAS": 353,
+          "TAS": 407
+        },
+        "gaf-version": "2.2",
+        "go-version": "http://purl.obolibrary.org/obo/go/releases/2026-04-27/extensions/go-plus.ofn"
+      },
+      "sha256": "db472faff1785878521693af62646546cea6af4a386609dd01c72c0554a46a30",
+      "url": "https://current.geneontology.org/annotations/goa_human.gaf.gz"
+    },
+    "target_manifests": {
+      "test": {
+        "path": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/assets/official_2025/test/pert_counts_Test.csv",
+        "sha256": "c4f0ba439d7c3121562ca1f79fa3854d8f96fc7c3de24dca23eb9e7c41c8923a"
+      },
+      "train": {
+        "path": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/assets/official_2025/train/pert_counts_Training.csv",
+        "sha256": "633d202be221418bdbac16efd8cb169666de0ef6469a4e9bfdfb64666ea81a89"
+      },
+      "validation": {
+        "path": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/assets/official_2025/validation/pert_counts_Validation.csv",
+        "sha256": "9da5dec8c25aff1bddc01cf76897cf94ec65f8f877beee29482c543bf1e7e43b"
+      }
+    }
+  },
+  "test_expression_used": false,
+  "unmapped_targets": [
+    "CENPB",
+    "LAD1",
+    "MFSD10",
+    "MORN2",
+    "SMAGP",
+    "TAZ"
+  ]
+}

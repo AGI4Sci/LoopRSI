@@ -1,0 +1,7 @@
+{
+  "run_id": "run1",
+  "round": 1,
+  "max_seconds": 3600,
+  "max_gpu_seconds": 3600,
+  "max_cost": 1.0
+}

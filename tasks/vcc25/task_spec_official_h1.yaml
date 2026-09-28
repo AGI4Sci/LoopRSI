@@ -1,0 +1,69 @@
+schema_version: omni-ar-task/v2
+
+task:
+  name: vcc25
+  type: regression
+  modality: single_cell
+  description: Predict all 18,080 genes for 100 unseen official H1 perturbation targets and evaluate with canonical Cell-Eval.
+
+workspace:
+  base: repository
+  project_root: tasks/vcc25
+  implementation_dir: implementation
+
+adapter:
+  module: tasks/vcc25/official_h1_adapter.py
+  class_name: VCC25OfficialH1TaskAdapter
+  trial_defaults:
+    method: candidate
+    candidate_variant: candidate_g_promoted_delta_model
+    seed: 20260907
+  actions:
+    prepare_data: python -m tasks.vcc25.official_h1_adapter prepare_data --output {result_path}
+    validate_data: python -m tasks.vcc25.official_h1_adapter validate_data --output {result_path}
+    run_baseline: python -m tasks.vcc25.official_h1_adapter run_baseline --output {result_path}
+    run_trial: python -m tasks.vcc25.official_h1_adapter run_trial --output {result_path}
+    evaluate: python -m tasks.vcc25.official_h1_adapter evaluate --output {result_path}
+    summarize_results: python -m tasks.vcc25.official_h1_adapter summarize_results --output {result_path}
+
+entrypoints:
+  train: python -m tasks.vcc25.official_h1_adapter run_trial --output {result_path}
+  evaluate: python -m tasks.vcc25.official_h1_adapter evaluate --output {result_path}
+
+data:
+  train:
+    path: /mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/assets/official_2025/train/adata_Training.h5ad
+    format: h5ad
+    split: train
+  validation:
+    path: /mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/assets/official_2025/validation/adata_Validation.h5ad
+    format: h5ad
+    split: validation
+  test:
+    path: /mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/assets/official_2025/test/adata_Test.h5ad
+    format: h5ad
+    split: official_h1_test
+
+metrics:
+  primary:
+    name: pearson_delta
+    direction: maximize
+    source: metrics.pearson_delta
+    role: primary
+  secondary:
+    - {name: overlap_at_N, direction: maximize, source: metrics.overlap_at_N, role: diagnostic}
+    - {name: de_spearman_lfc_sig, direction: maximize, source: metrics.de_spearman_lfc_sig, role: diagnostic}
+    - {name: pr_auc, direction: maximize, source: metrics.pr_auc, role: diagnostic}
+    - {name: mae, direction: minimize, source: metrics.mae, role: diagnostic}
+
+search:
+  path_scope: implementation
+  editable_paths: [crpm, scripts, tests]
+  protected_paths: [artifacts, reports]
+  interface_editable_paths: [tasks/vcc25/official_h1_adapter.py]
+
+resources:
+  gpu_count: 1
+  gpu_type: H200
+  max_runtime_minutes: 180
+  max_trials_per_round: 1

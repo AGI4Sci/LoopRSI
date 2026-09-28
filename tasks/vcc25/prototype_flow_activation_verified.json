@@ -1,0 +1,25 @@
+{
+  "schema_version": "vcc25-prototype-flow-verification/v1",
+  "status": "verified",
+  "heuresis_eligible": true,
+  "verified_on": "2026-08-19",
+  "contract_version": "vcc25.prototype_flow_activation.v1",
+  "method": "pseudobulk_prototype_flow_matching",
+  "scope": "full_data_heldout_guide_gpu_activation_smoke",
+  "activation_verified": true,
+  "scientific_status": "eligible_for_fixed_budget_screening",
+  "validation": {
+    "dataset_ref": "vcc25@2",
+    "prepared_artifact": "full_512g",
+    "protocol": "heldout_guide",
+    "seed": 20250805,
+    "optimizer_steps": 8,
+    "mean_delta_pearson": 0.6071323510079615
+  },
+  "implementation_sha256": {
+    "tasks/vcc25/implementation/train.py": "6faa1cc34e1b7d581354df337b5721cca485b455b2ac7af42c2608cb2304946c",
+    "tasks/vcc25/implementation/crpm/flow.py": "612571ae537b5c9f1e279a0259b9a4d14ce6cdcc6ef41ada6369e7dd272bc93c",
+    "tasks/vcc25/implementation/crpm/prototype.py": "46d3c7bbaad45acd7dd4526d3866cbd57cf3a26193c744e856e1bdf1bf2b601a"
+  },
+  "result_sha256": "b4db94b71cb279ccc43e5a12db10ffdd3d364c1b72315c0fde4d60f0fb75315d"
+}

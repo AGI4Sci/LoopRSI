@@ -1,0 +1,28 @@
+# RSI Step0 ablation config (design doc).
+# Compare A: heuresis-aide vs B: heuresis-aira with the SAME seed / task / budget.
+# Metrics compared: cost_aware_reward, pearson_delta, cost_compute, time_cost,
+# success_rate, schedule_quality.
+run:
+  mode: evaluate
+  seed: 42
+  task_id: vcc25_h1
+  rounds: 1
+
+ablation:
+  name: step0_heuresis_aide_vs_aira
+  group_a: heuresis-aide
+  group_b: heuresis-aira
+  same_seed: true
+  same_task: true
+  same_budget: true
+
+budget:
+  max_seconds: 3600
+  max_gpu_seconds: 1800
+  max_cost: 20.0
+
+metrics: [cost_aware_reward, pearson_delta, cost_compute, time_cost, success_rate, schedule_quality]
+
+router:
+  policy: guided
+  model: deepseek-v4-flash

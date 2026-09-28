@@ -1,0 +1,200 @@
+{
+  "best": {
+    "config": {
+      "confidence_power": 2.0,
+      "external_rank": 16,
+      "external_ridge": 10.0,
+      "external_scale": 0.1,
+      "internal": {
+        "basis_rank": 32,
+        "calibration": 0.75,
+        "confidence_power": 2.0,
+        "de_strength": 0.0,
+        "ridge": 1.0,
+        "scale": 1.5
+      }
+    },
+    "de_direction_mean": 0.9131272808889199,
+    "delta_correlation_mean": 0.5982758051717074,
+    "fold_runs": [
+      {
+        "de_direction": 0.9101216814159292,
+        "delta_correlation": 0.6085399024718913,
+        "fold": 0,
+        "mse": 0.17084633860614792,
+        "pairwise_rank_loss": 0.036827798932790756,
+        "seed": 20260907
+      },
+      {
+        "de_direction": 0.9114038616251006,
+        "delta_correlation": 0.5872821483638753,
+        "fold": 1,
+        "mse": 0.1861651597043894,
+        "pairwise_rank_loss": 0.036827798932790756,
+        "seed": 20260907
+      },
+      {
+        "de_direction": 0.8953443632166219,
+        "delta_correlation": 0.5829632865344152,
+        "fold": 2,
+        "mse": 0.1781049505417336,
+        "pairwise_rank_loss": 0.036827798932790756,
+        "seed": 20260907
+      },
+      {
+        "de_direction": 0.9160674778761062,
+        "delta_correlation": 0.6000109835039832,
+        "fold": 0,
+        "mse": 0.1683958910855031,
+        "pairwise_rank_loss": 0.03377799689769745,
+        "seed": 20260908
+      },
+      {
+        "de_direction": 0.9234714400643604,
+        "delta_correlation": 0.5944474850591582,
+        "fold": 1,
+        "mse": 0.17625327258027318,
+        "pairwise_rank_loss": 0.03377799689769745,
+        "seed": 20260908
+      },
+      {
+        "de_direction": 0.9053963062716429,
+        "delta_correlation": 0.5915716726214262,
+        "fold": 2,
+        "mse": 0.17314693710903004,
+        "pairwise_rank_loss": 0.03377799689769745,
+        "seed": 20260908
+      },
+      {
+        "de_direction": 0.9199391592920354,
+        "delta_correlation": 0.6157742173959904,
+        "fold": 0,
+        "mse": 0.1725758329306688,
+        "pairwise_rank_loss": 0.03698505461215973,
+        "seed": 20260909
+      },
+      {
+        "de_direction": 0.926387771520515,
+        "delta_correlation": 0.60119330042118,
+        "fold": 1,
+        "mse": 0.18444209697093916,
+        "pairwise_rank_loss": 0.03698505461215973,
+        "seed": 20260909
+      },
+      {
+        "de_direction": 0.9100134667179686,
+        "delta_correlation": 0.6026992501734469,
+        "fold": 2,
+        "mse": 0.17165878049237707,
+        "pairwise_rank_loss": 0.03698505461215973,
+        "seed": 20260909
+      }
+    ],
+    "pairwise_rank_loss_mean": 0.03586361681421598,
+    "shuffled_external": false
+  },
+  "external_artifact_sha256": "c38e7d6e12daf414bf516df0081b7ca4f5de709e7807bdf07854911cdf3dac48",
+  "gain_vs_shuffled": 4.450924037058268e-05,
+  "h200_job": "vcc-candidate-j-external-basis-v4-20260913-2-46143",
+  "official_test_prediction_generated": false,
+  "promotion_margin": -0.010418194828292537,
+  "promotion_reference": 0.608694,
+  "protocol_id": "vcc-h1-candidate-j-external-mixture-v1",
+  "shuffled_external_control": {
+    "config": {
+      "confidence_power": 2.0,
+      "external_rank": 16,
+      "external_ridge": 10.0,
+      "external_scale": 0.1,
+      "internal": {
+        "basis_rank": 32,
+        "calibration": 0.75,
+        "confidence_power": 2.0,
+        "de_strength": 0.0,
+        "ridge": 1.0,
+        "scale": 1.5
+      }
+    },
+    "de_direction_mean": 0.9129766487013264,
+    "delta_correlation_mean": 0.5982312959313368,
+    "fold_runs": [
+      {
+        "de_direction": 0.909637721238938,
+        "delta_correlation": 0.6084666029764642,
+        "fold": 0,
+        "mse": 0.1708402563357842,
+        "pairwise_rank_loss": 0.03680325299501419,
+        "seed": 20260907
+      },
+      {
+        "de_direction": 0.9106999195494772,
+        "delta_correlation": 0.5865812390466842,
+        "fold": 1,
+        "mse": 0.18618202697253058,
+        "pairwise_rank_loss": 0.03680325299501419,
+        "seed": 20260907
+      },
+      {
+        "de_direction": 0.8953443632166218,
+        "delta_correlation": 0.5833441022491592,
+        "fold": 2,
+        "mse": 0.17808888337836823,
+        "pairwise_rank_loss": 0.03680325299501419,
+        "seed": 20260907
+      },
+      {
+        "de_direction": 0.9161366150442478,
+        "delta_correlation": 0.5999602631451455,
+        "fold": 0,
+        "mse": 0.1683879879147666,
+        "pairwise_rank_loss": 0.03377024084329605,
+        "seed": 20260908
+      },
+      {
+        "de_direction": 0.9236725663716815,
+        "delta_correlation": 0.5945797835553025,
+        "fold": 1,
+        "mse": 0.17625631843303396,
+        "pairwise_rank_loss": 0.03377024084329605,
+        "seed": 20260908
+      },
+      {
+        "de_direction": 0.9056367833782224,
+        "delta_correlation": 0.5922224198473118,
+        "fold": 2,
+        "mse": 0.17312880271173003,
+        "pairwise_rank_loss": 0.03377024084329605,
+        "seed": 20260908
+      },
+      {
+        "de_direction": 0.920008296460177,
+        "delta_correlation": 0.6154107937685142,
+        "fold": 0,
+        "mse": 0.17257232673834605,
+        "pairwise_rank_loss": 0.03700326383113861,
+        "seed": 20260909
+      },
+      {
+        "de_direction": 0.9257843925985518,
+        "delta_correlation": 0.6000987936353369,
+        "fold": 1,
+        "mse": 0.18447281616154998,
+        "pairwise_rank_loss": 0.03700326383113861,
+        "seed": 20260909
+      },
+      {
+        "de_direction": 0.9098691804540209,
+        "delta_correlation": 0.6034176651581129,
+        "fold": 2,
+        "mse": 0.17162989303669282,
+        "pairwise_rank_loss": 0.03700326383113861,
+        "seed": 20260909
+      }
+    ],
+    "pairwise_rank_loss_mean": 0.03585891922314962,
+    "shuffled_external": true
+  },
+  "source_artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_j_external_20260913/result.json",
+  "status": "rejected",
+  "test_expression_used": false
+}

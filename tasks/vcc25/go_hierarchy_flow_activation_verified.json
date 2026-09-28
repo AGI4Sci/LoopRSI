@@ -1,0 +1,45 @@
+{
+  "schema_version": "vcc25-go-hierarchy-flow-verification/v1",
+  "status": "verified",
+  "heuresis_eligible": true,
+  "verified_on": "2026-08-18",
+  "contract_version": "vcc25.go_hierarchy_flow_activation.v1",
+  "method": "pseudobulk_go_hierarchy_flow",
+  "scope": "activation_smoke_and_full_three_seed_degree_preserving_negative_control",
+  "activation_verified": true,
+  "scientific_status": "stable_hierarchy_effect_not_new_global_best",
+  "scientific_note": "Real GO hierarchy conditioning exceeds both the matched no-hierarchy flow and degree-preserving hierarchy control on every tested seed. Absolute performance remains below the established CRPM best, so this is an eligible research mechanism rather than a promoted best result.",
+  "annotation": {
+    "hierarchy_id": "vcc25-go-bp-20260818",
+    "target_coverage": 0.98,
+    "nodes": 3430,
+    "edges": 7653
+  },
+  "validation": {
+    "protocol": "heldout_guide",
+    "epochs": 250,
+    "seeds": [20250805, 20250806, 20250807],
+    "no_hierarchy": [0.5678547995257213, 0.40970416783982033, 0.32420987631979903],
+    "real_hierarchy": [0.573335313908635, 0.4766118680350835, 0.44919046524959844],
+    "degree_preserving_control": [0.5682246660223085, 0.4651088220779107, 0.3748860715554144],
+    "mean_no_hierarchy": 0.43392294789511354,
+    "mean_real_hierarchy": 0.49971254906443896,
+    "mean_degree_preserving_control": 0.4694065198852112,
+    "mean_real_minus_no_hierarchy": 0.06578960116932543,
+    "mean_real_minus_degree_control": 0.030306029179227773,
+    "positive_paired_effects": "3/3 against both controls"
+  },
+  "implementation_sha256": {
+    "tasks/vcc25/implementation/train.py": "b7d329014f0d312b2ed7715715d4db528c36715ade7ab99d0850e6394da88429",
+    "tasks/vcc25/implementation/crpm/flow.py": "ce562cd690c80e80fe2f834a29f949ba7d5e7cbc49064602bb2c32a105cfb4f3",
+    "datasets/vcc25/annotations/go-bp-20260818/edge_table.csv": "0532034deacf13a119032c5221c5bec6289dbaa5e4d25d91be558801af763f95"
+  },
+  "result_sha256": {
+    "seed_20250805_real": "9c71c52f953ca1ff53b766d1ac8e32c0b93dd1532e6441b48668279204b021b9",
+    "seed_20250805_degree_control": "c75bbcd08f68f630eec2b9b8d5aca9d6f9fe35fc553d9625c1ee665649909da1",
+    "seed_20250806_real": "4855cd8a6a987bb4c78d93475798aab783cb39831df89b253f57d5c740804ae6",
+    "seed_20250806_degree_control": "949140e367b7a9a3ba99c7c16358a892ef4c96277a4169cc3bddf2318ed76af5",
+    "seed_20250807_real": "161cf0e01f9e65fd32b9ccb384922f31a70fa0814fd01742de5f7a1d816f6e3f",
+    "seed_20250807_degree_control": "6c9612533c9a513f2df9b430f60f4815f6873540cf93bc0c9a0c598cd13bc6d8"
+  }
+}

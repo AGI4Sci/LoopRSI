@@ -1,0 +1,252 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "rsi.hierloop/v1.config",
+  "title": "Hierarchical loop configuration",
+  "type": "object",
+  "required": [
+    "run",
+    "loop_range",
+    "loops"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "rsi.hierloop/v1"
+    },
+    "run": {
+      "type": "object",
+      "required": [
+        "seed"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "task_id": {
+          "type": "string"
+        }
+      }
+    },
+    "loop_range": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "start",
+            "end"
+          ],
+          "properties": {
+            "start": {
+              "enum": [
+                "L1",
+                "L2",
+                "L3",
+                "L4",
+                "L5"
+              ]
+            },
+            "end": {
+              "enum": [
+                "L1",
+                "L2",
+                "L3",
+                "L4",
+                "L5"
+              ]
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "enum": [
+              "L1",
+              "L2",
+              "L3",
+              "L4",
+              "L5"
+            ]
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "direct_whitelist": {
+      "description": "Non-adjacent cross-layer edges allowed to route directly.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "from",
+              "to"
+            ],
+            "properties": {
+              "from": {
+                "enum": [
+                  "L1",
+                  "L2",
+                  "L3",
+                  "L4",
+                  "L5"
+                ]
+              },
+              "to": {
+                "enum": [
+                  "L1",
+                  "L2",
+                  "L3",
+                  "L4",
+                  "L5"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "loops": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "max_steps",
+          "exit"
+        ],
+        "properties": {
+          "max_steps": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "exit": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "const": "converge_or_budget"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "const": "threshold"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "const": "budget"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "router": {
+      "type": "object"
+    },
+    "reward": {
+      "type": "object"
+    },
+    "out": {
+      "type": "object",
+      "properties": {
+        "dir": {
+          "type": "string"
+        },
+        "manifest": {
+          "type": "string"
+        }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "baseline": {
+          "type": "number"
+        },
+        "capacity_threshold": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retrieval": {
+          "type": "object",
+          "properties": {
+            "top_k": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "min_reward": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          }
+        },
+        "learn": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "min_samples": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "out": {
+          "type": "object",
+          "properties": {
+            "dir": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "properties": {
+        "dir": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

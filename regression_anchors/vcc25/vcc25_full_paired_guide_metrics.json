@@ -1,0 +1,53 @@
+{
+  "date": "2026-08-08",
+  "dataset": "vcc25_full_512g.npz",
+  "total_cells": 221273,
+  "selected_genes": 512,
+  "split": {
+    "strategy": "paired_heldout_guide",
+    "train_cells": 210123,
+    "eval_cells": 11150,
+    "heldout_guides": 8,
+    "eligible_targets": ["CAST", "DAXX", "HIRA", "KDM2B", "KLF10", "PRCP", "STAG2", "TMSB4X"],
+    "condition": "one guide held out per multi-guide target; every evaluation target remains represented by another guide in training"
+  },
+  "training": {
+    "epochs": 15,
+    "rank": 32,
+    "batch_size": 1024,
+    "batch_control_baselines": "48/48 direct"
+  },
+  "metrics": {
+    "global_mean": {
+      "mse": 0.46536242961883545,
+      "mean_profile_pearson": 0.9973073348771999,
+      "mean_delta_pearson": 0.42721297036055766,
+      "top50_overlap": 0.32
+    },
+    "batch_control_mean": {
+      "mse": 0.45986151695251465,
+      "mean_profile_pearson": 0.9967164974560132,
+      "mean_delta_pearson": null,
+      "top50_overlap": 0.14
+    },
+    "target_only_crpm": {
+      "mse": 0.48739051818847656,
+      "mean_profile_pearson": 0.9893302425866318,
+      "mean_delta_pearson": 0.5836984192400745,
+      "top50_overlap": 0.38,
+      "runtime_seconds": 27.70
+    },
+    "guide_aware_crpm": {
+      "mse": 0.4657457768917084,
+      "mean_profile_pearson": 0.996851848891657,
+      "mean_delta_pearson": 0.5914501826785145,
+      "top50_overlap": 0.42,
+      "runtime_seconds": 28.97
+    }
+  },
+  "rjob": {
+    "job_name": "vcc25-full-paired-guide-74828098",
+    "status": "Succeeded",
+    "gpu": "H200"
+  }
+}

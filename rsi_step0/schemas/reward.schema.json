@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://rsi.step0/schemas/reward.schema.json",
+  "title": "RSI Step0 Reward",
+  "type": "object",
+  "required": [
+    "normalized_outcome",
+    "cost_compute",
+    "time_cost",
+    "total",
+    "lambda_c",
+    "lambda_t",
+    "metadata"
+  ],
+  "properties": {
+    "normalized_outcome": { "type": "number" },
+    "cost_compute": { "type": "number" },
+    "time_cost": { "type": "number" },
+    "total": { "type": "number" },
+    "lambda_c": { "type": "number" },
+    "lambda_t": { "type": "number" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": true
+}

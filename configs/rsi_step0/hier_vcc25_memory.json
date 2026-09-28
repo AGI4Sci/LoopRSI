@@ -1,0 +1,135 @@
+{
+  "schema_version": "rsi.hierloop/v1",
+  "run": {
+    "id": "hier_vcc25_official_h1_mem",
+    "seed": 20260907,
+    "rounds": 2,
+    "task_id": "vcc25"
+  },
+  "task": {
+    "name": "vcc25",
+    "spec": "task_spec_official_h1.yaml",
+    "baseline": 0.30614
+  },
+  "loop_range": {
+    "start": "L1",
+    "end": "L5"
+  },
+  "direct_whitelist": [
+    {
+      "from": "L5",
+      "to": "L1"
+    },
+    {
+      "from": "L4",
+      "to": "L2"
+    }
+  ],
+  "loops": {
+    "L1": {
+      "max_steps": 2,
+      "exit": {
+        "type": "converge_or_budget",
+        "converge_delta": 0.001,
+        "budget_seconds": 600
+      }
+    },
+    "L2": {
+      "max_steps": 2,
+      "exit": {
+        "type": "converge_or_budget",
+        "converge_delta": 0.001,
+        "budget_seconds": 600
+      }
+    },
+    "L3": {
+      "max_steps": 3,
+      "exit": {
+        "type": "converge_or_budget",
+        "converge_delta": 0.001,
+        "budget_seconds": 900
+      }
+    },
+    "L4": {
+      "max_steps": 3,
+      "exit": {
+        "type": "converge_or_budget",
+        "converge_delta": 0.001,
+        "budget_seconds": 900
+      }
+    },
+    "L5": {
+      "max_steps": 1,
+      "exit": {
+        "type": "budget"
+      },
+      "note": "1 real trial per round; 2 rounds => 2 real vcc25 trainings (bounded rjob wall-time)"
+    }
+  },
+  "router": {
+    "policy": "hier_guided",
+    "default_route": "adjacent"
+  },
+  "reward": {
+    "metric": "pearson_delta",
+    "baseline": 0.30614,
+    "lambda_c": 1e-06,
+    "lambda_t": 1e-06,
+    "use_cost_aware_reward": true
+  },
+  "worker": {
+    "type": "vcc25",
+    "adapter_module": "tasks.vcc25.official_h1_adapter",
+    "trial_defaults": {
+      "method": "candidate",
+      "candidate_variant": "candidate_g_promoted_delta_model",
+      "eval_profile": "native",
+      "eval_skip_metrics": "discrimination_score_l1,pearson_edistance,clustering_agreement,overlap_at_N,de_spearman_sig,de_spearman_lfc_sig,pr_auc"
+    },
+    "result_root": "output/vcc25/hier/r18B",
+    "trial_timeout_seconds": 3600,
+    "trial_timeout_note": "1h cap; full-profile eval over 100 targets needs ~10h, so in-loop eval skips heavy cell-level metrics"
+  },
+  "out": {
+    "dir": "output/rsi_step0/hier",
+    "manifest": "hier_progress.jsonl"
+  },
+  "memory": {
+    "enabled": true,
+    "baseline": 0.050227,
+    "capacity_threshold": 3,
+    "retrieval": {
+      "top_k": 5,
+      "min_reward": null,
+      "prefer_metric_source": "real"
+    },
+    "learn": {
+      "enabled": false,
+      "min_samples": 100
+    },
+    "out": {
+      "dir": "output/rsi_step0/memory"
+    },
+    "prior_real_results": [
+      {
+        "layer": "L5",
+        "variant": "candidate_g_promoted_delta_model",
+        "seed": 20260908,
+        "outcome_score": 0.05022724027648984,
+        "reward": 0.0,
+        "reasoning": "r17 empirical baseline reproduction (seed 20260908, native_eval)"
+      },
+      {
+        "layer": "L5",
+        "variant": "candidate_g_promoted_delta_model",
+        "seed": 20260907,
+        "outcome_score": 0.035865552837513116,
+        "reward": -0.014362,
+        "reasoning": "r1 reproduction (seed 20260907, native_eval)"
+      }
+    ]
+  },
+  "decisions": {
+    "dir": "output/rsi_step0/rollout"
+  }
+}

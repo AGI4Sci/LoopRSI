@@ -1,0 +1,61 @@
+{
+  "status": "ok",
+  "schema_version": "vcc25-h5-optimization-summary/v1",
+  "source_dataset": "/data/zhangzhicheng/omni-ar/competition_train.h5",
+  "source_sha256": "3dc850b767553648b91bf0b21a0e753be3010f36cf0cf3e98f6ef616c75aa847",
+  "source_size_bytes": 15482098599,
+  "source_shape": [221273, 18080],
+  "source_available_in_worker": false,
+  "prepared_dataset": "vcc25_full_512g.npz",
+  "prepared_sha256": "267f6f58014d3ee56fae280172602dcd2b5281a39f26bfdfb16d8a0e4d0eb4f1",
+  "prepared_sha256_verified_in_worker": true,
+  "selected_genes": 512,
+  "data_protocol": "All 221273 cells from competition_train.h5 are retained; 512 genes selected by training-only variance ranking.",
+  "method": "pseudobulk",
+  "change": {"guide_shrinkage_type": "frequency"},
+  "seeds": [
+    {
+      "seed": 20250805,
+      "mean_delta_pearson": 0.6893471212469827,
+      "mse": 0.46267977356910706,
+      "top_k_delta_overlap": 0.46,
+      "n_train": 210123,
+      "n_eval": 11150,
+      "epochs_completed": 250,
+      "runtime_seconds": 32.99490308761597,
+      "acceptance_passed": true,
+      "within_budget": true
+    },
+    {
+      "seed": 20250806,
+      "mean_delta_pearson": 0.546807345822256,
+      "mse": 0.45907318592071533,
+      "top_k_delta_overlap": 0.28,
+      "n_train": 209720,
+      "n_eval": 11553,
+      "epochs_completed": 250,
+      "runtime_seconds": 29.99995994567871,
+      "acceptance_passed": true,
+      "within_budget": true
+    },
+    {
+      "seed": 20250807,
+      "mean_delta_pearson": 0.7653789693714816,
+      "mse": 0.4662875533103943,
+      "top_k_delta_overlap": 0.54,
+      "n_train": 211111,
+      "n_eval": 10162,
+      "epochs_completed": 250,
+      "runtime_seconds": 29.736242532730103,
+      "acceptance_passed": true,
+      "within_budget": true
+    }
+  ],
+  "summary": {
+    "mean_delta_pearson": {"mean": 0.6671778121469067, "population_std": 0.09059800349057419},
+    "mse": {"mean": 0.4626801709334056, "population_std": 0.0029452531670174607},
+    "top_k_delta_overlap": {"mean": 0.4266666666666667, "population_std": 0.10873004286866728}
+  },
+  "all_trials_ok": true,
+  "trial_results": "state/round_6/trial_results.json"
+}

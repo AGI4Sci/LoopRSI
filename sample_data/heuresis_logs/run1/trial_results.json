@@ -1,0 +1,10 @@
+{
+  "run_id": "run1",
+  "round": 1,
+  "proposal_id": "p1",
+  "idea_variant": {"name": "v1"},
+  "status": "ok",
+  "pearson_delta": 0.421,
+  "runtime_seconds": 120.5,
+  "gpu_count": 1
+}

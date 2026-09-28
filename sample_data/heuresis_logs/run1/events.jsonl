@@ -1,0 +1,3 @@
+{"event":"run_started","run_id":"run1","round":1}
+{"event":"candidate_recorded","run_id":"run1","round":1,"proposal_id":"p1","idea_variant":{"name":"v1"},"pearson_delta":0.421,"status":"ok","runtime_seconds":120.5,"gpu_count":1}
+{"event":"round_completed","run_id":"run1","round":1,"status":"ok"}

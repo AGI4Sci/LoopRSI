@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omni-ar.local/schemas/regression_suite.schema.json",
+  "title": "OMNI-AR Task Regression Suite",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "suite_id", "task_name", "policy", "cases", "historical_anchors"],
+  "properties": {
+    "schema_version": {"const": "omni-ar-regression/v1"},
+    "suite_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "task_name": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "allow_search", "preserve_best"],
+      "properties": {
+        "mode": {"const": "regression"},
+        "allow_search": {"type": "boolean"},
+        "preserve_best": {"type": "boolean"},
+        "note": {"type": "string"}
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "proposal", "expected_parameters"],
+        "properties": {
+          "case_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+          "proposal": {"type": "object"},
+          "expected_parameters": {"type": "object", "minProperties": 1, "additionalProperties": true}
+        }
+      }
+    },
+    "historical_anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["anchor_id", "artifact", "checks"],
+        "properties": {
+          "anchor_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+          "artifact": {"type": "string", "minLength": 1},
+          "checks": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["source", "expected", "absolute_tolerance"],
+              "properties": {
+                "source": {"type": "string", "minLength": 1},
+                "expected": {"type": "number"},
+                "absolute_tolerance": {"type": "number", "minimum": 0}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

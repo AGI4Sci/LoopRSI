@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omni-ar.local/schemas/result.schema.json",
+  "title": "OMNI-AR Trial Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "task_name", "proposal_id", "trial_name", "status",
+    "primary_metric", "secondary_metrics", "artifacts", "provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": "omni-ar-result/v1"},
+    "task_name": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "proposal_id": {"type": "string"},
+    "trial_name": {"type": "string"},
+    "status": {"enum": ["ok", "failed", "skipped", "simulated"]},
+    "primary_metric": {"oneOf": [{"$ref": "#/$defs/metricValue"}, {"type": "null"}]},
+    "secondary_metrics": {"type": "array", "items": {"$ref": "#/$defs/metricValue"}},
+    "artifacts": {"type": "object", "additionalProperties": {"type": "string"}},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["raw_result"],
+      "properties": {
+        "raw_result": {"type": "string"},
+        "command": {"type": "string"},
+        "seed": {"type": ["integer", "null"]},
+        "duration_seconds": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "error": {"type": "string"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "ok"}}},
+      "then": {"properties": {"primary_metric": {"$ref": "#/$defs/metricValue"}}},
+      "else": {}
+    }
+  ],
+  "$defs": {
+    "metricValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value", "direction"],
+      "properties": {
+        "name": {"type": "string"},
+        "value": {"type": "number"},
+        "direction": {"enum": ["maximize", "minimize"]}
+      }
+    }
+  }
+}
