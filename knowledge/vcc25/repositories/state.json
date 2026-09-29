@@ -1,0 +1,15 @@
+{
+  "id": "kb:repo:state", "schema_version": "1.0", "asset_type": "repository",
+  "title": "ArcInstitute/state", "summary_plain": "STATE 官方实现，提供数据准备、训练、预测 CLI 和公开模型集合，可作为较完整的迁移学习路线。",
+  "fit_reason": "命令行边界清楚，适合由 Agent 通过白名单 adapter 生成可审计任务。",
+  "limitations": ["依赖和训练资源较重。", "必须先把 H1 数据转换成 STATE 接受的格式。"],
+  "tags": ["state", "finetune", "cli", "official"], "layers": ["L5"],
+  "sources": [{"url": "https://github.com/ArcInstitute/state", "kind": "official_repository"}],
+  "relations": ["kb:paper:state", "kb:model:state-st-hvg-replogle"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "official_url": "https://github.com/ArcInstitute/state", "revision": "upstream-default-branch-unpinned",
+  "maintenance_status": "active_at_review_time", "licenses": {"code": "CC BY-NC-SA 4.0", "weights": "Arc Research Institute State Model Non-Commercial License"},
+  "install": "Use the upstream package environment.", "entrypoints": ["state tx train", "state tx predict"],
+  "io_contract": {"input": "STATE-formatted single-cell data", "output": "predicted cell state"},
+  "vcc25_adaptation": ["convert H1 training data", "fine-tune checkpoint", "restore official gene order"]
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rsi.local/schemas/vcc25/paper.schema.json",
+  "allOf": [{"$ref": "card.schema.json"}],
+  "properties": {"asset_type": {"const": "paper"}, "mechanism": {"type": "string"}, "limitations": {"type": "array"}}
+}

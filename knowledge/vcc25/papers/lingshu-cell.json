@@ -1,0 +1,11 @@
+{
+  "id": "kb:paper:lingshu-cell", "schema_version": "1.0", "asset_type": "paper",
+  "title": "Lingshu-Cell", "summary_plain": "面向单细胞任务的模型家族；其中 VCC 方案直接针对当前 H1 扰动预测任务，是必须复现和超过的目标基线。",
+  "fit_reason": "任务最贴近，而且本项目远端已经有 85M 权重和辅助资产。",
+  "mechanism": "把细胞表达、扰动基因和外部基因表示组合起来预测扰动后的表达变化。",
+  "limitations": ["公开成绩与本项目固定评测协议尚未完全对齐。", "本地资产存在不等于已经完成可复现冒烟推理。"],
+  "tags": ["vcc25", "genetic-perturbation", "transformer"], "layers": ["L1", "L2", "L3", "L4"],
+  "sources": [{"url": "https://arxiv.org/abs/2603.25240", "kind": "paper"}, {"url": "https://github.com/alibaba-damo-academy/Lingshu-Cell", "kind": "official_repository"}],
+  "relations": ["kb:repo:lingshu-cell", "kb:model:lingshu-vcc-85m"],
+  "review_status": "approved", "review_basis": "provisional_initial_release"
+}

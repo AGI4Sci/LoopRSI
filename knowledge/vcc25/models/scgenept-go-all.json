@@ -1,0 +1,22 @@
+{
+  "id": "kb:model:scgenept-go-all", "schema_version": "1.0", "asset_type": "model",
+  "title": "scGenePT GO-All", "summary_plain": "结合 Gene Ontology 的 scGenePT 遗传扰动 checkpoint，具备领域知识，但需要对齐 H1 词表并继续微调。",
+  "fit_reason": "已经学过遗传扰动，比通用 scGPT 更符合当前问题。",
+  "limitations": ["首版只登记资产，不提供执行 adapter。", "checkpoint、词表和基因嵌入必须成套验证。"],
+  "tags": ["scgenept", "gene-ontology", "checkpoint", "finetune"], "layers": ["L4", "L5"],
+  "sources": [{"url": "https://github.com/czi-ai/scGenePT", "kind": "official_repository"}, {"url": "https://www.biorxiv.org/content/10.1101/2024.10.23.619972v1", "kind": "paper"}],
+  "relations": ["kb:paper:scgenept", "kb:repo:scgenept"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "usage_mode": "foundation_checkpoint", "execution_readiness": "finetune_required",
+  "artifacts": [
+    {"role": "checkpoint", "uri": "s3://czi-scgenept-public/", "format": "pytorch", "access": "public", "integrity": {"status": "not_published"}},
+    {"role": "vocabulary", "uri": "s3://czi-scgenept-public/", "format": "json", "access": "public", "integrity": {"status": "not_published"}},
+    {"role": "gene_embeddings", "uri": "s3://czi-scgenept-public/", "format": "array", "access": "public", "integrity": {"status": "not_published"}}
+  ],
+  "licenses": {"code": "see upstream LICENSE", "weights": "see upstream model documentation"},
+  "io_contract": {"input_format": "tokenized single-cell expression plus perturbation", "gene_space": "scGenePT vocabulary; alignment required", "output_type": "predicted expression"},
+  "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
+  "vcc25_compatibility": {"level": "future_finetune_candidate", "gaps": ["adapter implementation", "H1 fine-tuning", "output conversion"]},
+  "execution_recipe": {"adapter_id": null, "actions": ["future_adapter_required"]},
+  "smoke_evidence": []
+}

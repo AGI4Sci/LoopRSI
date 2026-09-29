@@ -1,0 +1,15 @@
+{
+  "id": "kb:repo:linear-baseline", "schema_version": "1.0", "asset_type": "repository",
+  "title": "Linear perturbation prediction paper code", "summary_plain": "线性扰动预测论文的公开实现，用很少的算力建立必须超过的简单基线。",
+  "fit_reason": "便宜、快速、容易审计，适合作为统一 base。",
+  "limitations": ["首版沿用 RSI 内部线性流程，尚未增加独立 adapter。", "不能充分表达非线性响应。"],
+  "tags": ["linear", "pseudobulk", "fast", "baseline"], "layers": ["L5"],
+  "sources": [{"url": "https://github.com/const-ae/linear_perturbation_prediction-Paper", "kind": "official_repository"}],
+  "relations": ["kb:paper:linear-baseline", "kb:model:linear-pseudobulk"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "official_url": "https://github.com/const-ae/linear_perturbation_prediction-Paper", "revision": "upstream-default-branch-unpinned",
+  "maintenance_status": "public", "licenses": {"code": "see upstream LICENSE"},
+  "install": "Use the repository environment or the existing RSI baseline environment.",
+  "entrypoints": ["paper reproduction scripts"], "io_contract": {"input": "training expression grouped by perturbation", "output": "mean or linear response"},
+  "vcc25_adaptation": ["use training-only statistics", "emit official gene order"]
+}

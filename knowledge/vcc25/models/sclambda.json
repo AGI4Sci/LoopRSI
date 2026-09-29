@@ -1,0 +1,18 @@
+{
+  "id": "kb:model:sclambda", "schema_version": "1.0", "asset_type": "model",
+  "title": "scLAMBDA training recipe", "summary_plain": "scLAMBDA 的 VCC25 候选训练配方，尚未宣称存在可直接使用的 H1 checkpoint。",
+  "fit_reason": "作为第二版后续路线，和 Lingshu、GEARS、PRiMeFlow 形成机制对照。",
+  "limitations": ["来源、权重和 H1 适配尚未核验。", "需要先通过静态检查和小数据 smoke。"],
+  "tags": ["sclambda", "single-cell", "train"], "layers": ["L3", "L4", "L5"],
+  "sources": [{"url": "https://doi.org/10.1101/2024.12.04.626878", "kind": "paper"}, {"url": "https://github.com/gefeiwang/scLAMBDA", "kind": "official_repository"}],
+  "relations": ["kb:paper:sclambda", "kb:repo:sclambda"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "usage_mode": "trainable_recipe", "execution_readiness": "reference_only",
+  "artifacts": [{"role": "recipe", "uri": "https://github.com/gefeiwang/scLAMBDA", "format": "source_repository", "access": "public", "integrity": {"status": "not_published", "note": "card seed has no fixed commit"}}],
+  "licenses": {"code": "GPL-3.0", "weights": "not_applicable_until_trained"},
+  "io_contract": {"input_format": "pending source confirmation", "gene_space": "official 18080-gene order", "output_type": "predicted expression matrix"},
+  "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
+  "vcc25_compatibility": {"level": "reference_only", "gaps": ["source confirmation", "adapter", "training", "H1 output conversion"]},
+  "execution_recipe": {"adapter_id": null, "actions": ["future_adapter_required"]},
+  "smoke_evidence": []
+}

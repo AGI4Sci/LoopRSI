@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VCC25 L4 mechanism decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["layer", "decision_type", "mechanism", "expected_effect"],
+  "properties": {
+    "layer": {"type": "string", "const": "L4"},
+    "decision_type": {"type": "string", "const": "mechanism"},
+    "mechanism": {"type": "string", "minLength": 1},
+    "expected_effect": {"type": "string", "minLength": 1}
+  }
+}

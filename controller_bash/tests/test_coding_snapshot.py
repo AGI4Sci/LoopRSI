@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import tempfile
@@ -12,12 +13,20 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "controller_bash/scripts"))
 
 from run_coding_agent import (  # noqa: E402
-    create_worktree, ensure_bubblewrap, materialize_dataset_binding,
-    materialize_source_snapshot,
+    create_worktree, ensure_bubblewrap, file_hashes, materialize_dataset_binding,
+    materialize_source_snapshot, run_direct_codex,
 )
 
 
 class CodingSnapshotTests(unittest.TestCase):
+    def test_file_hashes_ignore_git_worktree_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / ".git").write_text("gitdir: /tmp/example\n", encoding="utf-8")
+            (root / "model.py").write_text("VALUE = 1\n", encoding="utf-8")
+
+            self.assertEqual(set(file_hashes(root)), {"model.py"})
+
     def test_dirty_source_is_snapshotted_without_credentials(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -90,6 +99,46 @@ class CodingSnapshotTests(unittest.TestCase):
             ):
                 selected = ensure_bubblewrap("codex")
             self.assertEqual(selected, str(bundled.resolve()))
+
+    def test_direct_codex_is_ephemeral_scoped_and_strips_secrets(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source, agent_dir = root / "source", root / "agent"
+            source.mkdir()
+            (source / "model.py").write_text("VALUE = 1\n", encoding="utf-8")
+            calls = []
+
+            def fake_runner(command, **kwargs):
+                calls.append((command, kwargs))
+                return subprocess.CompletedProcess(command, 0, "done\n", "")
+
+            with patch.dict(
+                os.environ,
+                {
+                    "OPENAI_API_KEY": "must-not-leak",
+                    "OMNI_AR_CODEX_BASE_URL": "https://example.invalid/v1",
+                },
+                clear=False,
+            ):
+                run = run_direct_codex(
+                    "codex",
+                    "gpt-test",
+                    source,
+                    agent_dir,
+                    "edit only model.py",
+                    timeout=30,
+                    runner=fake_runner,
+                )
+
+            self.assertEqual(run.exit_code, 0)
+            self.assertEqual((agent_dir / "solution/model.py").read_text(), "VALUE = 1\n")
+            command, kwargs = calls[0]
+            self.assertIn("--ephemeral", command)
+            self.assertIn("--ignore-user-config", command)
+            self.assertIn("workspace-write", command)
+            self.assertEqual(command[command.index("--cd") + 1], str(agent_dir / "solution"))
+            self.assertNotIn("OPENAI_API_KEY", kwargs["env"])
+            self.assertEqual(kwargs["input"], "edit only model.py")
 
 
 if __name__ == "__main__":

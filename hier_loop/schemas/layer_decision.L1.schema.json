@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VCC25 L1 direction decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["layer", "decision_type", "direction", "rationale"],
+  "properties": {
+    "layer": {"type": "string", "const": "L1"},
+    "decision_type": {"type": "string", "const": "direction"},
+    "direction": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1}
+  }
+}

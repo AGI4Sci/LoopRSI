@@ -25,6 +25,16 @@
 
 入口脚本：`rjob_train_rsi.py`（用 rjob 拉起一次训练的最小闭环入口）。
 
+## VCC25 领域知识库
+
+首版领域知识库位于 `knowledge/vcc25/`，包含论文、开源仓库和模型卡，并通过 `skills/vcc25/` 接入现有 Agent 插件。它不保存权重，也不会直接运行第三方代码。先执行：
+
+```bash
+python3 -m domain_knowledge --root knowledge/vcc25 validate
+```
+
+维护、检索和适配器检查方法见 `docs/domain-knowledge.md`。
+
 ## 二、什么是不用改、但接口已经定义好的核心代码
 
 - `rsi_step0/contracts.py` —— 全部枚举 / 常量 / 哈希工具的**唯一权威契约**，其它模块都 `from rsi_step0 import contracts as C` 引用它。**不要改**，除非你明确要在协议上加字段。

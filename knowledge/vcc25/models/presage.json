@@ -1,0 +1,18 @@
+{
+  "id": "kb:model:presage", "schema_version": "1.0", "asset_type": "model",
+  "title": "PRESAGE training or fine-tuning recipe", "summary_plain": "PRESAGE 的 VCC25 候选配方，当前只进入知识库选型，不代表已经具备可运行权重。",
+  "fit_reason": "用于后续比较预训练表示对未见扰动泛化的影响。",
+  "limitations": ["公开 checkpoint、代码和 VCC25 适配尚未核验。", "不能使用论文最终测试分数作为本地选择信号。"],
+  "tags": ["presage", "pretrained-representation", "finetune"], "layers": ["L3", "L4", "L5"],
+  "sources": [{"url": "https://www.biorxiv.org/content/10.1101/2025.06.03.657653v1", "kind": "paper"}, {"url": "https://github.com/Genentech/PRESAGE", "kind": "official_repository"}],
+  "relations": ["kb:paper:presage", "kb:repo:presage"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "usage_mode": "trainable_recipe", "execution_readiness": "reference_only",
+  "artifacts": [{"role": "gene_embeddings", "uri": "https://zenodo.org/records/15587986", "format": "archive", "access": "public", "integrity": {"status": "not_published", "note": "card seed has no checksum"}}],
+  "licenses": {"code": "Genentech Non-Commercial Software License 1.0", "weights": "not_applicable_until_trained"},
+  "io_contract": {"input_format": "pending source confirmation", "gene_space": "official 18080-gene order", "output_type": "predicted expression matrix"},
+  "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
+  "vcc25_compatibility": {"level": "reference_only", "gaps": ["source confirmation", "adapter", "checkpoint", "H1 output conversion"]},
+  "execution_recipe": {"adapter_id": null, "actions": ["future_adapter_required"]},
+  "smoke_evidence": []
+}

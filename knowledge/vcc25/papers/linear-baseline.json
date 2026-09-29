@@ -1,0 +1,11 @@
+{
+  "id": "kb:paper:linear-baseline", "schema_version": "1.0", "asset_type": "paper",
+  "title": "Linear perturbation prediction baseline", "summary_plain": "研究表明，许多扰动预测数据上，简单线性或伪批量方法就很强；它是判断复杂模型是否真的带来收益的最低成本参照。",
+  "fit_reason": "训练快、可解释，适合作为 Agent 每轮实验的统一起点和 sanity check。",
+  "mechanism": "从训练样本估计各扰动的平均或线性表达效应，并将其应用到目标细胞状态。",
+  "limitations": ["难以表达强非线性和上下文特异效应。", "对训练集中未覆盖的扰动泛化有限。"],
+  "tags": ["linear", "pseudobulk", "baseline", "fast"], "layers": ["L1", "L2", "L3", "L4"],
+  "sources": [{"url": "https://doi.org/10.1038/s41592-025-02772-6", "kind": "paper"}, {"url": "https://github.com/const-ae/linear_perturbation_prediction-Paper", "kind": "official_repository"}],
+  "relations": ["kb:repo:linear-baseline", "kb:model:linear-pseudobulk"],
+  "review_status": "approved", "review_basis": "provisional_initial_release"
+}

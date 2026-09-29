@@ -191,6 +191,14 @@ def cmd_memory(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_knowledge_preflight(args: argparse.Namespace) -> int:
+    from .knowledge_experiment import KnowledgeExperiment
+
+    result = KnowledgeExperiment.from_config(args.config, args.workspace).run_preflight()
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="hier_loop", description="Hierarchical Looped RSI Researcher")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -218,6 +226,14 @@ def main(argv: Optional[List[str]] = None) -> int:
             sp.add_argument("--decisions")
             sp.add_argument("--memory")
         sp.set_defaults(func=fn)
+
+    knowledge = sub.add_parser(
+        "knowledge-preflight",
+        help="run the five-layer knowledge injection preflight without GPU execution",
+    )
+    knowledge.add_argument("--config", required=True)
+    knowledge.add_argument("--workspace", required=True)
+    knowledge.set_defaults(func=cmd_knowledge_preflight)
 
     args = p.parse_args(argv)
     return int(args.func(args))

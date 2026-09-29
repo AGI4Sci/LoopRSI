@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rsi.local/schemas/vcc25/evaluation-contract.schema.json",
+  "type": "object",
+  "required": ["id", "schema_version", "task_id", "gene_count", "gene_order_source", "metrics", "selection_policy", "leakage_policy"],
+  "properties": {"task_id": {"const": "vcc25"}, "gene_count": {"const": 18080}, "metrics": {"type": "array", "minItems": 1}}
+}

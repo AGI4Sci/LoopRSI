@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VCC25 hierarchy layer decision",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "decision_type", "direction", "rationale"],
+      "properties": {
+        "layer": {"const": "L1"},
+        "decision_type": {"const": "direction"},
+        "direction": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "decision_type", "problem", "comparison_target"],
+      "properties": {
+        "layer": {"const": "L2"},
+        "decision_type": {"const": "problem"},
+        "problem": {"type": "string", "minLength": 1},
+        "comparison_target": {"type": "string", "minLength": 1}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "decision_type", "hypothesis", "falsification_criterion"],
+      "properties": {
+        "layer": {"const": "L3"},
+        "decision_type": {"const": "hypothesis"},
+        "hypothesis": {"type": "string", "minLength": 1},
+        "falsification_criterion": {"type": "string", "minLength": 1}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "decision_type", "mechanism", "expected_effect"],
+      "properties": {
+        "layer": {"const": "L4"},
+        "decision_type": {"const": "mechanism"},
+        "mechanism": {"type": "string", "minLength": 1},
+        "expected_effect": {"type": "string", "minLength": 1}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "decision_type", "coding_request"],
+      "properties": {
+        "layer": {"const": "L5"},
+        "decision_type": {"const": "coding_request"},
+        "coding_request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allowed_paths", "hypothesis", "activation_diagnostics", "train_command", "validation_command", "expected_artifacts"],
+          "properties": {
+            "allowed_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "hypothesis": {"type": "string", "minLength": 1},
+            "activation_diagnostics": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "train_command": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "validation_command": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "expected_artifacts": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    }
+  ]
+}

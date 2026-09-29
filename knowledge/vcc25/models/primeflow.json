@@ -1,0 +1,18 @@
+{
+  "id": "kb:model:primeflow", "schema_version": "1.0", "asset_type": "model",
+  "title": "PRiMeFlow training recipe", "summary_plain": "PRiMeFlow 的 VCC25 候选训练与生成预测配方；当前没有宣称存在可直接使用的 H1 checkpoint。",
+  "fit_reason": "作为第二版首轮优先模型，比较生成式流匹配和现有 Lingshu/GEARS 路线。",
+  "limitations": ["官方 checkpoint、代码 revision 和 H1 转换仍需确认。", "训练和采样预算可能高于简单 baseline。"],
+  "tags": ["primeflow", "flow-matching", "generative", "train"], "layers": ["L3", "L4", "L5"],
+  "sources": [{"url": "https://arxiv.org/abs/2604.13986", "kind": "paper"}, {"url": "https://github.com/altoslabs/primeflow", "kind": "official_repository"}],
+  "relations": ["kb:paper:primeflow", "kb:repo:primeflow", "kb:model:perturbench-latent-additive"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "usage_mode": "trainable_recipe", "execution_readiness": "train_required",
+  "artifacts": [{"role": "recipe", "uri": "https://github.com/altoslabs/primeflow", "format": "source_repository", "access": "public", "integrity": {"status": "not_published", "note": "card seed has no fixed commit"}}],
+  "licenses": {"code": "see upstream LICENSE", "weights": "not_published_in_card"},
+  "io_contract": {"input_format": "H1 perturbation training split", "gene_space": "official 18080-gene order", "output_type": "predicted expression matrix"},
+  "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
+  "vcc25_compatibility": {"level": "future_train_candidate", "gaps": ["source confirmation", "H1 data adapter", "training", "output conversion"]},
+  "execution_recipe": {"adapter_id": null, "actions": ["future_adapter_required"]},
+  "smoke_evidence": []
+}

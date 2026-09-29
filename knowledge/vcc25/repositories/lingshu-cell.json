@@ -1,0 +1,15 @@
+{
+  "id": "kb:repo:lingshu-cell", "schema_version": "1.0", "asset_type": "repository",
+  "title": "Alibaba DAMO Lingshu-Cell", "summary_plain": "Lingshu-Cell 官方仓库，包含 VCC 数据处理、模型定义和推理代码，是复现当前目标基线的直接入口。",
+  "fit_reason": "远端已有它所需的权重、基因嵌入和辅助数据，接入成本最低。",
+  "limitations": ["当前 revision 尚未冻结。", "需要本项目 adapter 约束路径和输出格式。"],
+  "tags": ["vcc25", "inference", "official"], "layers": ["L5"],
+  "sources": [{"url": "https://github.com/alibaba-damo-academy/Lingshu-Cell", "kind": "official_repository"}],
+  "relations": ["kb:paper:lingshu-cell", "kb:model:lingshu-vcc-85m"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "official_url": "https://github.com/alibaba-damo-academy/Lingshu-Cell", "revision": "upstream-default-branch-unpinned",
+  "maintenance_status": "active_at_review_time", "licenses": {"code": "MIT"},
+  "install": "Follow the upstream environment file in an isolated environment.",
+  "entrypoints": ["python3 -m workflows.infer.main --config-name infer/legacy_vcc"], "io_contract": {"input": "AnnData plus perturbation metadata", "output": "predicted expression"},
+  "vcc25_adaptation": ["map assets by role", "validate 18080-gene order", "convert output through official contract"]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VCC25 L5 coding request decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["layer", "decision_type", "coding_request"],
+  "properties": {
+    "layer": {"type": "string", "const": "L5"},
+    "decision_type": {"type": "string", "const": "coding_request"},
+    "coding_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_paths", "hypothesis", "activation_diagnostics", "train_command", "validation_command", "expected_artifacts"],
+      "properties": {
+        "allowed_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "hypothesis": {"type": "string", "minLength": 1},
+        "activation_diagnostics": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "train_command": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "validation_command": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "expected_artifacts": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "kb:paper:presage", "schema_version": "1.0", "asset_type": "paper",
+  "title": "PRESAGE", "summary_plain": "利用预训练单细胞表示和扰动条件建模细胞状态变化的候选方法，面向未见扰动泛化。",
+  "fit_reason": "第二版指定的后续候选，可作为预训练表示路线与 Lingshu、scGenePT 的对照。",
+  "mechanism": "将细胞状态表示、扰动条件和表达变化结合，学习对新扰动的条件预测。",
+  "limitations": ["需要确认公开代码、权重和输入输出是否覆盖 VCC25 H1。", "不能把论文报告成绩当作本地验证成绩。"],
+  "tags": ["presage", "pretrained-representation", "genetic-perturbation"], "layers": ["L1", "L2", "L3", "L4", "L5"],
+  "sources": [{"url": "https://www.biorxiv.org/content/10.1101/2025.06.03.657653v1", "kind": "paper"}, {"url": "https://github.com/Genentech/PRESAGE", "kind": "official_repository"}],
+  "relations": ["kb:repo:presage", "kb:model:presage"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "evidence_notes": ["The official source is identified, but VCC25 H1 adaptation and smoke evidence are still pending." ]
+}

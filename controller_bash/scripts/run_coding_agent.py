@@ -11,8 +11,9 @@ import re
 import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from task_contract import (
     ContractError, editable_workspace_path, find_repository_root, load_task_spec,
@@ -27,7 +28,12 @@ def slug(value: str) -> str:
 def file_hashes(root: Path) -> dict[str, str]:
     result: dict[str, str] = {}
     for path in root.rglob("*"):
-        if path.is_file() and "__pycache__" not in path.parts and not path.name.endswith(".pyc"):
+        if (
+            path.is_file()
+            and ".git" not in path.parts
+            and "__pycache__" not in path.parts
+            and not path.name.endswith(".pyc")
+        ):
             result[str(path.relative_to(root))] = hashlib.sha256(path.read_bytes()).hexdigest()
     return result
 
@@ -199,6 +205,71 @@ Request:
 """
 
 
+@dataclass(frozen=True)
+class DirectAgentRun:
+    exit_code: int
+
+
+def run_direct_codex(
+    agent: str,
+    model: str | None,
+    source: Path,
+    agent_dir: Path,
+    prompt: str,
+    *,
+    timeout: int,
+    runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+) -> DirectAgentRun:
+    """Run Codex in an isolated editable copy when the Heuresis package is unavailable."""
+
+    edited = agent_dir / "solution"
+    agent_dir.mkdir(parents=True, exist_ok=False)
+    shutil.copytree(
+        source,
+        edited,
+        symlinks=True,
+        ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"),
+    )
+    command = [
+        agent,
+        "exec",
+        "--ephemeral",
+        "--ignore-user-config",
+        "--skip-git-repo-check",
+        "--sandbox",
+        "workspace-write",
+        "--cd",
+        str(edited),
+    ]
+    base_url = os.environ.get("OMNI_AR_CODEX_BASE_URL")
+    if base_url:
+        command.extend(["--config", f"openai_base_url={json.dumps(base_url)}"])
+    if model:
+        command.extend(["--model", model])
+    command.append("-")
+    secret_tokens = ("API_KEY", "ACCESS_TOKEN", "SECRET_KEY", "PASSWORD")
+    environment = {
+        name: value
+        for name, value in os.environ.items()
+        if not any(token in name.upper() for token in secret_tokens)
+    }
+    completed = runner(
+        command,
+        cwd=edited,
+        input=prompt,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=timeout,
+        env=environment,
+    )
+    (agent_dir / "agent.log").write_text(
+        str(completed.stdout or "") + "\n--- stderr ---\n" + str(completed.stderr or ""),
+        encoding="utf-8",
+    )
+    return DirectAgentRun(exit_code=completed.returncode)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task", required=True, type=Path)
@@ -207,6 +278,7 @@ def main() -> int:
     parser.add_argument("--mode", choices=("plan", "apply"), default="plan")
     parser.add_argument("--agent", default="codex")
     parser.add_argument("--model")
+    parser.add_argument("--backend", choices=("harness", "direct-codex"), default="harness")
     args = parser.parse_args()
     output_dir = args.output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -248,12 +320,6 @@ def main() -> int:
             print(result_path)
             return 0
 
-        heuresis_src = repository / "Heuresis_PJLAB-boyue/src"
-        if str(heuresis_src) not in sys.path:
-            sys.path.insert(0, str(heuresis_src))
-        from heuresis.harness import Harness
-        from heuresis.workspace import Workspace
-
         digest = hashlib.sha256(str(output_dir).encode()).hexdigest()[:12]
         default_worktree_root = repository.parent / ".omni-ar-worktrees"
         worktree_root = Path(os.environ.get("OMNI_AR_WORKTREE_ROOT", str(default_worktree_root)))
@@ -273,31 +339,51 @@ def main() -> int:
         agent_dir = output_dir / (
             "agent_workspace" if resume_index == 0 else f"agent_workspace_resume_{resume_index:02d}"
         )
-        workspace = Workspace(
-            files={"solution": candidate_solution, "task_spec.yaml": candidate_task},
-            prompt="", venv=Path(sys.prefix), editable="solution", lock_down_edits=True,
-        )
-        bubblewrap = ensure_bubblewrap(args.agent)
-        # Codex authenticates through its mounted profile. Research and data
-        # service credentials are unnecessary for code generation and must not
-        # be visible inside the candidate sandbox or its persistent agent.log.
-        secret_env = [
-            name for name in os.environ
-            if any(token in name.upper() for token in (
-                "API_KEY", "ACCESS_TOKEN", "SECRET_KEY", "PASSWORD",
-            ))
-        ]
-        harness = Harness(
-            args.agent, model=args.model, gpus=[], max_workers=1,
-            strip_env=secret_env,
-        )
-        errors = harness.preflight()
-        if errors:
-            raise ContractError("coding agent preflight failed: " + "; ".join(errors))
-        run = harness.run(
-            workspace, prompt_for(workspace_request), path=agent_dir,
-            timeout=int(os.environ.get("OMNI_AR_CODING_TIMEOUT_SEC", "1800")),
-        ).result(timeout=int(os.environ.get("OMNI_AR_CODING_TIMEOUT_SEC", "1800")) + 30)
+        timeout = int(os.environ.get("OMNI_AR_CODING_TIMEOUT_SEC", "1800"))
+        if args.backend == "direct-codex":
+            bubblewrap = None
+            run = run_direct_codex(
+                args.agent,
+                args.model,
+                candidate_solution,
+                agent_dir,
+                prompt_for(workspace_request).replace(
+                    "`/workspace/solution`", "the current working directory"
+                ),
+                timeout=timeout,
+            )
+        else:
+            heuresis_src = repository / "Heuresis_PJLAB-boyue/src"
+            if str(heuresis_src) not in sys.path:
+                sys.path.insert(0, str(heuresis_src))
+            from heuresis.harness import Harness
+            from heuresis.workspace import Workspace
+
+            workspace = Workspace(
+                files={"solution": candidate_solution, "task_spec.yaml": candidate_task},
+                prompt="", venv=Path(sys.prefix), editable="solution", lock_down_edits=True,
+            )
+            bubblewrap = ensure_bubblewrap(args.agent)
+            # Codex authenticates through its mounted profile. Research and data
+            # service credentials are unnecessary for code generation and must not
+            # be visible inside the candidate sandbox or its persistent agent.log.
+            secret_env = [
+                name for name in os.environ
+                if any(token in name.upper() for token in (
+                    "API_KEY", "ACCESS_TOKEN", "SECRET_KEY", "PASSWORD",
+                ))
+            ]
+            harness = Harness(
+                args.agent, model=args.model, gpus=[], max_workers=1,
+                strip_env=secret_env,
+            )
+            errors = harness.preflight()
+            if errors:
+                raise ContractError("coding agent preflight failed: " + "; ".join(errors))
+            run = harness.run(
+                workspace, prompt_for(workspace_request), path=agent_dir,
+                timeout=timeout,
+            ).result(timeout=timeout + 30)
         edited = agent_dir / "solution"
         before, after = file_hashes(candidate_solution), file_hashes(edited)
         changed = sorted(path for path in set(before) | set(after) if before.get(path) != after.get(path))

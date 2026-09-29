@@ -1,0 +1,16 @@
+{
+  "id": "kb:repo:presage", "schema_version": "1.0", "asset_type": "repository",
+  "title": "PRESAGE implementation", "summary_plain": "PRESAGE 候选代码库记录，等待官方仓库和固定 revision 核验后再执行。",
+  "fit_reason": "用于第二版后续预训练表示路线的可追溯选型。",
+  "limitations": ["来源、许可证和入口尚待确认。", "首版不允许从卡片直接执行任意命令。"],
+  "tags": ["presage", "repository", "pretrained-representation"], "layers": ["L5"],
+  "sources": [{"url": "https://github.com/Genentech/PRESAGE", "kind": "official_repository"}],
+  "relations": ["kb:paper:presage", "kb:model:presage"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "official_url": "https://github.com/Genentech/PRESAGE", "revision": "main-unpinned-at-card-seed",
+  "maintenance_status": "public", "licenses": {"code": "Genentech Non-Commercial Software License 1.0"},
+  "install": "Use an isolated environment and pin a reviewed commit before execution.",
+  "entrypoints": ["PRESAGE training scripts", "notebooks/PRESAGE_example.ipynb", "notebooks/EvaluateFromPredictions.ipynb"],
+  "io_contract": {"input": "approved H1 training data", "output": "predicted expression in official gene order"},
+  "vcc25_adaptation": ["confirm source", "pin revision", "implement adapter", "validate output"]
+}

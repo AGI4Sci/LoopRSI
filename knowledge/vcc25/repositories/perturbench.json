@@ -1,0 +1,15 @@
+{
+  "id": "kb:repo:perturbench", "schema_version": "1.0", "asset_type": "repository",
+  "title": "altoslabs/perturbench", "summary_plain": "扰动模型统一训练框架，能用同一套数据模块和训练循环比较多种模型。",
+  "fit_reason": "非常适合 Agent 快速替换模型，首版先打通轻量 LatentAdditive。",
+  "limitations": ["需要实现 H1 数据模块和输出转换。", "不同模型的超参数仍需单独管理。"],
+  "tags": ["perturbench", "framework", "training", "latent-additive"], "layers": ["L5"],
+  "sources": [{"url": "https://github.com/altoslabs/perturbench", "kind": "official_repository"}],
+  "relations": ["kb:paper:perturbench", "kb:model:perturbench-latent-additive"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "official_url": "https://github.com/altoslabs/perturbench", "revision": "upstream-default-branch-unpinned",
+  "maintenance_status": "active_at_review_time", "licenses": {"code": "BSD-3-Clause"},
+  "install": "Install the upstream package in an isolated environment.", "entrypoints": ["train", "predict"],
+  "io_contract": {"input": "PerturBench data module", "output": "predicted expression"},
+  "vcc25_adaptation": ["implement H1 data module", "train on approved split", "convert output"]
+}

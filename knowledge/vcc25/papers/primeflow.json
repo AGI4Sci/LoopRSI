@@ -1,0 +1,12 @@
+{
+  "id": "kb:paper:primeflow", "schema_version": "1.0", "asset_type": "paper",
+  "title": "PRiMeFlow", "summary_plain": "面向单细胞扰动预测的生成式流匹配路线，重点利用预训练表示和条件生成建模扰动后的表达分布。",
+  "fit_reason": "第二版首批高优先级复现对象，适合检验生成式预测相对 Lingshu、GEARS 和简单 baseline 的收益。",
+  "mechanism": "以条件流匹配或连续生成过程学习从未扰动状态到扰动状态的表达变化，并结合预训练细胞表示。",
+  "limitations": ["需要核对官方训练、微调和推理入口与 VCC25 H1 输出契约的差异。", "生成式链路通常有较高显存、时间和调参成本。"],
+  "tags": ["primeflow", "flow-matching", "generative", "genetic-perturbation"], "layers": ["L1", "L2", "L3", "L4", "L5"],
+  "sources": [{"url": "https://arxiv.org/abs/2604.13986", "kind": "paper"}, {"url": "https://github.com/altoslabs/primeflow", "kind": "official_repository"}, {"url": "https://github.com/altoslabs/perturbench", "kind": "supporting_infrastructure"}],
+  "relations": ["kb:repo:primeflow", "kb:model:primeflow", "kb:repo:perturbench", "kb:paper:perturbench"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "evidence_notes": ["The official source is identified, but the VCC25 adapter, fixed revision, and H1 smoke evidence are still pending." ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "kb:model:linear-pseudobulk", "schema_version": "1.0", "asset_type": "model",
+  "title": "Linear / Pseudobulk recipe", "summary_plain": "只用 H1 训练数据估计平均或线性扰动效应，成本最低，是复杂模型必须公平超过的起点。",
+  "fit_reason": "几乎不需要额外权重，训练和排错都很快。",
+  "limitations": ["表达能力有限。", "首版复用 RSI 内部实现，不新增独立 adapter。"],
+  "tags": ["linear", "pseudobulk", "fast", "baseline"], "layers": ["L4", "L5"],
+  "sources": [{"url": "https://github.com/const-ae/linear_perturbation_prediction-Paper", "kind": "official_repository"}, {"url": "https://doi.org/10.1038/s41592-025-02772-6", "kind": "paper"}],
+  "relations": ["kb:paper:linear-baseline", "kb:repo:linear-baseline"],
+  "review_status": "approved", "review_basis": "provisional_initial_release",
+  "usage_mode": "trainable_recipe", "execution_readiness": "train_required",
+  "artifacts": [{"role": "recipe", "uri": "https://github.com/const-ae/linear_perturbation_prediction-Paper", "format": "source_repository", "access": "public", "integrity": {"status": "not_published"}}],
+  "licenses": {"code": "see upstream LICENSE", "weights": "not_applicable_until_trained"},
+  "io_contract": {"input_format": "training expression grouped by perturbation", "gene_space": "VCC25 18080 training genes", "output_type": "predicted expression"},
+  "resource_profile": {"gpu_count": 0, "gpu_type": "none", "max_minutes": 30},
+  "vcc25_compatibility": {"level": "existing_internal_route", "gaps": ["freeze evaluation contract", "record reproducible parameters"]},
+  "execution_recipe": {"adapter_id": null, "actions": ["use_existing_rsi_baseline"]},
+  "smoke_evidence": []
+}
