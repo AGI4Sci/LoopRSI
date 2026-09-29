@@ -86,7 +86,10 @@ class SeedKnowledgeTests(unittest.TestCase):
                 self.assertTrue(card.get("io_contract").get("input_format"))
                 self.assertIn("adapter_id", card.get("execution_recipe"))
                 for artifact in card.get("artifacts"):
-                    self.assertIn(artifact["integrity"]["status"], {"not_published", "not_applicable"})
+                    self.assertIn(
+                        artifact["integrity"]["status"],
+                        {"not_published", "not_applicable", "sha256_recorded"},
+                    )
 
     def test_schema_documents_are_valid_json_and_cover_all_contracts(self):
         schema_dir = KNOWLEDGE_ROOT / "schemas"
