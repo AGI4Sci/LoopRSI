@@ -1,0 +1,35 @@
+{
+  "authority": "smoke_only",
+  "status": "subset_validation_completed",
+  "promotion_eligible": false,
+  "reward": null,
+  "final_official_run": false,
+  "selection_feedback_allowed": false,
+  "job_name": "lingshu-v2-full-validation-20260930r-63360813",
+  "job_status": "Succeeded",
+  "active_gpu_replicas_after_completion": 0,
+  "output_dir": "/mnt/shared-storage-gpfs2/beam-gpfs02/huangwenxuan/RSI-v2-lingshu-experiment-20260929/artifacts/phase-d-validation/validation-20260930-retry",
+  "summary_sha256": "c50c482c1773ee51fbee404b1ee05f6b7d4d563553e1b4b40a4bd8db3a2171a3",
+  "seeds": [20260907, 20260908, 20260909],
+  "train_targets": 150,
+  "validation_targets": 50,
+  "max_rows_per_target": 8,
+  "sampled_train_rows": 1208,
+  "sampled_validation_rows": 408,
+  "gene_count": 18080,
+  "test_expression_read": false,
+  "candidate_variants_completed": 4,
+  "subset_ranked_first": "candidate_d_amplitude_de_weighted_hash_embedding",
+  "subset_delta_correlation_mean": 0.6167381670670101,
+  "not_full_validation_reasons": [
+    "Validation expression was capped at 8 rows per target rather than using the full validation set.",
+    "No same-contract Lingshu validation baseline was evaluated.",
+    "The reported subset diagnostics are not the fixed contract PCC reward metric.",
+    "Phase A candidate_code_sha256.json still records candidate_hash=null and frozen=false.",
+    "Phase A split_audit.json still records status=not_run."
+  ],
+  "failed_setup_attempt": {
+    "job_name": "lingshu-v2-full-validation-20260930-37396612",
+    "reason": "PYTHONPATH was unbound before Python started; the retry used ${PYTHONPATH:-}."
+  }
+}
