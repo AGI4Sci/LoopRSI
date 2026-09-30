@@ -128,6 +128,59 @@ def load_sample(h5ad_path: Path, official_genes: list[str], targets: list[str], 
     )
 
 
+def select_sample_metadata(h5ad_path: Path, official_genes: list[str], targets: list[str], max_rows_per_target: int, seed: int) -> tuple[np.ndarray, Sample]:
+    """Select rows without materializing X; used by the streaming validator."""
+    import h5py
+
+    wanted = [CONTROL] + list(targets)
+    with h5py.File(h5ad_path, "r") as handle:
+        var_names = _h5ad_index(handle["var"])
+        if var_names != official_genes:
+            raise ValueError(f"{h5ad_path} var_names do not match official gene order")
+        target_col = _h5ad_column(handle["obs"], "target_gene")
+        guide_col = _h5ad_column(handle["obs"], "guide_id")
+        batch_col = _h5ad_column(handle["obs"], "batch")
+        obs_names_all = _h5ad_index(handle["obs"])
+        rng = np.random.default_rng(seed)
+        target_array = np.asarray(target_col, dtype=object)
+        rows = []
+        for target in wanted:
+            hits = np.flatnonzero(target_array == target)
+            if len(hits) == 0:
+                raise ValueError(f"{target} has no rows in {h5ad_path}")
+            if max_rows_per_target > 0 and len(hits) > max_rows_per_target:
+                hits = rng.choice(hits, size=max_rows_per_target, replace=False)
+            rows.append(np.asarray(hits, dtype=np.int64))
+        row_index = np.concatenate(rows)
+        row_index.sort()
+    return row_index, Sample(
+        x=np.empty((len(row_index), len(official_genes)), dtype=np.float32),
+        target_names_per_row=[target_col[i] for i in row_index],
+        batch_names_per_row=[batch_col[i] for i in row_index],
+        guide_names_per_row=[guide_col[i] for i in row_index],
+        obs_names=[obs_names_all[i] for i in row_index],
+        gene_names=official_genes,
+    )
+
+
+def iter_csr_rows(h5ad_path: Path, rows: np.ndarray, chunk_size: int = 64):
+    """Yield dense chunks while keeping the H5AD expression matrix out of RAM."""
+    import h5py
+
+    with h5py.File(h5ad_path, "r") as handle:
+        x = handle["X"]
+        shape = tuple(int(v) for v in x.attrs["shape"])
+        indptr = x["indptr"][...]
+        for start in range(0, len(rows), chunk_size):
+            chunk_rows = rows[start:start + chunk_size]
+            dense = np.zeros((len(chunk_rows), shape[1]), dtype=np.float32)
+            for out_row, source_row in enumerate(chunk_rows.tolist()):
+                left, right = int(indptr[source_row]), int(indptr[source_row + 1])
+                if right > left:
+                    dense[out_row, x["indices"][left:right]] = x["data"][left:right]
+            yield start, dense
+
+
 
 def encode_rows(sample: Sample, target_order: list[str], batch_order: list[str], feature_map: dict[str, np.ndarray], allow_unknown_batch: bool) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
     target_index = {t: i for i, t in enumerate(target_order)}
