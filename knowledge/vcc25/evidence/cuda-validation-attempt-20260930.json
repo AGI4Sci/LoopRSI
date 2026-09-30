@@ -1,0 +1,30 @@
+{
+  "phase": "full_validation_cuda_attempt",
+  "cuda_smoke": {
+    "job_name": "lingshu-v2-cuda-validation-smoke-20260930-38948856",
+    "status": "passed",
+    "device_recorded": "cuda",
+    "scope": "8 train targets, 4 validation targets, 1 seed, 8 optimizer steps",
+    "gpu_replicas_after_completion": 0
+  },
+  "full_validation_attempts": [
+    {
+      "job_name": "lingshu-v2-full-validation-cuda-20260930-729359",
+      "requested_memory_mib": 65536,
+      "status": "failed",
+      "exit_code": 137,
+      "reason": "Host memory OOM while the implementation materialized full sparse matrices as dense arrays."
+    },
+    {
+      "job_name": "lingshu-v2-full-validation-cuda-r2-20260930-52e47",
+      "requested_memory_mib": 131072,
+      "status": "stopped_before_progress",
+      "reason": "No Python output or result files after several minutes; the same full-dense loading path was still running, so the H200 was stopped to avoid idle waste.",
+      "gpu_replicas_after_stop": 0
+    }
+  ],
+  "promotion_eligible": false,
+  "final_official_run": false,
+  "final_test_expression_read": false,
+  "required_code_change": "stream full train/validation H5AD rows in bounded chunks instead of materializing all rows at once"
+}
