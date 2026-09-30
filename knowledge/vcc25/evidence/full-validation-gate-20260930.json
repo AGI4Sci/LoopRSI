@@ -11,7 +11,13 @@
   "cpu_retry": {
     "status": "rejected_by_cluster",
     "reason": "公共资源池配额组不允许提交 0 卡任务",
-    "torch_on_dev_node": false
+    "torch_on_dev_node": false,
+    "private_environment_attempt": {
+      "path": "/tmp/looprsi-cpu-venv",
+      "status": "blocked",
+      "reason": "The internal mirror provides only a CUDA-linked torch wheel; a no-dependencies install cannot import without libcudart.so.12, while installing all CUDA dependencies exhausted the 7 GB temporary filesystem.",
+      "cleaned_up": true
+    }
   },
   "required_follow_up": [
     "Run the same full train/validation protocol in an approved CPU resource pool or a GPU job whose implementation actually uses CUDA.",
