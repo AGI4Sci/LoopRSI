@@ -212,6 +212,14 @@ def cmd_knowledge_preflight(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_reproduce_papers(args: argparse.Namespace) -> int:
+    from .paper_reproduction import run_paper_reproduction
+
+    result = run_paper_reproduction(Path(args.experiment_dir), Path(args.output))
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="hier_loop", description="Hierarchical Looped RSI Researcher")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -247,6 +255,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     knowledge.add_argument("--config", required=True)
     knowledge.add_argument("--workspace", required=True)
     knowledge.set_defaults(func=cmd_knowledge_preflight)
+
+    reproduction = sub.add_parser(
+        "reproduce-papers",
+        help="read eight VCC25 card triplets and run bounded remote source attempts",
+    )
+    reproduction.add_argument("--experiment-dir", required=True)
+    reproduction.add_argument("--output", required=True)
+    reproduction.set_defaults(func=cmd_reproduce_papers)
 
     args = p.parse_args(argv)
     return int(args.func(args))
