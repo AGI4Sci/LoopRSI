@@ -13,6 +13,6 @@
   "io_contract": {"input_format": "pending source confirmation", "gene_space": "official 18080-gene order", "output_type": "predicted expression matrix"},
   "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
   "vcc25_compatibility": {"level": "reference_only", "gaps": ["source confirmation", "adapter", "checkpoint", "H1 output conversion"]},
-  "execution_recipe": {"adapter_id": null, "actions": ["future_adapter_required"]},
+  "execution_recipe": {"adapter_id": "vcc25.presage", "actions": ["prepare", "train", "predict", "convert_output"]},
   "smoke_evidence": []
 }
