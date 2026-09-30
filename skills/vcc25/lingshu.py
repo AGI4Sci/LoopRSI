@@ -35,15 +35,33 @@ class _KnowledgeSkill:
         assert_safe_knowledge(context, "skill_context")
         budget = int(context.get("token_budget", 1200))
         text = str(context.get("query", context.get("text", "")))
-        cards = self._store.query(
-            KnowledgeQuery(
-                task_id="vcc25",
-                layer=str(context["layer"]),
-                text=text,
-                asset_types=self._asset_types,
-                max_results=10,
+        if len(self._asset_types) > 1:
+            # L5 needs both the implementation repository and its model card.
+            # A single mixed ranking can fill the result budget with model cards
+            # before the repository is considered, hiding the executable entrypoint.
+            cards = tuple(
+                card
+                for asset_type in self._asset_types
+                for card in self._store.query(
+                    KnowledgeQuery(
+                        task_id="vcc25",
+                        layer=str(context["layer"]),
+                        text=text,
+                        asset_types=(asset_type,),
+                        max_results=1,
+                    )
+                )
             )
-        )
+        else:
+            cards = self._store.query(
+                KnowledgeQuery(
+                    task_id="vcc25",
+                    layer=str(context["layer"]),
+                    text=text,
+                    asset_types=self._asset_types,
+                    max_results=10,
+                )
+            )
         rendered = render_cards(cards, token_budget=budget)
         if not rendered.card_ids:
             return None
