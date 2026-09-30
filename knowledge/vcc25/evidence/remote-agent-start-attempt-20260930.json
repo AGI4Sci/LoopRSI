@@ -1,0 +1,19 @@
+{
+  "schema_version": "vcc25.remote-agent-start-attempt/v1",
+  "date": "2026-09-30",
+  "authority": "orchestration_diagnostic",
+  "experiment_dir": "/mnt/shared-storage-gpfs2/beam-gpfs02/huangwenxuan/RSI-v2-lingshu-experiment-20260929",
+  "remote_log": "artifacts/remote-agent-eight-paper-20260930/agent.log",
+  "status": "agent_unavailable_before_reproduction",
+  "observed_errors": [
+    "failed to refresh available models: request timed out",
+    "Transport channel closed while contacting chatgpt.com/backend-api/ps/mcp",
+    "workspace routing discovery timed out"
+  ],
+  "paper_commands_executed": 0,
+  "paper_evidence_cards_generated": 0,
+  "gpu_used": false,
+  "final_test_expression_read": false,
+  "final_vcc25_evaluation_started": false,
+  "next_step": "Restore remote Codex model-service connectivity, then rerun the bounded eight-paper reproduction agent in the independent experiment directory. Do not convert this infrastructure failure into per-paper reproduction outcomes."
+}

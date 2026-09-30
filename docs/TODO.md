@@ -37,6 +37,7 @@
 - 知识库基础卡片已通过校验：9 PaperCard、9 CodeCard、9 ModelCard，共 27 张；其中 PerturBench 作为基础设施条目保留，不是本轮正式复现对象。
 - 正式复现目标为 8 个方法。统一预检入口已覆盖 8 个目标；当前清单见 `knowledge/vcc25/evidence/paper-reproduction-status-20260930.json`：Lingshu 为 `partial`，GEARS、Linear、PRESAGE、PRiMeFlow、scGenePT、scLAMBDA 因远端 GitHub HTTPS 拉取超时而缺上游代码副本，STATE 因缺 checkpoint 暂为 `blocked`。
 - 当前尚未启动由远端分层 LoopAgent 执行的逐篇复现任务。此前的本机源码下载尝试已按要求停止；临时下载未传远端、未用于实验，也不构成复现证据。
+- 远端 Agent 启动尝试已提交，但模型服务连接超时，尚未读卡或执行任何论文复现命令，0/8 张逐篇 EvidenceCard；见 `knowledge/vcc25/evidence/remote-agent-start-attempt-20260930.json`。这是 Agent 运行平台阻塞，不是 8 篇论文各自的复现失败。
 - Lingshu 已有 CUDA smoke 和完整训练/验证证据，但这不代表其他论文已完成复现。
 - 现有验证结果可以作为 EvidenceCard 证据，不以“两个指标同时提升”作为建立 ModelCard 的前置条件。
 - 在论文复现扫查、EvidenceCard 汇总和候选请求生成完成前，不得启动唯一一次正式 VCC25 评测。
