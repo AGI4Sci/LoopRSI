@@ -45,6 +45,7 @@ _FIELDS_BY_TYPE = {
 }
 
 _CODING_FIELDS = {
+    "candidate_variant",
     "allowed_paths",
     "hypothesis",
     "activation_diagnostics",
@@ -79,6 +80,8 @@ def validate_layer_decision(layer: str, value: Mapping[str, Any]) -> dict[str, A
     coding = decision.get("coding_request")
     if not isinstance(coding, Mapping) or set(coding) != _CODING_FIELDS:
         raise LayerDecisionError(f"coding_request fields must be {sorted(_CODING_FIELDS)}")
+    if coding.get("candidate_variant") not in {"candidate_g_promoted_delta_model", "autonomous_research_candidate"}:
+        raise LayerDecisionError("coding_request.candidate_variant is not an allowed VCC25 variant")
     for field in ("allowed_paths", "activation_diagnostics", "train_command", "validation_command", "expected_artifacts"):
         values = coding.get(field)
         if not isinstance(values, list) or not values or not all(
@@ -159,6 +162,7 @@ class RecordingDecisionBackend:
                 "layer": "L5",
                 "decision_type": "coding_request",
                 "coding_request": {
+                    "candidate_variant": "autonomous_research_candidate",
                     "allowed_paths": [
                         "crpm",
                         "scripts",
