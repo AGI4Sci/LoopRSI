@@ -13,12 +13,12 @@
     {"paper_id": "kb:paper:gears", "model_id": "kb:model:gears", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:linear-baseline", "model_id": "kb:model:linear-pseudobulk", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:lingshu-cell", "model_id": "kb:model:lingshu-vcc-85m", "status": "partial", "reason": "CUDA smoke and streamed validation evidence exist; autonomous paper reproduction card not yet finalized"},
-    {"paper_id": "kb:paper:perturbench", "model_id": "kb:model:perturbench-latent-additive", "status": "blocked", "reason": "adapter exists but required config/training assets are missing"},
     {"paper_id": "kb:paper:presage", "model_id": "kb:model:presage", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:primeflow", "model_id": "kb:model:primeflow", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:scgenept", "model_id": "kb:model:scgenept-go-all", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:sclambda", "model_id": "kb:model:sclambda", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:state", "model_id": "kb:model:state-st-hvg-replogle", "status": "blocked", "reason": "adapter exists but required checkpoint is missing"}
   ],
+  "infrastructure_note": "PerturBench is retained as a supporting dependency for PRiMeFlow, not counted as one of the eight formal reproduction targets.",
   "next_step": "For each blocked entry, resolve or explicitly document the reproducibility gap before generating the sole formal VCC25 candidate request."
 }
