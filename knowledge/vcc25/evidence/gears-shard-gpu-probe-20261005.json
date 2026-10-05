@@ -1,0 +1,19 @@
+{
+  "schema_version": "vcc25.gears-shard-gpu-probe/v1",
+  "status": "passed",
+  "scope": "real H1 smoke train shard batch only",
+  "job": "looprsi-gears-shard-probe2-1005-54650020",
+  "image": "registry.h.pjlab.org.cn/ailab-deepdivegzy-deepdivegzy_gpu/slime:v0",
+  "charged_group": "deepdivegzy_gpu_pool",
+  "packaged_source": "/data/looprsi-assets/gears/probe-shard-20261005",
+  "torch": "2.9.1+cu129",
+  "torch_geometric": "2.6.1",
+  "cuda_available": true,
+  "batch_graphs": 2,
+  "x_shape": [36160, 1],
+  "y_shape": [2, 18080],
+  "condition_count": 2,
+  "final_test_expression_read": false,
+  "training_completed": false,
+  "validation_score_claim": false
+}
