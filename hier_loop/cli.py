@@ -223,6 +223,18 @@ def cmd_reproduce_papers(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_gears_preflight(args: argparse.Namespace) -> int:
+    from .gears_preflight import run_gears_preflight
+
+    result = run_gears_preflight(
+        Path(args.experiment_dir), Path(args.source_manifest), Path(args.output),
+        Path(args.processed_dataset), Path(args.split_json), Path(args.gene2go),
+        Path(args.gene_names),
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="hier_loop", description="Hierarchical Looped RSI Researcher")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -267,6 +279,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     reproduction.add_argument("--output", required=True)
     reproduction.add_argument("--source-manifest")
     reproduction.set_defaults(func=cmd_reproduce_papers)
+
+    gears = sub.add_parser("gears-preflight", help="check pinned GEARS H1 execution inputs without reading expression")
+    for name in ("experiment-dir", "source-manifest", "output", "processed-dataset",
+                 "split-json", "gene2go", "gene-names"):
+        gears.add_argument("--" + name, required=True)
+    gears.set_defaults(func=cmd_gears_preflight)
 
     args = p.parse_args(argv)
     return int(args.func(args))
