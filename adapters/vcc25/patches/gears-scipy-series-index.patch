@@ -1,0 +1,7 @@
+--- a/gears/gears.py
++++ b/gears/gears.py
+@@ -86,3 +86,3 @@
+         self.ctrl_expression = torch.tensor(
+-            np.mean(self.adata.X[self.adata.obs.condition == 'ctrl'],
++            np.mean(self.adata.X[(self.adata.obs.condition == 'ctrl').to_numpy()],
+                     axis=0)).reshape(-1, ).to(self.device)

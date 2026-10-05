@@ -1,0 +1,4 @@
+{
+  "train": ["ACAT2"],
+  "val": ["ACLY"]
+}

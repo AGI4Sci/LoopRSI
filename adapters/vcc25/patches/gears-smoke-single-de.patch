@@ -1,0 +1,12 @@
+--- a/gears/inference.py
++++ b/gears/inference.py
+@@ -98,7 +98,10 @@ def compute_metrics(results):
+             for m, fct in metric2fct.items():
+                 if m == 'pearson':
+-                    val = fct(results['pred_de'][p_idx].mean(0), results['truth_de'][p_idx].mean(0))[0]
++                    pred_de = results['pred_de'][p_idx].mean(0)
++                    truth_de = results['truth_de'][p_idx].mean(0)
++                    # Pearson is undefined for a one-gene smoke subset.
++                    val = fct(pred_de, truth_de)[0] if len(pred_de) >= 2 else 0
+                     if np.isnan(val):
+                         val = 0

@@ -20,6 +20,10 @@ def _has_validation_controls(conditions, splits) -> bool:
     return any(condition == "ctrl" and label != "train" for condition, label in zip(conditions, splits))
 
 
+def _has_one_cuda_device(torch) -> bool:
+    return torch.cuda.is_available() and torch.cuda.device_count() == 1
+
+
 def _write(path: Path, value: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -117,6 +121,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--gene-names", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--shard-dir")
+    parser.add_argument("--compute-smoke-de", action="store_true")
+    parser.add_argument("--official-go-csv")
     parser.add_argument("--preflight-only", action="store_true")
     args = parser.parse_args(argv)
     output = Path(args.output).resolve()
@@ -155,20 +161,46 @@ def main(argv: list[str] | None = None) -> int:
     if (os.environ.get("LOOPRSI_REMOTE_GPU_JOB") != "1"
             or "_pool" not in os.environ.get("LOOPRSI_CHARGED_GROUP", "")):
         raise ValueError("GEARS training requires a remote charged _pool GPU job")
-    if not torch.cuda.is_available() or os.environ.get("CUDA_VISIBLE_DEVICES", "") == "":
+    if not _has_one_cuda_device(torch):
         raise ValueError("GEARS training requires one assigned CUDA device")
 
     output.mkdir(parents=True, exist_ok=True)
     data_root = output / "gears_data"
     data_root.mkdir(exist_ok=True)
     shutil.copyfile(args.gene2go, data_root / "gene2go_all.pkl")
+    if args.official_go_csv:
+        import pandas as pd
+
+        go_dir = data_root / "go_essential_all"
+        go_dir.mkdir(exist_ok=True)
+        shutil.copyfile(args.official_go_csv, go_dir / "go_essential_all.csv")
+        go_edges = pd.read_csv(args.official_go_csv, usecols=["source", "target"])
+        go_genes = sorted(set(go_edges["source"]) | set(go_edges["target"]))
+        required_perts = set(split["train"] + split["val"])
+        if not required_perts.issubset(go_genes):
+            raise ValueError("train or validation perturbation is absent from official GO graph")
+        with (data_root / "essential_all_data_pert_genes.pkl").open("wb") as stream:
+            pickle.dump(go_genes, stream)
     sys.path.insert(0, str(source))
     from gears import GEARS, PertData
 
+    if args.compute_smoke_de:
+        if adata.n_obs > 500 or not args.shard_dir:
+            raise ValueError("smoke DE preparation requires at most 500 cells and shards")
+        from gears.data_utils import get_DE_genes, get_dropout_non_zero_genes
+
+        prepared = output / "prepared_dataset"
+        (prepared / "data_pyg").mkdir(parents=True, exist_ok=True)
+        adata = get_dropout_non_zero_genes(get_DE_genes(adata, skip_calc_de=False))
+        adata.write_h5ad(prepared / "perturb_processed.h5ad")
+        shutil.copyfile(dataset / "data_pyg" / "cell_graphs.pkl", prepared / "data_pyg" / "cell_graphs.pkl")
+        dataset = prepared
+
     with (output / "split.pkl").open("wb") as stream:
         pickle.dump({**gears_split, "test": []}, stream)
-    pert_data = PertData(str(data_root), default_pert_graph=False)
+    pert_data = PertData(str(data_root), default_pert_graph=bool(args.official_go_csv))
     pert_data.load(data_path=str(dataset))
+    (data_root / pert_data.dataset_name).mkdir(parents=True, exist_ok=True)
     pert_data.prepare_split(split="custom", split_dict_path=str(output / "split.pkl"))
     pert_data.split = "no_test"
     pert_data.get_dataloader(batch_size=32)
@@ -189,7 +221,8 @@ def main(argv: list[str] | None = None) -> int:
     np.savez_compressed(output / "validation_predictions.npz", **predictions)
     _write(output / "run.json", {
         "schema_version": "vcc25.gears-run/v1", "status": "partial",
-        "command": sys.argv, "source_repository": str(source),
+        "command": ["gears_h1", *(argv if argv is not None else sys.argv[1:])],
+        "source_repository": str(source),
         "train_conditions": len(split["train"]), "validation_conditions": len(split["val"]),
         "gene_count": len(expected_genes), "epochs": 1,
         "prediction_keys": sorted(predictions), "test_expression_read": False,

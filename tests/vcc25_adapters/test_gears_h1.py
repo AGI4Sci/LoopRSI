@@ -3,9 +3,10 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import Mock
 
 from adapters.vcc25 import get_adapter
-from adapters.vcc25.gears_h1 import _has_validation_controls, _prediction_perturbation, preflight
+from adapters.vcc25.gears_h1 import _has_one_cuda_device, _has_validation_controls, _prediction_perturbation, preflight
 from domain_knowledge import KnowledgeQuery, KnowledgeStore
 
 
@@ -83,6 +84,14 @@ class GearsH1Tests(unittest.TestCase):
     def test_preflight_blocks_validation_controls(self):
         self.assertTrue(_has_validation_controls(["ctrl", "A+ctrl", "ctrl"], ["train", "val", "val"]))
         self.assertFalse(_has_validation_controls(["ctrl", "A+ctrl"], ["train", "val"]))
+
+    def test_cuda_guard_uses_assigned_device_count(self):
+        torch = Mock()
+        torch.cuda.is_available.return_value = True
+        torch.cuda.device_count.return_value = 1
+        self.assertTrue(_has_one_cuda_device(torch))
+        torch.cuda.device_count.return_value = 2
+        self.assertFalse(_has_one_cuda_device(torch))
 
 
 if __name__ == "__main__":
