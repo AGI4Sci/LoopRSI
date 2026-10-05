@@ -62,6 +62,15 @@ class LingshuSkillTests(unittest.TestCase):
         self.assertIn("asset_type: model", fragment.content)
         self.assertIn("execution_readiness:", fragment.content)
         self.assertIn("adapter_id:", fragment.content)
+        self.assertEqual(fragment.source, "knowledge:vcc25:kb:repo:lingshu-cell,kb:model:lingshu-vcc-85m")
+
+    def test_l5_targeted_gears_uses_matching_repository(self):
+        skill = LingshuModelDesignInsightSkill(KNOWLEDGE_ROOT)
+        fragment = skill.inject({"task_id": "vcc25", "layer": "L5", "query": "GEARS", "token_budget": 1600})
+        self.assertIsNotNone(fragment)
+        self.assertEqual(fragment.source, "knowledge:vcc25:kb:repo:gears,kb:model:gears")
+        self.assertIn("smoke_evidence: passed (smoke_only)", fragment.content)
+        self.assertIn("gears-h1-gpu-smoke-20261005.json", fragment.content)
 
     def test_renderer_is_deterministic_hashes_content_and_never_truncates_a_card(self):
         store = KnowledgeStore.from_directory(KNOWLEDGE_ROOT)

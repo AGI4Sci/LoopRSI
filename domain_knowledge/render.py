@@ -58,6 +58,15 @@ def _render_card(card: KnowledgeCard) -> str:
         compatibility: Mapping[str, Any] = card.get("vcc25_compatibility", {})
         lines.append(f"compatibility: {compatibility.get('level')}")
         lines.append(f"gaps: {_join(compatibility.get('gaps', ())) }")
+        evidence = card.get("smoke_evidence", ())
+        for item in evidence:
+            if isinstance(item, Mapping):
+                lines.append(
+                    "smoke_evidence: "
+                    f"{item.get('status', 'unknown')} "
+                    f"({item.get('authority', 'unknown')}); "
+                    f"source={item.get('source_manifest', 'unspecified')}"
+                )
     for source in card.sources:
         lines.append(f"source: {source['url']}")
     return "\n".join(lines)
