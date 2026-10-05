@@ -116,6 +116,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--gene2go", required=True)
     parser.add_argument("--gene-names", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--shard-dir")
     parser.add_argument("--preflight-only", action="store_true")
     args = parser.parse_args(argv)
     output = Path(args.output).resolve()
@@ -171,6 +172,12 @@ def main(argv: list[str] | None = None) -> int:
     pert_data.prepare_split(split="custom", split_dict_path=str(output / "split.pkl"))
     pert_data.split = "no_test"
     pert_data.get_dataloader(batch_size=32)
+    if args.shard_dir:
+        from adapters.vcc25.gears_shard_loader import ShardBatchLoader
+        pert_data.dataloader = {
+            "train_loader": ShardBatchLoader(args.shard_dir, "train", 32),
+            "val_loader": ShardBatchLoader(args.shard_dir, "val", 32),
+        }
     model = GEARS(pert_data, device="cuda:0")
     model.model_initialize(hidden_size=64)
     model.train(epochs=1)
