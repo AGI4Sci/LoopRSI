@@ -12,8 +12,12 @@ import sys
 from pathlib import Path
 
 
-REQUIRED_MODULES = ("numpy", "torch", "torch_geometric", "scanpy", "scipy", "sklearn", "dcor")
+REQUIRED_MODULES = ("numpy", "torch", "torch_geometric", "scanpy", "scipy", "sklearn", "dcor", "h5py")
 FORBIDDEN_NAME_PARTS = ("test_expression", "adata_test", "competition_test")
+
+
+def _has_validation_controls(conditions, splits) -> bool:
+    return any(condition == "ctrl" and label != "train" for condition, label in zip(conditions, splits))
 
 
 def _write(path: Path, value: dict) -> None:
@@ -44,6 +48,20 @@ def preflight(args: argparse.Namespace) -> dict:
     }
     missing = sorted(name for name, path in required.items() if not path.is_file())
     modules = sorted(name for name in REQUIRED_MODULES if importlib.util.find_spec(name) is None)
+    data_errors = []
+    if required["dataset"].is_file() and importlib.util.find_spec("h5py") is not None:
+        import h5py
+        from adapters.vcc25.scgenept_h1 import _obs_strings
+
+        with h5py.File(required["dataset"], "r") as h5:
+            obs = h5["obs"]
+            if "condition" not in obs or "split" not in obs:
+                data_errors.append("dataset needs cell-level condition and split metadata")
+            else:
+                conditions = _obs_strings(obs, "condition", h5py)
+                splits = _obs_strings(obs, "split", h5py)
+                if _has_validation_controls(conditions, splits):
+                    data_errors.append("validation controls would enter the GEARS training graph cache")
     split = None
     if not missing and not modules:
         split = json.loads(paths["split_json"].read_text(encoding="utf-8"))
@@ -64,9 +82,10 @@ def preflight(args: argparse.Namespace) -> dict:
         raise ValueError("GEARS output must be outside source and prepared dataset")
     return {
         "schema_version": "vcc25.gears-preflight/v1",
-        "status": "ready" if not missing and not modules else "blocked",
+        "status": "ready" if not missing and not modules and not data_errors else "blocked",
         "missing_assets": missing,
         "missing_modules": modules,
+        "data_errors": data_errors,
         "inputs": {name: str(path) for name, path in paths.items()},
         "data_scope": "prepared train and validation only; final-test expression excluded",
         "test_expression_read": False,
