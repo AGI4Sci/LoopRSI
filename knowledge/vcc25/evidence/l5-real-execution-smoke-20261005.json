@@ -1,0 +1,15 @@
+{
+  "schema_version": "vcc25.l5-real-execution-smoke/v1",
+  "authority": "execution_boundary",
+  "status": "blocked",
+  "workspace": "/tmp/looprsi-l5-real-trial-20261005/out4",
+  "knowledge_selected": true,
+  "knowledge_card_ids": ["kb:repo:lingshu-cell", "kb:model:lingshu-vcc-85m"],
+  "candidate_variant": "autonomous_research_candidate",
+  "adapter_command_reached": true,
+  "error": "autonomous_runner is required",
+  "score_produced": false,
+  "test_expression_read": false,
+  "gpu_invoked": false,
+  "next_condition": "provide the reviewed autonomous runner and train/validation assets in an independent remote workspace"
+}
