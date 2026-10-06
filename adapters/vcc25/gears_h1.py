@@ -236,16 +236,20 @@ def main(argv: list[str] | None = None) -> int:
         pickle.dump({**gears_split, "test": []}, stream)
     pert_data = PertData(str(data_root), default_pert_graph=bool(args.official_go_csv))
     pert_data.load(data_path=str(dataset))
+    if isinstance(pert_data.gene_names, list):
+        import pandas as pd
+        pert_data.gene_names = pd.Series(pert_data.gene_names)
     (data_root / pert_data.dataset_name).mkdir(parents=True, exist_ok=True)
     pert_data.prepare_split(split="custom", split_dict_path=str(output / "split.pkl"))
     pert_data.split = "no_test"
-    pert_data.get_dataloader(batch_size=32)
     if args.shard_dir:
         from adapters.vcc25.gears_shard_loader import ShardBatchLoader
         pert_data.dataloader = {
             "train_loader": ShardBatchLoader(args.shard_dir, "train", 32),
             "val_loader": ShardBatchLoader(args.shard_dir, "val", 32),
         }
+    else:
+        pert_data.get_dataloader(batch_size=32)
     model = GEARS(pert_data, device="cuda:0")
     model.model_initialize(hidden_size=64)
     model.train(epochs=args.epochs)
