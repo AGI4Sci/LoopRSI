@@ -10,16 +10,15 @@
     "reference_only": "仅保留参考资料，当前没有可执行入口"
   },
   "papers": [
-    {"paper_id": "kb:paper:gears", "model_id": "kb:model:gears", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:linear-baseline", "model_id": "kb:model:linear-pseudobulk", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
+    {"paper_id": "kb:paper:gears", "model_id": "kb:model:gears", "status": "blocked", "reason": "no implemented VCC25 adapter"},
+    {"paper_id": "kb:paper:linear-baseline", "model_id": "kb:model:linear-pseudobulk", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:lingshu-cell", "model_id": "kb:model:lingshu-vcc-85m", "status": "partial", "reason": "CUDA smoke and streamed validation evidence exist; autonomous paper reproduction card not yet finalized"},
-    {"paper_id": "kb:paper:presage", "model_id": "kb:model:presage", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:primeflow", "model_id": "kb:model:primeflow", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:scgenept", "model_id": "kb:model:scgenept-go-all", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:sclambda", "model_id": "kb:model:sclambda", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
+    {"paper_id": "kb:paper:presage", "model_id": "kb:model:presage", "status": "blocked", "reason": "no implemented VCC25 adapter"},
+    {"paper_id": "kb:paper:primeflow", "model_id": "kb:model:primeflow", "status": "blocked", "reason": "no implemented VCC25 adapter"},
+    {"paper_id": "kb:paper:scgenept", "model_id": "kb:model:scgenept-go-all", "status": "blocked", "reason": "no implemented VCC25 adapter"},
+    {"paper_id": "kb:paper:sclambda", "model_id": "kb:model:sclambda", "status": "blocked", "reason": "no implemented VCC25 adapter"},
     {"paper_id": "kb:paper:state", "model_id": "kb:model:state-st-hvg-replogle", "status": "blocked", "reason": "adapter exists but required checkpoint is missing"}
   ],
   "infrastructure_note": "PerturBench is retained as a supporting dependency for PRiMeFlow, not counted as one of the eight formal reproduction targets.",
-  "preflight_runs": [{"date": "2026-09-30", "remote_source_fetch": "blocked", "reason": "GitHub HTTPS port 443 connection timed out from the development node; all clone processes were confirmed exited", "gpu_used": false}],
-  "next_step": "Fetch pinned upstream sources through an approved route into the independent experiment directory, then run method-specific CPU-safe preflight before requesting any GPU allocation."
+  "next_step": "For each blocked entry, resolve or explicitly document the reproducibility gap before generating the sole formal VCC25 candidate request."
 }
