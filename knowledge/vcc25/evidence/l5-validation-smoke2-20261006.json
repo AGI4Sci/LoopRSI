@@ -1,0 +1,55 @@
+{
+  "artifact_note": "Final summary captured from rjob logs; container GPFS output path is not visible on login node.",
+  "best_candidate_on_smoke": "candidate_d_amplitude_de_weighted_hash_embedding",
+  "candidate_diagnostics": {
+    "candidate_a_hash_embedding_anchor": {
+      "de_direction_agreement_top5pct_mean": 0.905766039823009,
+      "delta_correlation_mean": 0.5102776663389808,
+      "predicted_to_true_delta_l2_ratio_mean": 0.15799110275191475
+    },
+    "candidate_b_amplitude_aware_hash_embedding": {
+      "de_direction_agreement_top5pct_mean": 0.9058351769911506,
+      "delta_correlation_mean": 0.5106138022607897,
+      "predicted_to_true_delta_l2_ratio_mean": 0.16652259541224618
+    },
+    "candidate_c_de_weighted_hash_embedding": {
+      "de_direction_agreement_top5pct_mean": 0.9061808628318584,
+      "delta_correlation_mean": 0.5112002191936772,
+      "predicted_to_true_delta_l2_ratio_mean": 0.15965333516018626
+    },
+    "candidate_d_amplitude_de_weighted_hash_embedding": {
+      "de_direction_agreement_top5pct_mean": 0.9061808628318584,
+      "delta_correlation_mean": 0.5115493211684374,
+      "predicted_to_true_delta_l2_ratio_mean": 0.16844365145185952
+    }
+  },
+  "data_contract": {
+    "gene_count": 18080,
+    "gene_order_preserved": true,
+    "split_disjointness": true,
+    "test_expression_read": false,
+    "test_targets_total": 100,
+    "train_targets_total": 150,
+    "validation_targets_total": 50
+  },
+  "evaluation_authority": "smoke_only",
+  "job_id": "looprsi-l5-val-smoke2-1006-5312745",
+  "job_status": "Succeeded",
+  "limitations": "Subset diagnostic only; no official H1 pearson_delta and no L5 reward-memory update.",
+  "official_h1_metric": null,
+  "recorded_at": "2026-10-06",
+  "schema_version": "vcc25.l5-smoke-evidence/v1",
+  "scope": {
+    "max_rows_per_target": 12,
+    "max_steps": 24,
+    "seeds": [
+      20260907,
+      20260908
+    ],
+    "train_targets": 16,
+    "validation_targets": 8
+  },
+  "selection_feedback_allowed": false,
+  "source_commit": "387af34",
+  "source_sha256": "c3e3cee238c00e583eecbb126def291bce6856b4a7c308c13a1e128ceeff4c4d"
+}

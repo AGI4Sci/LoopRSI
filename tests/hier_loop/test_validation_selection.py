@@ -16,6 +16,17 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class ValidationSelectionTests(unittest.TestCase):
+    def test_autonomous_runner_is_passed_to_adapter(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            worker = Vcc25Worker({"worker": {"mode": "real", "result_root": tmp,
+                "trial_defaults": {"autonomous_runner": "tasks/vcc25/implementation/scripts/run_official_h1_autonomous_candidate.sh"}}})
+            from unittest.mock import patch
+            import subprocess
+            with patch("hier_loop.vcc25_worker.subprocess.run") as run:
+                run.return_value = subprocess.CompletedProcess([], 2, "", "expected stop")
+                worker._run_real_trial("autonomous_research_candidate", 20260907, 0, 1)
+            self.assertIn("--autonomous-runner", run.call_args.args[0])
+
     def test_record_rejects_unverified_and_missing_split_audit(self):
         args = dict(method="official_h1", variant="candidate_g_promoted_delta_model",
                     seed=20260907, metric="pearson_delta", elapsed_seconds=2.0)

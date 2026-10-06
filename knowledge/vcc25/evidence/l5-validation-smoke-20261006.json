@@ -1,0 +1,56 @@
+{
+  "artifact_note": "Container wrote lineage_summary.json, but the same GPFS path was empty from the login node after completion; rjob logs contain the final summary.",
+  "best_candidate_on_smoke": "candidate_d_amplitude_de_weighted_hash_embedding",
+  "candidate_diagnostics": {
+    "candidate_a_hash_embedding_anchor": {
+      "de_direction_agreement_top5pct_mean": 0.8708517699115044,
+      "delta_correlation_mean": 0.40297232416522893,
+      "predicted_to_true_delta_l2_ratio_mean": 0.01671277097542976
+    },
+    "candidate_b_amplitude_aware_hash_embedding": {
+      "de_direction_agreement_top5pct_mean": 0.8708517699115044,
+      "delta_correlation_mean": 0.40297532885027726,
+      "predicted_to_true_delta_l2_ratio_mean": 0.016814512178116952
+    },
+    "candidate_c_de_weighted_hash_embedding": {
+      "de_direction_agreement_top5pct_mean": 0.872787610619469,
+      "delta_correlation_mean": 0.4037283413732641,
+      "predicted_to_true_delta_l2_ratio_mean": 0.016726991688257007
+    },
+    "candidate_d_amplitude_de_weighted_hash_embedding": {
+      "de_direction_agreement_top5pct_mean": 0.872787610619469,
+      "delta_correlation_mean": 0.40373095170690815,
+      "predicted_to_true_delta_l2_ratio_mean": 0.01682769039689671
+    }
+  },
+  "data_contract": {
+    "gene_count": 18080,
+    "gene_order_preserved": true,
+    "split_disjointness": true,
+    "test_expression_read": false,
+    "test_targets_total": 100,
+    "train_targets_total": 150,
+    "validation_targets_total": 50
+  },
+  "evaluation_authority": "smoke_only",
+  "job_id": "looprsi-l5-val-smoke-1006-1032768",
+  "job_status": "Succeeded",
+  "limitations": "Tiny subset diagnostic only. Delta correlation is not official H1 pearson_delta and must not enter reward memory.",
+  "official_h1_metric": null,
+  "recorded_at": "2026-10-06",
+  "schema_version": "vcc25.l5-smoke-evidence/v1",
+  "scope": {
+    "max_rows_per_target": 8,
+    "max_steps": 8,
+    "seeds": [
+      20260907
+    ],
+    "train_rows": 72,
+    "train_targets": 8,
+    "validation_rows": 40,
+    "validation_targets": 4
+  },
+  "selection_feedback_allowed": false,
+  "source_commit": "387af34",
+  "source_sha256": "c3e3cee238c00e583eecbb126def291bce6856b4a7c308c13a1e128ceeff4c4d"
+}

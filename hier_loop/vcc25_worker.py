@@ -172,6 +172,19 @@ class Vcc25Worker(LoopWorker):
             "--candidate-variant", variant,
             "--seed", str(seed),
         ]
+        if variant == "autonomous_research_candidate":
+            runner = self.trial_defaults.get("autonomous_runner")
+            if not isinstance(runner, str) or not runner.strip():
+                return {"status": "failed", "error": "autonomous_runner is required before submitting the L5 trial",
+                        "test_expression_read": False, "gpu_used": False}
+            runner_path = os.path.normpath(runner)
+            if os.path.isabs(runner_path) or runner_path.startswith(".."):
+                return {"status": "failed", "error": "autonomous_runner must be a repository-relative path",
+                        "test_expression_read": False, "gpu_used": False}
+            if not os.path.isfile(runner_path):
+                return {"status": "failed", "error": f"autonomous_runner is missing: {runner_path}",
+                        "test_expression_read": False, "gpu_used": False}
+            cmd += ["--autonomous-runner", runner_path]
         for key, flag in (("eval_profile", "--eval-profile"),
                           ("eval_skip_metrics", "--eval-skip-metrics")):
             val = self.trial_defaults.get(key)
