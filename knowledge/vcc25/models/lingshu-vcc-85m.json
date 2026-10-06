@@ -1,6 +1,6 @@
 {
   "id": "kb:model:lingshu-vcc-85m", "schema_version": "1.0", "asset_type": "model",
-  "title": "Lingshu VCC 85M", "summary_plain": "面向 VCC H1 的 85M 参数 Lingshu checkpoint；远端已有固定代码、权重和历史 smoke 产物，但仍需在本项目独立副本中重新核验。",
+  "title": "Lingshu VCC 85M", "summary_plain": "面向 VCC H1 的 85M 参数 Lingshu checkpoint；本地已发现配套资产，但还没有在本项目契约下完成冒烟推理。",
   "fit_reason": "和当前任务最直接，适合作为必须先复现的 base。",
   "limitations": ["资产存在尚不能证明输入、权重和输出完全兼容。", "0.30614 的评测协议仍需负责人确认。"],
   "tags": ["vcc25", "checkpoint", "inference", "transformer"], "layers": ["L4", "L5"],
@@ -9,8 +9,8 @@
   "review_status": "approved", "review_basis": "provisional_initial_release",
   "usage_mode": "task_checkpoint", "execution_readiness": "adapter_required",
   "artifacts": [
-    {"role": "checkpoint", "uri": "hf://bibona/lingshu-cell/vcc_perturbation_85M.pth", "format": "pytorch", "access": "public", "size_bytes": 917377561, "integrity": {"status": "sha256_recorded", "sha256": "e4395a0f0627f51ef14464d8e68703b2a9cfba88c22527e7b797bd97d47b07d9"}},
-    {"role": "gene_embeddings", "uri": "hf://bibona/lingshu-cell/gene_embeddings.npz", "format": "npz", "access": "public", "size_bytes": 374102734, "integrity": {"status": "sha256_recorded", "sha256": "d1c9bf8b91fcca789ea73128c0288f3c82809a590ab37f7cf407d2e5e88ada42"}},
+    {"role": "checkpoint", "uri": "hf://bibona/lingshu-cell/vcc_perturbation_85M.pth", "format": "pytorch", "access": "public", "size_bytes": 917377561, "integrity": {"status": "not_published"}},
+    {"role": "gene_embeddings", "uri": "hf://bibona/lingshu-cell/gene_embeddings.npz", "format": "npz", "access": "public", "size_bytes": 374102734, "integrity": {"status": "not_published"}},
     {"role": "reference_dataset", "uri": "hf://bibona/lingshu-cell/whole_dataset_stringent_clue.csv", "format": "csv", "access": "public", "size_bytes": 894030231, "integrity": {"status": "not_published"}}
   ],
   "licenses": {"code": "MIT", "weights": "see model host card"},
@@ -18,6 +18,6 @@
   "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
   "vcc25_compatibility": {"level": "direct_task_candidate", "gaps": ["adapter smoke test", "output contract validation"]},
   "execution_recipe": {"adapter_id": "vcc25.lingshu", "actions": ["check_assets", "prepare", "predict", "convert_output"]},
-  "smoke_evidence": [{"authority": "smoke_only", "status": "passed", "provenance": "remote_existing_record", "source_manifest": "reproduction/run_manifest.json", "code_commit": "0cbde2feb6639f9411399794cf5e1c4831eb6c93", "weights_revision": "b77f980f908060371967c680d6e900b5a04c11c3", "cases": ["pbmc", "cytokine", "vcc"], "validated_gene_count": 18080, "output_checks": ["finite", "nonnegative", "shape_checked"], "metrics": null, "selection_feedback_allowed": false}],
-  "evidence_notes": ["Existing remote smoke evidence is operational only and is not this experiment's reward or validation result.", "Historical final-test metrics remain reported-only and are excluded from selection and reward.", "A reported 0.30614 value remains unresolved against vcc25-eval-v1 and must not be used for ranking."]
+  "smoke_evidence": [],
+  "evidence_notes": ["Local run note reports 0.30614 under an unresolved evaluation contract; keep it reported-only until reconciled with vcc25-eval-v1."]
 }
