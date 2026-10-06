@@ -20,8 +20,6 @@ from official_h1_cold_start_probe import (
     control_baselines,
     encode_rows,
     load_sample,
-    iter_csr_rows,
-    select_sample_metadata,
     mean_pairwise_l2,
     mean_profile_correlation,
     mse,
@@ -33,26 +31,6 @@ from official_h1_nonnegative_probe import normalize_log1p
 DEFAULT_ROOT = Path('/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1')
 DEFAULT_ASSETS = DEFAULT_ROOT / 'assets/official_2025'
 PROTOCOL_ID = 'vcc-h1-autonomous-validation-research-loop-v1'
-
-
-def stream_normalized_sample(path: Path, sample: Any, rows: np.ndarray, output: Path, target_sum: float | None = None, chunk_size: int = 64) -> tuple[np.memmap, float]:
-    """Normalize H5AD rows in bounded chunks and persist them as a memory map."""
-    if target_sum is None:
-        libraries = np.empty(len(rows), dtype=np.float64)
-        for start, chunk in iter_csr_rows(path, rows, chunk_size):
-            libraries[start:start + len(chunk)] = chunk.sum(axis=1, dtype=np.float64)
-        positive = libraries > 0
-        target_sum = float(np.median(libraries[positive])) if positive.any() else 1.0
-    output.parent.mkdir(parents=True, exist_ok=True)
-    mapped = np.memmap(output, mode='w+', dtype=np.float32, shape=(len(rows), len(sample.gene_names)))
-    for start, chunk in iter_csr_rows(path, rows, chunk_size):
-        lib = chunk.sum(axis=1, dtype=np.float64)
-        scale = np.ones_like(lib, dtype=np.float64)
-        positive = lib > 0
-        scale[positive] = target_sum / lib[positive]
-        mapped[start:start + len(chunk)] = np.log1p(chunk.astype(np.float64) * scale[:, None]).astype(np.float32)
-    mapped.flush()
-    return mapped, target_sum
 
 
 class AnchoredSoftplusHead(torch.nn.Module):
@@ -156,9 +134,8 @@ def build_features(args: argparse.Namespace, genes: list[str], all_targets: list
 def train_and_eval(args: argparse.Namespace, candidate: Candidate, seed: int, train: Any, val: Any, fmap: dict[str, np.ndarray], train_targets: list[str], batch_order: list[str], de_weights: np.ndarray | None) -> dict[str, Any]:
     t0=time.time()
     device = torch.device(args.device)
-    # run_loop provides chunk-normalized memmaps; do not materialize them again.
-    train_log = train.x
-    val_log = val.x
+    train_log, target_sum=normalize_log1p(train.x)
+    val_log,_=normalize_log1p(val.x, target_sum)
     train_features, train_target_ids, train_batch_ids,_=encode_rows(train, [CONTROL]+train_targets, batch_order, fmap, False)
     val_features,_,val_batch_ids,unknown_batches=encode_rows(val, [CONTROL]+train_targets, batch_order, fmap, True)
     baselines=control_baselines(train_log, train.target_names_per_row, train.batch_names_per_row, batch_order)
@@ -242,17 +219,15 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def train_delta_weights(train_log: np.ndarray, targets: list[str], batches: list[str], batch_order: list[str]) -> np.ndarray:
     baselines=control_baselines(train_log, targets, batches, batch_order)
     batch_index={b:i for i,b in enumerate(batch_order)}
-    delta_sum = np.zeros(train_log.shape[1], dtype=np.float64)
-    count = 0
+    deltas=[]
     for row_target,row_batch,x in zip(targets,batches,train_log):
         if row_target == CONTROL:
             continue
         bid=batch_index.get(row_batch,0)
-        delta_sum += np.abs(x-baselines[bid])
-        count += 1
-    if not count:
+        deltas.append(np.abs(x-baselines[bid]))
+    if not deltas:
         return np.ones(train_log.shape[1], dtype=np.float32)
-    score=delta_sum / count
+    score=np.mean(np.asarray(deltas), axis=0)
     score=score/(np.mean(score)+1e-6)
     return np.clip(1.0 + score, 1.0, 5.0).astype(np.float32)
 
@@ -268,17 +243,12 @@ def run_loop(args: argparse.Namespace) -> dict[str, Any]:
     first_seed=seeds[0]
     train_targets=choose_targets(train_all, args.n_train_targets, first_seed)
     val_targets=choose_targets(val_all, args.n_val_targets, first_seed+1)
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    train_rows, train=select_sample_metadata(args.train_h5ad, genes, train_targets, args.max_rows_per_target, first_seed+10)
-    val_rows, val=select_sample_metadata(args.validation_h5ad, genes, val_targets, args.max_rows_per_target, first_seed+20)
-    scratch=args.output_dir/'.scratch'
-    train_log, target_sum=stream_normalized_sample(args.train_h5ad, train, train_rows, scratch/'train_log1p.f32')
-    val_log, _=stream_normalized_sample(args.validation_h5ad, val, val_rows, scratch/'val_log1p.f32', target_sum)
-    train.x=train_log
-    val.x=val_log
+    train=load_sample(args.train_h5ad, genes, train_targets, args.max_rows_per_target, first_seed+10)
+    val=load_sample(args.validation_h5ad, genes, val_targets, args.max_rows_per_target, first_seed+20)
     all_targets=sorted({CONTROL,*train_all,*val_all,*test_all})
     fmap, feature_meta=build_features(args, genes, all_targets, args.train_h5ad)
     batch_order=['__global__']+sorted(set(train.batch_names_per_row))
+    train_log,_=normalize_log1p(train.x)
     de_weights=train_delta_weights(train_log, train.target_names_per_row, train.batch_names_per_row, batch_order)
     candidates=[
         Candidate('candidate_a_hash_embedding_anchor', None, 'Fixed hash+gene embedding target prior should improve unseen target residual direction over hash-only.', 'hash_embedding', 'anchored_softplus', 'mse', 'baseline representation candidate'),
