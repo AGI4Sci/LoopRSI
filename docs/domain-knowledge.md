@@ -41,8 +41,6 @@ Lingshu 独立副本的两条件推理 smoke 已通过，证据见 `knowledge/vc
 
 全量验证门禁见 `knowledge/vcc25/evidence/full-validation-gate-20260930.json`：GPU 任务在无 Python 进展后已停止，0 卡 CPU job 被公共资源池拒绝；因此没有把未完成的全量验证误记为通过，也没有启动最终评测。
 
-CUDA 迁移冒烟和全量尝试见 `knowledge/vcc25/evidence/cuda-validation-attempt-20260930.json`。CUDA 冒烟已确认设备路径有效；全量路径因一次性 dense 化 H5AD 导致内存压力，尚需改成分块读取后才能继续。
-
 ## 五层知识实验
 
 本地无 GPU 预检只验证 L1–L5 知识注入、结构化决策和 L5 编码请求，不训练模型，也不产生或比较分数：
