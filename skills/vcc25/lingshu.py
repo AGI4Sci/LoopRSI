@@ -36,17 +36,22 @@ class _KnowledgeSkill:
         budget = int(context.get("token_budget", 1200))
         text = str(context.get("query", context.get("text", "")))
         if len(self._asset_types) > 1:
-            models = self._store.query(KnowledgeQuery(
-                task_id="vcc25", layer=str(context["layer"]), text=text,
-                asset_types=("model",), max_results=1,
-            ))
-            repositories = self._store.query(KnowledgeQuery(
-                task_id="vcc25", layer=str(context["layer"]), text=text,
-                asset_types=("repository",), max_results=20,
-            ))
-            model = models[0] if models else None
-            repository = next((card for card in repositories if model and model.id in card.relations), None)
-            cards = (repository, model) if repository and model else ()
+            # L5 needs both the implementation repository and its model card.
+            # A single mixed ranking can fill the result budget with model cards
+            # before the repository is considered, hiding the executable entrypoint.
+            cards = tuple(
+                card
+                for asset_type in self._asset_types
+                for card in self._store.query(
+                    KnowledgeQuery(
+                        task_id="vcc25",
+                        layer=str(context["layer"]),
+                        text=text,
+                        asset_types=(asset_type,),
+                        max_results=1,
+                    )
+                )
+            )
         else:
             cards = self._store.query(
                 KnowledgeQuery(
