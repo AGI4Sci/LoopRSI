@@ -2,7 +2,7 @@
   "id": "kb:model:gears", "schema_version": "1.0", "asset_type": "model",
   "title": "GEARS training recipe", "summary_plain": "用 GEARS 官方实现从 H1 训练数据重新训练图神经网络，没有可直接使用的 H1 checkpoint。",
   "fit_reason": "提供和 Transformer 不同的强经典路线，适合验证基因图先验。",
-  "limitations": ["必须从头训练。", "当前仅完成小样本 GPU 训练 smoke；尚无完整 H1 checkpoint、持久化训练产物或正式验证结果。", "2026-10-06 容器 GPFS 写入探针虽成功，但产物在登录节点不可见；须先配置并验证跨环境产物回传通道。"],
+  "limitations": ["必须从头训练。", "当前仅完成小样本 GPU 训练 smoke；尚无完整 H1 checkpoint 或正式验证结果。", "已通过 rjob 日志分块回传并校验一个单条件 3 epoch smoke checkpoint；该通道尚未证明适合大型训练产物，GPFS 容器写入也无法从登录节点读取。"],
   "tags": ["gears", "graph-neural-network", "train", "baseline"], "layers": ["L4", "L5"],
   "sources": [{"url": "https://github.com/snap-stanford/GEARS", "kind": "official_repository"}, {"url": "https://www.nature.com/articles/s41587-023-01905-6", "kind": "paper"}],
   "relations": ["kb:paper:gears", "kb:repo:gears"],
@@ -14,5 +14,5 @@
   "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
   "vcc25_compatibility": {"level": "future_train_candidate", "gaps": ["full H1 training", "persistent checkpoint", "official validation"]},
   "execution_recipe": {"adapter_id": "vcc25.gears", "actions": ["prepare", "train", "predict", "convert_output"]},
-  "smoke_evidence": [{"authority": "smoke_only", "status": "passed", "provenance": "independent_remote_gpu_job", "source_manifest": "knowledge/vcc25/evidence/gears-h1-gpu-smoke-20261005.json", "job_name": "looprsi-gears-smoke12-1005-56148272", "validated_gene_count": 18080, "metrics": null, "selection_feedback_allowed": false}, {"authority": "infrastructure_probe", "status": "passed_with_persistence_failure", "source_manifest": "knowledge/vcc25/evidence/gears-artifact-persistence-probe-20261006.json", "job_name": "looprsi-gpfs-write-probe2-1006-86456123", "selection_feedback_allowed": false}]
+  "smoke_evidence": [{"authority": "smoke_only", "status": "passed", "provenance": "independent_remote_gpu_job", "source_manifest": "knowledge/vcc25/evidence/gears-h1-gpu-smoke-20261005.json", "job_name": "looprsi-gears-smoke12-1005-56148272", "validated_gene_count": 18080, "metrics": null, "selection_feedback_allowed": false}, {"authority": "smoke_only", "status": "passed", "provenance": "checkpoint_returned_and_reloaded", "source_manifest": "knowledge/vcc25/evidence/gears-checkpoint-roundtrip-20261006.json", "job_name": "looprsi-gears-checkpoint-r2-1006-12352642", "checkpoint_verification_job": "looprsi-gears-checkpoint-verify-1006-95695900", "epochs": 3, "train_conditions": 1, "validation_conditions": 1, "selection_feedback_allowed": false}, {"authority": "infrastructure_probe", "status": "passed_with_persistence_failure", "source_manifest": "knowledge/vcc25/evidence/gears-artifact-persistence-probe-20261006.json", "job_name": "looprsi-gpfs-write-probe2-1006-86456123", "selection_feedback_allowed": false}]
 }

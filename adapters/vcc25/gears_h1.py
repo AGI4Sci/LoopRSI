@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import importlib.util
+import io
 import json
 import os
 import pickle
 import shutil
 import sys
+import tarfile
+import zlib
+import time
 from pathlib import Path
 
 
@@ -34,6 +40,26 @@ def _positive_int(value: str) -> int:
     if parsed < 1:
         raise argparse.ArgumentTypeError("must be a positive integer")
     return parsed
+
+
+def _checkpoint_log_lines(checkpoint_dir: Path, max_bytes: int) -> list[str]:
+    buffer = io.BytesIO()
+    with tarfile.open(fileobj=buffer, mode="w") as archive:
+        for path in sorted(checkpoint_dir.iterdir()):
+            if path.is_file():
+                archive.add(path, arcname=path.name)
+    payload = zlib.compress(buffer.getvalue(), level=6)
+    if len(payload) > max_bytes:
+        raise ValueError(f"compressed checkpoint exceeds log export limit ({len(payload)} > {max_bytes} bytes)")
+    digest = hashlib.sha256(payload).hexdigest()
+    encoded = base64.b64encode(payload).decode("ascii")
+    lines = [f"GEARS_ARTIFACT_BEGIN {digest} {len(payload)}"]
+    lines.extend(
+        f"GEARS_ARTIFACT_CHUNK {index:06d} {encoded[offset:offset + 2048]}"
+        for index, offset in enumerate(range(0, len(encoded), 2048))
+    )
+    lines.append("GEARS_ARTIFACT_END")
+    return lines
 
 
 def preflight(args: argparse.Namespace) -> dict:
@@ -129,6 +155,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", required=True)
     parser.add_argument("--shard-dir")
     parser.add_argument("--epochs", type=_positive_int, default=1)
+    parser.add_argument("--export-checkpoint-to-logs", action="store_true")
+    parser.add_argument("--checkpoint-log-limit-mib", type=_positive_int, default=4)
     parser.add_argument("--compute-smoke-de", action="store_true")
     parser.add_argument("--official-go-csv")
     parser.add_argument("--preflight-only", action="store_true")
@@ -223,6 +251,13 @@ def main(argv: list[str] | None = None) -> int:
     model.train(epochs=args.epochs)
     checkpoint_dir = output / "model"
     model.save_model(str(checkpoint_dir))
+    if args.export_checkpoint_to_logs:
+        for index, line in enumerate(_checkpoint_log_lines(
+            checkpoint_dir, args.checkpoint_log_limit_mib * 1024 * 1024
+        )):
+            print(line, flush=True)
+            if index and index % 32 == 0:
+                time.sleep(0.01)
     predictions = model.predict([
         _prediction_perturbation(condition)
         for condition in split["val"] if condition != "ctrl"

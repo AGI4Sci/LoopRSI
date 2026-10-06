@@ -1,12 +1,15 @@
+import base64
+import hashlib
 import argparse
 import json
 import tempfile
+import zlib
 import unittest
 from pathlib import Path
 from unittest.mock import Mock
 
 from adapters.vcc25 import get_adapter
-from adapters.vcc25.gears_h1 import _has_one_cuda_device, _has_validation_controls, _positive_int, _prediction_perturbation, preflight
+from adapters.vcc25.gears_h1 import _checkpoint_log_lines, _has_one_cuda_device, _has_validation_controls, _positive_int, _prediction_perturbation, preflight
 from domain_knowledge import KnowledgeQuery, KnowledgeStore
 
 
@@ -97,6 +100,23 @@ class GearsH1Tests(unittest.TestCase):
         self.assertEqual(_positive_int("5"), 5)
         with self.assertRaisesRegex(argparse.ArgumentTypeError, "positive"):
             _positive_int("0")
+
+    def test_checkpoint_log_export_has_checksum_and_size_limit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "model.pt").write_bytes(b"checkpoint payload")
+            lines = _checkpoint_log_lines(root, 1024)
+            self.assertTrue(lines[0].startswith("GEARS_ARTIFACT_BEGIN "))
+            self.assertEqual(lines[-1], "GEARS_ARTIFACT_END")
+            _, digest, size = lines[0].split()
+            chunks = [line.split(maxsplit=2) for line in lines[1:-1]]
+            self.assertEqual([int(chunk[1]) for chunk in chunks], list(range(len(chunks))))
+            payload = base64.b64decode("".join(chunk[2] for chunk in chunks))
+            self.assertEqual(len(payload), int(size))
+            self.assertEqual(hashlib.sha256(payload).hexdigest(), digest)
+            self.assertIn(b"checkpoint payload", zlib.decompress(payload))
+            with self.assertRaisesRegex(ValueError, "export limit"):
+                _checkpoint_log_lines(root, 1)
 
 
 if __name__ == "__main__":

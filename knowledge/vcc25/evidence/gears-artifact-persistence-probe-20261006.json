@@ -6,7 +6,7 @@
   "container_write_succeeded": true,
   "container_output": "/mnt/shared-storage-gpfs2/beam-gpfs02/gaozhangyang/looprsi-l5-closure-20261006/gpu-write-probe-20261006.txt",
   "login_node_visible_after_completion": false,
-  "artifact_channel": "rjob download-logs only exports logs; no generic workspace artifact download command was available",
+  "artifact_channel": "GPFS container writes were not visible from the login node. A separate bounded file roundtrip through rjob download-logs followed by SSH/SCP was verified in knowledge/vcc25/evidence/gears-checkpoint-roundtrip-20261006.json.",
   "test_expression_read": false,
-  "conclusion": "Do not treat rjob container output or checkpoints as persisted until a verified cross-environment artifact channel is configured."
+  "conclusion": "The GPFS path is not a cross-environment persistence channel. rjob download-logs can return bounded artifacts when they are chunked, throttled, and checksum-verified; it is not yet established as a scalable general checkpoint store."
 }

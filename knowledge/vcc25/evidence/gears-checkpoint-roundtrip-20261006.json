@@ -1,0 +1,49 @@
+{
+  "schema_version": "vcc25.gears-checkpoint-roundtrip/v1",
+  "recorded_at": "2026-10-06",
+  "authority": "smoke_only",
+  "training_job": "looprsi-gears-checkpoint-r2-1006-12352642",
+  "training_job_status": "Succeeded",
+  "checkpoint_verification_job": "looprsi-gears-checkpoint-verify-1006-95695900",
+  "checkpoint_verification_status": "Succeeded",
+  "upstream_gears_revision": "f374e43e197b",
+  "repository_commit": "af71beb",
+  "adapter_source_sha256": "11f620a81f6c1f822799c288481d414f30007e4d6415dca90aa44ee7fef1b4e4",
+  "scope": {
+    "train_conditions": ["ACAT2"],
+    "validation_conditions": ["ACLY"],
+    "genes": 18080,
+    "epochs": 3,
+    "prediction_keys": ["ACLY"],
+    "final_test_expression_read": false
+  },
+  "artifact_transfer": {
+    "channel": "rjob download-logs, then SSH/SCP to local host",
+    "compressed_payload_bytes": 26487892,
+    "log_archive_bytes": 26663531,
+    "chunk_count": 17245,
+    "all_chunks_present": true,
+    "payload_sha256": "e0390813e5dce5389a6dc62555faa2f7a7803600567eefc93e730ed5d148b0f3"
+  },
+  "checkpoint": {
+    "local_ignored_directory": "models/vcc25/gears-h1-smoke-checkpoint-20261006-r2",
+    "model_file": "model.pt",
+    "model_bytes": 26101619,
+    "model_sha256": "794b02f35ea70d7f28fb111387c481e304a075a51972865fd9e284328e0c5296",
+    "config_file": "config.pkl",
+    "config_bytes": 9419553,
+    "config_sha256": "6f87882fa2b50c809b3df56e39a3a5931f6f8382ff6441bb75b0adfe264e8638",
+    "torch_load_verified": true,
+    "tensor_count": 84,
+    "tensor_elements": 6519403,
+    "gene_count_from_config": 18080,
+    "all_tensors_finite": true
+  },
+  "limitations": [
+    "One train and one validation condition only; this is a checkpoint persistence smoke, not expanded GEARS H1 training.",
+    "The checkpoint was trained for three epochs on the bounded GEARS smoke dataset.",
+    "The GPFS mount path is not readable across container and login-node namespaces; this bounded log export must not be treated as a scalable general artifact store.",
+    "No official VCC25 score or full H1 reproduction is claimed."
+  ],
+  "selection_feedback_allowed": false
+}
