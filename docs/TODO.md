@@ -37,8 +37,7 @@
 - 知识库基础卡片已通过校验：9 PaperCard、9 CodeCard、9 ModelCard，共 27 张；其中 PerturBench 作为基础设施条目保留，不是本轮正式复现对象。
 - 正式复现目标为 8 个方法。统一预检入口已覆盖 8 个目标；当前清单见 `knowledge/vcc25/evidence/paper-reproduction-status-20260930.json`：Lingshu 为 `partial`，GEARS、Linear、PRESAGE、PRiMeFlow、scGenePT、scLAMBDA 因远端 GitHub HTTPS 拉取超时而缺上游代码副本，STATE 因缺 checkpoint 暂为 `blocked`。
 - 远端 LoopRSI 的 `reproduce-papers` 入口已逐项读取 8 组 PaperCard、CodeCard、ModelCard，并在独立实验目录运行受限源码探测；8 张逐篇 EvidenceCard 与汇总见 `artifacts/remote-looprsi-paper-reproduction-20260930/`。Lingshu 为 `partial`，引用远端既有完整验证原始产物；其余 7 项因各自的 GitHub `git ls-remote` 在 15 秒内超时而为 `blocked`。没有运行其他方法的训练或推理，不能把这次源码尝试称为完整论文复现。
-- 用户已授权改为本机拉取官方源码并运行 LoopRSI 控制流程，仅在有可行实验时通过 SSH 使用远端 GPU。本机通过 GitHub API 和 codeload 固定取得 8 个官方仓库的提交及归档哈希；源码清单在 `work/vcc25-sources/manifest.json`（本机独立 Codex 工作目录）。本机 `reproduce-papers --source-manifest` 已核验 8 个归档与入口并生成独立 EvidenceCard：Lingshu 仍为 `partial`，其余 7 项仍为 `blocked`；7 个 Python 入口语法通过，线性基线的 R 入口因本机缺 `Rscript` 未通过。该检查不等于方法训练或推理复现，未提交 GPU job。
 - 此前 `codex exec` 的模型服务超时只说明可选 Codex 决策后端不可用，不能作为 LoopRSI 启动阻塞；旧启动尝试日志保留在 `knowledge/vcc25/evidence/remote-agent-start-attempt-20260930.json` 供审计。`knowledge_vcc25` 现有五层入口仍使用 `RecordingDecisionBackend`，其固定预检决策不是逐篇复现或自主候选选择。
 - Lingshu 已有 CUDA smoke 和完整训练/验证证据，但这不代表其他论文已完成复现。
 - 现有验证结果可以作为 EvidenceCard 证据，不以“两个指标同时提升”作为建立 ModelCard 的前置条件。
-- 下一步是在本机固定源码上接通方法专用的 H1 训练/推理执行和分层 Agent 对逐篇 EvidenceCard 的汇总选择；远端 GPU 只由本机经 SSH 向带 `_pool` 的 charged group 提交已核验可行的单卡作业。正式 `candidate_request` 尚未由 Agent 引用证据 `card_id` 生成；候选冻结、完整验证和唯一一次正式 VCC25 评测仍被门禁阻止。
+- 下一步是恢复远端官方源码的可达性，并接通方法专用的 H1 训练/推理执行和分层 Agent 对逐篇 EvidenceCard 的汇总选择。正式 `candidate_request` 尚未由 Agent 引用证据 `card_id` 生成；候选冻结、完整验证和唯一一次正式 VCC25 评测仍被门禁阻止。

@@ -215,10 +215,7 @@ def cmd_knowledge_preflight(args: argparse.Namespace) -> int:
 def cmd_reproduce_papers(args: argparse.Namespace) -> int:
     from .paper_reproduction import run_paper_reproduction
 
-    result = run_paper_reproduction(
-        Path(args.experiment_dir), Path(args.output),
-        source_manifest=Path(args.source_manifest) if args.source_manifest else None,
-    )
+    result = run_paper_reproduction(Path(args.experiment_dir), Path(args.output))
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
@@ -265,7 +262,6 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     reproduction.add_argument("--experiment-dir", required=True)
     reproduction.add_argument("--output", required=True)
-    reproduction.add_argument("--source-manifest")
     reproduction.set_defaults(func=cmd_reproduce_papers)
 
     args = p.parse_args(argv)
