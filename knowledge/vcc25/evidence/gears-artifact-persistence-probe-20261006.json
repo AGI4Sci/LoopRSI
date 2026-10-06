@@ -1,0 +1,12 @@
+{
+  "schema_version": "vcc25.artifact-persistence-probe/v1",
+  "recorded_at": "2026-10-06",
+  "job_id": "looprsi-gpfs-write-probe2-1006-86456123",
+  "job_status": "Succeeded",
+  "container_write_succeeded": true,
+  "container_output": "/mnt/shared-storage-gpfs2/beam-gpfs02/gaozhangyang/looprsi-l5-closure-20261006/gpu-write-probe-20261006.txt",
+  "login_node_visible_after_completion": false,
+  "artifact_channel": "rjob download-logs only exports logs; no generic workspace artifact download command was available",
+  "test_expression_read": false,
+  "conclusion": "Do not treat rjob container output or checkpoints as persisted until a verified cross-environment artifact channel is configured."
+}

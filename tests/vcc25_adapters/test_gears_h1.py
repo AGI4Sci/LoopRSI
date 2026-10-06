@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 from adapters.vcc25 import get_adapter
-from adapters.vcc25.gears_h1 import _has_one_cuda_device, _has_validation_controls, _prediction_perturbation, preflight
+from adapters.vcc25.gears_h1 import _has_one_cuda_device, _has_validation_controls, _positive_int, _prediction_perturbation, preflight
 from domain_knowledge import KnowledgeQuery, KnowledgeStore
 
 
@@ -92,6 +92,11 @@ class GearsH1Tests(unittest.TestCase):
         self.assertTrue(_has_one_cuda_device(torch))
         torch.cuda.device_count.return_value = 2
         self.assertFalse(_has_one_cuda_device(torch))
+
+    def test_training_epoch_count_must_be_positive(self):
+        self.assertEqual(_positive_int("5"), 5)
+        with self.assertRaisesRegex(argparse.ArgumentTypeError, "positive"):
+            _positive_int("0")
 
 
 if __name__ == "__main__":

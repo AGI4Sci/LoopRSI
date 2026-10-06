@@ -29,6 +29,13 @@ def _write(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return parsed
+
+
 def preflight(args: argparse.Namespace) -> dict:
     paths = {
         "source_repository": Path(args.source_repository).resolve(),
@@ -121,6 +128,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--gene-names", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--shard-dir")
+    parser.add_argument("--epochs", type=_positive_int, default=1)
     parser.add_argument("--compute-smoke-de", action="store_true")
     parser.add_argument("--official-go-csv")
     parser.add_argument("--preflight-only", action="store_true")
@@ -212,8 +220,9 @@ def main(argv: list[str] | None = None) -> int:
         }
     model = GEARS(pert_data, device="cuda:0")
     model.model_initialize(hidden_size=64)
-    model.train(epochs=1)
-    model.save_model(str(output / "model"))
+    model.train(epochs=args.epochs)
+    checkpoint_dir = output / "model"
+    model.save_model(str(checkpoint_dir))
     predictions = model.predict([
         _prediction_perturbation(condition)
         for condition in split["val"] if condition != "ctrl"
@@ -224,7 +233,8 @@ def main(argv: list[str] | None = None) -> int:
         "command": ["gears_h1", *(argv if argv is not None else sys.argv[1:])],
         "source_repository": str(source),
         "train_conditions": len(split["train"]), "validation_conditions": len(split["val"]),
-        "gene_count": len(expected_genes), "epochs": 1,
+        "gene_count": len(expected_genes), "epochs": args.epochs,
+        "checkpoint_dir": str(checkpoint_dir),
         "prediction_keys": sorted(predictions), "test_expression_read": False,
         "gpu_used": True, "official_score_claim": False,
     })
