@@ -1,0 +1,32 @@
+{
+  "schema_version": "vcc25.gears-expanded-checkpoint-attempt/v1",
+  "recorded_at": "2026-10-06",
+  "authority": "smoke_only",
+  "status": "prepared_but_not_submitted",
+  "scope": {
+    "train_conditions": ["ACAT2", "ACVR1B", "AKT2", "ANTXR1"],
+    "validation_conditions": ["ACLY", "ANXA6", "ARPC2", "CENPB"],
+    "cells_per_condition": 50,
+    "total_cells": 450,
+    "genes": 18080,
+    "epochs_requested": 3,
+    "final_test_expression_read": false
+  },
+  "remote_inputs": {
+    "dataset": "/data/looprsi-assets/gears/h1-expanded450-20261006/perturb_processed.h5ad",
+    "dataset_sha256": "recorded remotely; source is the bounded train/validation-only view",
+    "shards": "/data/looprsi-assets/gears/h1-expanded450-shards-20261006",
+    "shard_manifest_sha256": "recorded remotely; 9 shards, 450 cells"
+  },
+  "submission_attempts": [
+    {"job_name": "looprsi-gears-expanded-1006-210803-84336040", "status": "failed_before_job_creation", "error": "rjob packaging upload SSLEOFError"},
+    {"job_name": "looprsi-gears-expanded-1006-retry-38940290", "status": "failed_before_job_creation", "error": "rjob packaging upload SSLEOFError"},
+    {"job_name": "looprsi-gears-expanded450-1006-9711008", "status": "failed_before_job_creation", "error": "rjob packaging upload SSLEOFError"}
+  ],
+  "limitations": [
+    "No GPU training, checkpoint, metrics, or job ID was claimed because all attempts failed during rjob packaging upload.",
+    "This remains a bounded preparation/infrastructure failure record, not GEARS reproduction evidence.",
+    "The final test expression matrix was not read."
+  ],
+  "selection_feedback_allowed": false
+}

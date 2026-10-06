@@ -3,12 +3,17 @@
 import json
 import os
 import sys
+import argparse
 from pathlib import Path
 
 from probe_gears_import import main as install_and_check
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--epochs", type=int, default=3)
+    parser.add_argument("--checkpoint-log-limit-mib", type=int, default=32)
+    args = parser.parse_args()
     root = Path(__file__).resolve().parent
     install_and_check()
     sys.path.insert(0, str(root / "python_deps"))
@@ -25,9 +30,9 @@ def main() -> None:
         "--shard-dir", str(root / "shards"),
         "--compute-smoke-de",
         "--official-go-csv", str(root / "go_essential_all.csv"),
-        "--epochs", "3",
+        "--epochs", str(args.epochs),
         "--export-checkpoint-to-logs",
-        "--checkpoint-log-limit-mib", "32",
+        "--checkpoint-log-limit-mib", str(args.checkpoint_log_limit_mib),
         "--output", str(root / "output"),
     ])
     print(json.dumps({"runner_exit": result,
