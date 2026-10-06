@@ -35,8 +35,6 @@ PRiMeFlow、PRESAGE 和 scLAMBDA 的卡片在官方论文标识、仓库地址�
 
 静态资产齐全也不会把模型自动标成 `ready`。需要在批准的计算节点上，用公开训练数据小样本完成加载、推理、18,080 基因顺序及 NaN/Inf 检查，并把可审计证据写回 `smoke_evidence` 后，才能单独提升准备度。
 
-Lingshu 独立副本的两条件推理 smoke 已通过，证据见 `knowledge/vcc25/evidence/lingshu-v2-smoke-20260930.json`。它验证了输出内部基因顺序一致、形状和数值，但尚未与正式 VCC25 基因顺序逐项比对，也没有训练或完整验证，因此模型仍为 `adapter_required`，不产生 reward。
-
 ## 五层知识实验
 
 本地无 GPU 预检只验证 L1–L5 知识注入、结构化决策和 L5 编码请求，不训练模型，也不产生或比较分数：
