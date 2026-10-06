@@ -10,9 +10,8 @@
     "coding_request": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["candidate_variant", "allowed_paths", "hypothesis", "activation_diagnostics", "train_command", "validation_command", "expected_artifacts"],
+      "required": ["allowed_paths", "hypothesis", "activation_diagnostics", "train_command", "validation_command", "expected_artifacts"],
       "properties": {
-        "candidate_variant": {"type": "string", "enum": ["candidate_g_promoted_delta_model", "autonomous_research_candidate"]},
         "allowed_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
         "hypothesis": {"type": "string", "minLength": 1},
         "activation_diagnostics": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},

@@ -16,13 +16,11 @@ import argparse
 import json
 import os
 import sys
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from .experience import capacity_signal
 from .routing import build_routing_table
 from .layers import resolve_loop_range
-from .layer_agent import RecordingDecisionBackend
 
 
 # --------------------------------------------------------------------------- config loading
@@ -98,24 +96,13 @@ def cmd_dry_run(args: argparse.Namespace) -> int:
 def cmd_run(args: argparse.Namespace) -> int:
     from . import HierarchicalLoop
     from .vcc25_worker import Vcc25Worker
-    from .knowledge_worker import KnowledgeDrivenVcc25Worker
-    from .knowledge_bridge import KnowledgeBridge
-    from ai4ai.plugin_manifest import load_task_plugin_manifest
 
     cfg = load_config(args.config)
     if args.out:
         out = cfg.setdefault("out", {})
         out["dir"] = args.out
-    if args.worker == "knowledge_vcc25":
-        plugin_path = Path(__file__).resolve().parents[1] / "tasks" / "vcc25" / "task_plugin.yaml"
-        execution = Vcc25Worker(config=cfg)
-        worker = KnowledgeDrivenVcc25Worker(
-            KnowledgeBridge(load_task_plugin_manifest(plugin_path)),
-            RecordingDecisionBackend(), execution_worker=execution,
-        )
-    else:
-        worker = Vcc25Worker(config=cfg)
-    loop = HierarchicalLoop(cfg, worker)
+    worker_cls = Vcc25Worker if args.worker == "vcc25" else None
+    loop = HierarchicalLoop(cfg, worker_cls(config=cfg) if worker_cls else None)
     errors = loop.validate()
     if errors:
         for e in errors:
@@ -228,7 +215,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         sp.add_argument("--config", required=name in ("validate", "dry-run", "run", "rollout", "memory"))
         sp.add_argument("--out")
         if name == "run":
-            sp.add_argument("--worker", choices=("vcc25", "knowledge_vcc25"), default="vcc25")
+            sp.add_argument("--worker", choices=("vcc25",), default="vcc25")
         if name == "report":
             sp.add_argument("--manifest", required=True)
         if name == "rollout":

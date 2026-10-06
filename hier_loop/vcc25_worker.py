@@ -21,8 +21,7 @@ from .loop import LoopWorker, StepResult
 
 # Seed set accepted by the official_h1 run_trial adapter.
 VALID_SEEDS = (20260907, 20260908, 20260909)
-# Candidate variants accepted by the adapter. Selection is supplied by the L5
-# knowledge decision; these values are only the execution allowlist.
+# Candidate variants accepted by the adapter (candidate_g is the promoted one).
 VALID_VARIANTS = ("candidate_g_promoted_delta_model", "autonomous_research_candidate")
 
 
@@ -68,14 +67,7 @@ class Vcc25Worker(LoopWorker):
         empirical baseline prior.  Falls back to the deterministic schedule for
         the A arm / graceful no-memory path.
         """
-        decision = context.get("knowledge_decision") or {}
-        coding_request = decision.get("coding_request") if isinstance(decision, dict) else None
-        selected_variant = coding_request.get("candidate_variant") if isinstance(coding_request, dict) else None
-        require_knowledge = bool(((self.trial_defaults.get("require_knowledge_selection")) or
-                                  ((context.get("policy") or {}).get("require_knowledge_selection"))))
-        if require_knowledge and selected_variant not in VALID_VARIANTS:
-            raise ValueError("L5 knowledge decision must select an allowed candidate_variant")
-        variant = selected_variant or self.trial_defaults.get("candidate_variant", VALID_VARIANTS[0])
+        variant = self.trial_defaults.get("candidate_variant", VALID_VARIANTS[0])
         seed = VALID_SEEDS[self.seed_idx % len(VALID_SEEDS)]
         chosen_from = "default_schedule"
         tried = set(self._picked_seeds)
@@ -111,8 +103,6 @@ class Vcc25Worker(LoopWorker):
             "chosen_from": chosen_from,
             "memory_used": bool(context.get("memory_used")),
             "memory_hits": int(context.get("memory_hits") or 0) if context.get("memory_used") else 0,
-            "knowledge_selected": selected_variant is not None,
-            "knowledge_card_ids": list(context.get("knowledge_card_ids") or []),
         }
 
     def _next_untried_seed(self) -> int:
@@ -197,7 +187,7 @@ class Vcc25Worker(LoopWorker):
             "L2": "rank 18080 genes across 100 unseen H1 targets",
             "L3": "delta-model perturbation features transfer across targets",
             "L4": "promoted delta model with shared gene embedding head",
-            "L5": "knowledge-selected candidate variant with native_eval scoring",
+            "L5": "candidate_g_promoted_delta_model with native_eval scoring",
         }[layer]
         action = {
             "layer": layer, "step": step, "kind": "plan",

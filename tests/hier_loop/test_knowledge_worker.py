@@ -6,7 +6,6 @@ from pathlib import Path
 from ai4ai.plugin_manifest import load_task_plugin_manifest
 from hier_loop.knowledge_bridge import KnowledgeBridge
 from hier_loop.knowledge_worker import KnowledgeDrivenVcc25Worker
-from hier_loop.vcc25_worker import Vcc25Worker
 from hier_loop.layer_agent import (
     CodexJsonDecisionBackend,
     LayerDecisionError,
@@ -85,17 +84,6 @@ class KnowledgeWorkerTests(unittest.TestCase):
         worker = self.make_worker(_MalformedBackend())
         with self.assertRaises(LayerDecisionError):
             worker.step("L1", 0, 1, {"task_id": "vcc25"})
-
-    def test_l5_decision_is_forwarded_to_execution_worker(self):
-        execution = Vcc25Worker({"worker": {"mode": "offline", "trial_defaults": {"require_knowledge_selection": True}}})
-        worker = KnowledgeDrivenVcc25Worker(
-            KnowledgeBridge(MANIFEST), RecordingDecisionBackend(), execution_worker=execution
-        )
-        for step, layer in enumerate(("L1", "L2", "L3", "L4", "L5"), start=1):
-            result = worker.step(layer, 0, step, {"task_id": "vcc25"})
-        self.assertTrue(result.action["knowledge_selected"])
-        self.assertEqual(result.action["variant"], "autonomous_research_candidate")
-        self.assertTrue(result.action["knowledge"]["card_ids"])
 
     def test_codex_backend_is_ephemeral_read_only_and_parses_last_json_object(self):
         calls = []
