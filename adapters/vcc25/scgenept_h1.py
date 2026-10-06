@@ -86,12 +86,10 @@ def preflight(args: argparse.Namespace) -> dict:
                     (["train"] * 150 + ["val"] * 50),
                 ))
                 if any(
-                    label != assignments.get(condition)
-                    for condition, label in zip(conditions, splits) if condition != "ctrl"
+                    label != ("train" if condition == "ctrl" else assignments.get(condition))
+                    for condition, label in zip(conditions, splits)
                 ):
                     split_metadata_errors.append("cell-level split disagrees with fixed H1 targets")
-                if any(condition == "ctrl" and label != "train" for condition, label in zip(conditions, splits)):
-                    split_metadata_errors.append("validation controls would enter the scGenePT training graph cache")
         expected = {"ctrl"} | {
             gene + "+ctrl" for gene in split["train"] + split["val"]
         }
