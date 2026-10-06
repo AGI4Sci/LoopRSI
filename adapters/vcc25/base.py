@@ -7,7 +7,6 @@ from typing import Any, Mapping, Optional, Sequence, Tuple
 from ai4ai.plugin_protocols import CandidateExecutionRequest
 from domain_knowledge import KnowledgeCard
 from domain_knowledge.store import assert_safe_knowledge
-from .protocol import ReproductionContext, ReproductionEvidence
 
 
 @dataclass(frozen=True)
@@ -26,38 +25,6 @@ class VCC25ModelAdapter:
     allowed_environment = frozenset(
         {"CUDA_VISIBLE_DEVICES", "PYTHONPATH", "TOKENIZERS_PARALLELISM"}
     )
-
-    # A shared lifecycle makes new literature adapters predictable. The
-    # controller executes requests; adapters only validate and describe them.
-    reproduction_actions: Tuple[str, ...] = (
-        "check_assets", "prepare", "train", "predict", "convert_output"
-    )
-
-    def evidence_template(
-        self,
-        context: ReproductionContext,
-        status: str,
-        *,
-        code_revision: Optional[str] = None,
-        model_revision: Optional[str] = None,
-        commands: Sequence[Sequence[str]] = (),
-        data_scope: Optional[Mapping[str, Any]] = None,
-        metrics: Optional[Mapping[str, float]] = None,
-        limitations: Sequence[str] = (),
-    ) -> ReproductionEvidence:
-        """Create the standard EvidenceCard payload for this adapter."""
-        return ReproductionEvidence(
-            paper_id=context.paper_id,
-            model_id=context.model_id,
-            code_id=context.code_id,
-            status=status,
-            code_revision=code_revision,
-            model_revision=model_revision,
-            commands=tuple(tuple(str(part) for part in command) for command in commands),
-            data_scope=dict(data_scope or {}),
-            metrics=dict(metrics or {}),
-            limitations=tuple(str(item) for item in limitations),
-        )
 
     def check_assets(
         self,
