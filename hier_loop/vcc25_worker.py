@@ -15,7 +15,6 @@ from __future__ import annotations
 import json
 import os
 import subprocess
-import sys
 from typing import Any, Dict, List, Optional
 
 from .loop import LoopWorker, StepResult
@@ -154,7 +153,7 @@ class Vcc25Worker(LoopWorker):
         stem = f"hier_r{round_}_s{step}_{variant}_seed{seed}"
         output = os.path.join(self.result_root, f"{stem}.json")
         cmd = [
-            sys.executable, "-m", self.adapter_module, "run_trial",
+            "python", "-m", self.adapter_module, "run_trial",
             "--output", output,
             "--method", "candidate",
             "--candidate-variant", variant,
@@ -277,8 +276,8 @@ class Vcc25Worker(LoopWorker):
                 score=self._best_score,
                 metrics={self.metric: self._best_score if self._best_score is not None else 0.0},
                 cost={"seconds": 0.0},
-                context={"details": details, "raw_result": raw},
-                action={"variant": variant, "seed": seed, "kind": "real_trial", "raw_result": raw},
+                context={"details": details, "raw": raw},
+                action={"variant": variant, "seed": seed, "kind": "real_trial"},
                 detail=f"trial failed: {str(raw.get('error'))[:200]}",
             )
         metrics = raw.get("metrics") or {}
