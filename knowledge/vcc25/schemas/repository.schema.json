@@ -1,6 +1,0 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rsi.local/schemas/vcc25/repository.schema.json",
-  "allOf": [{"$ref": "card.schema.json"}],
-  "properties": {"asset_type": {"const": "repository"}, "official_url": {"type": "string", "format": "uri"}, "revision": {"type": "string"}}
-}

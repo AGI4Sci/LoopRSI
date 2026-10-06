@@ -1,31 +1,21 @@
-# ---------- 数据 / 训练产物 ----------
+# Generated / heavy artifacts (never push to GitHub)
 output/
 datasets/
-models/
-# Model weights stay ignored; these are small JSON knowledge cards only.
-!knowledge/vcc25/models/
-!knowledge/vcc25/models/*.json
-
-# ---------- 依赖与运行时（不提交） ----------
-.venv_embed/
-runtime_wheels/
-rjob_packages/
-Heuresis_PJLAB-boyue/
-
-# ---------- Python ----------
 __pycache__/
-*.py[cod]
-*.egg-info/
-.eggs/
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
-
-# ---------- 日志 / 临时文件 ----------
+*.pyc
+*.pyo
 *.log
-nohup.out
-*.tmp
+.rjobignore
 
-# ---------- 系统 / 编辑器 ----------
-.DS_Store
+# Cluster bootstrapped runtime deps (wheels + extracted site-packages)
+runtime_wheels/
+tasks/vcc25/implementation/runtime_py312/
+tasks/vcc25/implementation/runtime_deps/
+.venv_embed/
+.venv*/
+
+# Generated rjob package copies
+rjob_packages/
+
+# Embedding model binaries (weights). Provenance is in models/README.md.
+models/bge-small-zh-v1.5-onnx/onnx/

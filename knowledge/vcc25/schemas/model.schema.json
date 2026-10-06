@@ -1,7 +1,0 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rsi.local/schemas/vcc25/model.schema.json",
-  "allOf": [{"$ref": "card.schema.json"}],
-  "required": ["usage_mode", "execution_readiness", "artifacts", "licenses", "io_contract", "resource_profile", "vcc25_compatibility", "execution_recipe", "smoke_evidence"],
-  "properties": {"asset_type": {"const": "model"}, "execution_readiness": {"enum": ["ready", "adapter_required", "finetune_required", "train_required", "reference_only"]}, "artifacts": {"type": "array"}}
-}
