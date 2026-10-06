@@ -39,8 +39,6 @@ Lingshu 独立副本的两条件推理 smoke 已通过，证据见 `knowledge/vc
 
 三 seed、四变体的训练/验证子集实验也已运行，审计见 `knowledge/vcc25/evidence/autonomous-validation-subset-20260930.json`。每目标最多 8 行，尚无同契约 Lingshu 验证 baseline、正式 PCC 指标和冻结的候选哈希，所以该结果不能晋升候选，也不能开启最终评测。
 
-全量验证门禁见 `knowledge/vcc25/evidence/full-validation-gate-20260930.json`：GPU 任务在无 Python 进展后已停止，0 卡 CPU job 被公共资源池拒绝；因此没有把未完成的全量验证误记为通过，也没有启动最终评测。
-
 ## 五层知识实验
 
 本地无 GPU 预检只验证 L1–L5 知识注入、结构化决策和 L5 编码请求，不训练模型，也不产生或比较分数：
