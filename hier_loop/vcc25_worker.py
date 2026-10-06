@@ -16,9 +16,11 @@ import json
 import os
 import subprocess
 import sys
+import time
 from typing import Any, Dict, List, Optional
 
 from .loop import LoopWorker, StepResult
+from .validation_record import make_validation_record, write_validation_record
 
 # Seed set accepted by the official_h1 run_trial adapter.
 VALID_SEEDS = (20260907, 20260908, 20260909)
@@ -85,8 +87,15 @@ class Vcc25Worker(LoopWorker):
                 real_pool = [e for e in self.memory_manager.real_candidates(layer)
                              if e.seed in VALID_SEEDS and e.variant in VALID_VARIANTS
                              and e.variant is not None]
+                failed = {e.variant for e in real_pool if e.status == "failed"}
+                if variant in failed:
+                    alternatives = [item for item in VALID_VARIANTS if item not in failed]
+                    if alternatives:
+                        variant = alternatives[0]
+                        chosen_from = "memory:avoid_failed_variant"
                 real = [e for e in real_pool
-                        if int(e.seed) not in tried and float(e.reward or 0.0) >= 0.0]
+                        if e.status in (None, "passed") and e.variant not in failed
+                        and int(e.seed) not in tried and e.reward is not None and float(e.reward) >= 0.0]
                 if real:
                     best = real[0]
                     variant, seed = best.variant, int(best.seed)
@@ -124,16 +133,17 @@ class Vcc25Worker(LoopWorker):
         return VALID_SEEDS[self.seed_idx % len(VALID_SEEDS)]
 
     def _memorize_live(self, context: Dict[str, Any], variant: str, seed: int,
-                       score: Optional[float], status: str, round_: int, step: int) -> None:
+                       record: Dict[str, Any], round_: int, step: int) -> None:
         """Record a just-completed real native_eval trial into the memory so the
         next round can exploit/explore from observed outcomes (self-improvement).
         """
-        if self.memory_manager is None or status != "ok":
+        if self.memory_manager is None:
             return
         try:
             from .decisions import context_fingerprint, context_text
             from .memory import MemoryEntry
             fp = context.get("memory_fingerprint") or context_fingerprint(context)
+            score = record["metric_value"]
             reward = None if score is None else round(float(score) - self.memory_baseline, 6)
             entry = MemoryEntry(
                 layer="L5", context_fingerprint=fp,
@@ -142,7 +152,9 @@ class Vcc25Worker(LoopWorker):
                 variant=variant, seed=int(seed),
                 outcome_score=score, reward=reward,
                 metric_source="real", kind="step", round=round_, step=step,
-                reasoning=f"real native_eval round={round_} step={step} seed={seed} score={score}",
+                status=record["status"], wall_seconds=record["cost"]["wall_seconds"],
+                error=record["error"],
+                reasoning=f"real validation round={round_} step={step} seed={seed} status={record['status']} score={score}",
             )
             self.memory_manager.remember_live(entry)
         except Exception:
@@ -268,31 +280,38 @@ class Vcc25Worker(LoopWorker):
                 detail=f"mock vcc25 trial variant={variant} seed={seed}",
             )
 
+        started = time.monotonic()
         raw = self._run_real_trial(variant, seed, round_, step)
+        record = make_validation_record(
+            method="official_h1", variant=variant, seed=seed, raw=raw,
+            metric=self.metric, elapsed_seconds=time.monotonic() - started,
+            gpu_requested=1,
+        )
+        stem = f"hier_r{round_}_s{step}_{variant}_seed{seed}"
+        record_path = write_validation_record(self.result_root, stem, record)
+        self._memorize_live(context, variant, seed, record, round_, step)
         self.seed_idx += 1
-        if raw.get("status") != "ok":
+        if record["status"] != "passed":
             return StepResult(
                 layer="L5", round=round_, step=step, operator="tune",
                 status="failed",
-                score=self._best_score,
-                metrics={self.metric: self._best_score if self._best_score is not None else 0.0},
-                cost={"seconds": 0.0},
+                score=None, metrics={},
+                cost={"seconds": record["cost"]["wall_seconds"], "gpu": 1},
                 context={"details": details, "raw_result": raw},
-                action={"variant": variant, "seed": seed, "kind": "real_trial", "raw_result": raw},
-                detail=f"trial failed: {str(raw.get('error'))[:200]}",
+                action={**pick, "kind": "real_trial", "validation_record": str(record_path), "raw_result": raw},
+                detail=f"trial failed: {record['error'][:200]}",
             )
-        metrics = raw.get("metrics") or {}
-        score = float(metrics.get(self.metric, 0.0))
+        metrics = record["metrics"]
+        score = record["metric_value"]
         self._best_score = max(self._best_score or score, score)
-        self._memorize_live(context, variant, seed, score, "ok", round_, step)
         return StepResult(
             layer="L5", round=round_, step=step,
             operator="tune" if step > 1 else "implement",
             status="ok", score=score,
             metrics=dict(metrics),
-            cost={"seconds": float(raw.get("runtime_seconds") or 0.0), "gpu": 1},
+            cost={"seconds": record["cost"]["wall_seconds"], "gpu": 1},
             context={"details": details, "raw_result": str(raw.get("raw_result", ""))},
-            action={"variant": variant, "seed": seed, "kind": "real_trial"},
+            action={**pick, "kind": "real_trial", "validation_record": str(record_path)},
             detail=f"real vcc25 trial variant={variant} seed={seed} pearson_delta={score}",
         )
 

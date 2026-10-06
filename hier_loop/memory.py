@@ -53,6 +53,9 @@ class MemoryEntry:
     card_id: Optional[str] = None
     seed: Optional[int] = None
     metric_source: Optional[str] = None
+    status: Optional[str] = None
+    wall_seconds: Optional[float] = None
+    error: Optional[str] = None
     layer: Optional[str] = None
     round: Optional[int] = None
     step: Optional[int] = None
@@ -75,6 +78,9 @@ class MemoryEntry:
             "card_id": self.card_id,
             "seed": self.seed,
             "metric_source": self.metric_source,
+            "status": self.status,
+            "wall_seconds": self.wall_seconds,
+            "error": self.error,
             "round": self.round,
             "step": self.step,
             "kind": self.kind,
@@ -97,6 +103,9 @@ class MemoryEntry:
             card_id=raw.get("card_id"),
             seed=raw.get("seed"),
             metric_source=raw.get("metric_source"),
+            status=raw.get("status"),
+            wall_seconds=raw.get("wall_seconds"),
+            error=raw.get("error"),
             round=raw.get("round"),
             step=raw.get("step"),
             kind=raw.get("kind"),

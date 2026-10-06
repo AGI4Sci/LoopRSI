@@ -107,15 +107,18 @@ def cmd_run(args: argparse.Namespace) -> int:
         out = cfg.setdefault("out", {})
         out["dir"] = args.out
     if args.worker == "knowledge_vcc25":
+        from .memory import build_memory_manager
+        from .layer_agent import HistoricalDecisionBackend
         plugin_path = Path(__file__).resolve().parents[1] / "tasks" / "vcc25" / "task_plugin.yaml"
-        execution = Vcc25Worker(config=cfg)
+        memory = build_memory_manager(cfg, (cfg.get("decisions") or {}).get("dir", "output/rsi_step0/rollout"))
+        execution = Vcc25Worker(config=cfg, memory_manager=memory)
         worker = KnowledgeDrivenVcc25Worker(
             KnowledgeBridge(load_task_plugin_manifest(plugin_path)),
-            RecordingDecisionBackend(), execution_worker=execution,
+            HistoricalDecisionBackend(memory), execution_worker=execution,
         )
     else:
         worker = Vcc25Worker(config=cfg)
-    loop = HierarchicalLoop(cfg, worker)
+    loop = HierarchicalLoop(cfg, worker, memory_manager=memory if args.worker == "knowledge_vcc25" else None)
     errors = loop.validate()
     if errors:
         for e in errors:

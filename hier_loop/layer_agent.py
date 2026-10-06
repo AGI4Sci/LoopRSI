@@ -201,6 +201,36 @@ class RecordingDecisionBackend:
         return decisions[request.layer]
 
 
+class HistoricalDecisionBackend(RecordingDecisionBackend):
+    """Select an executable L5 variant from trusted real validation history."""
+
+    def __init__(self, memory_manager: Any) -> None:
+        super().__init__()
+        self.memory_manager = memory_manager
+
+    def decide(self, request: LayerDecisionRequest) -> Mapping[str, Any]:
+        decision = dict(super().decide(request))
+        if request.layer != "L5":
+            return decision
+        from .vcc25_worker import VALID_VARIANTS
+
+        history = [entry for entry in self.memory_manager.real_candidates("L5")
+                   if entry.variant in VALID_VARIANTS]
+        failed = {entry.variant for entry in history if entry.status == "failed"}
+        successes = [entry for entry in history if entry.status in (None, "passed")
+                     and entry.outcome_score is not None and entry.variant not in failed]
+        if len(failed) == len(VALID_VARIANTS):
+            raise LayerDecisionError("all executable L5 variants failed real validation")
+        selected = successes[0].variant if successes else next(
+            (variant for variant in VALID_VARIANTS if variant not in failed),
+            VALID_VARIANTS[0],
+        )
+        coding = dict(decision["coding_request"])
+        coding["candidate_variant"] = selected
+        decision["coding_request"] = coding
+        return decision
+
+
 def _parse_final_json_object(stdout: str) -> Mapping[str, Any]:
     decoder = json.JSONDecoder()
     candidates: list[Mapping[str, Any]] = []

@@ -20,6 +20,7 @@ class KnowledgeDrivenVcc25Worker(LoopWorker):
         self.backend = backend
         self._decisions: list[dict[str, Any]] = []
         self.execution_worker = execution_worker
+        self.mode = getattr(execution_worker, "mode", "offline")
 
     def step(self, layer: str, round_: int, step: int, context: Dict[str, Any]) -> StepResult:
         knowledge = self.bridge.inject(layer, context)
