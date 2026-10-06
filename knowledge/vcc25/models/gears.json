@@ -2,7 +2,7 @@
   "id": "kb:model:gears", "schema_version": "1.0", "asset_type": "model",
   "title": "GEARS training recipe", "summary_plain": "用 GEARS 官方实现从 H1 训练数据重新训练图神经网络，没有可直接使用的 H1 checkpoint。",
   "fit_reason": "提供和 Transformer 不同的强经典路线，适合验证基因图先验。",
-  "limitations": ["必须从头训练。", "当前仅完成小样本 GPU 训练 smoke；尚无完整 H1 checkpoint、持久化训练产物或正式验证结果。"],
+  "limitations": ["必须从头训练。", "统一入口当前只提供受控预检，尚无方法专用训练实现。"],
   "tags": ["gears", "graph-neural-network", "train", "baseline"], "layers": ["L4", "L5"],
   "sources": [{"url": "https://github.com/snap-stanford/GEARS", "kind": "official_repository"}, {"url": "https://www.nature.com/articles/s41587-023-01905-6", "kind": "paper"}],
   "relations": ["kb:paper:gears", "kb:repo:gears"],
@@ -12,7 +12,7 @@
   "licenses": {"code": "see upstream LICENSE", "weights": "not_applicable_until_trained"},
   "io_contract": {"input_format": "GEARS perturbation dataset", "gene_space": "built from H1 training genes", "output_type": "predicted expression"},
   "resource_profile": {"gpu_count": 1, "gpu_type": "H200 or compatible", "max_minutes": 180},
-  "vcc25_compatibility": {"level": "future_train_candidate", "gaps": ["full H1 training", "persistent checkpoint", "official validation"]},
+  "vcc25_compatibility": {"level": "future_train_candidate", "gaps": ["graph preparation", "adapter implementation", "training"]},
   "execution_recipe": {"adapter_id": "vcc25.gears", "actions": ["prepare", "train", "predict", "convert_output"]},
-  "smoke_evidence": [{"authority": "smoke_only", "status": "passed", "provenance": "independent_remote_gpu_job", "source_manifest": "knowledge/vcc25/evidence/gears-h1-gpu-smoke-20261005.json", "job_name": "looprsi-gears-smoke12-1005-56148272", "validated_gene_count": 18080, "metrics": null, "selection_feedback_allowed": false}]
+  "smoke_evidence": []
 }
