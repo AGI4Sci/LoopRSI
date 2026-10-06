@@ -35,7 +35,6 @@
 ## 当前已知状态
 
 - 知识库基础卡片已通过校验：9 PaperCard、9 CodeCard、9 ModelCard，共 27 张。
-- 第一轮逐篇入口预检已启动；当前清单见 `knowledge/vcc25/evidence/paper-reproduction-status-20260930.json`：Lingshu 为 `partial`，其余条目因适配器或运行资产缺口暂为 `blocked`。
 - Lingshu 已有 CUDA smoke 和完整训练/验证证据，但这不代表其他论文已完成复现。
 - 现有验证结果可以作为 EvidenceCard 证据，不以“两个指标同时提升”作为建立 ModelCard 的前置条件。
 - 在论文复现扫查、EvidenceCard 汇总和候选请求生成完成前，不得启动唯一一次正式 VCC25 评测。
