@@ -133,7 +133,6 @@ def build_features(args: argparse.Namespace, genes: list[str], all_targets: list
 
 def train_and_eval(args: argparse.Namespace, candidate: Candidate, seed: int, train: Any, val: Any, fmap: dict[str, np.ndarray], train_targets: list[str], batch_order: list[str], de_weights: np.ndarray | None) -> dict[str, Any]:
     t0=time.time()
-    device = torch.device(args.device)
     train_log, target_sum=normalize_log1p(train.x)
     val_log,_=normalize_log1p(val.x, target_sum)
     train_features, train_target_ids, train_batch_ids,_=encode_rows(train, [CONTROL]+train_targets, batch_order, fmap, False)
@@ -141,39 +140,26 @@ def train_and_eval(args: argparse.Namespace, candidate: Candidate, seed: int, tr
     baselines=control_baselines(train_log, train.target_names_per_row, train.batch_names_per_row, batch_order)
     baseline_pred=baselines[val_batch_ids]
     torch.manual_seed(seed); np.random.seed(seed)
-    if device.type == 'cuda':
-        torch.cuda.manual_seed_all(seed)
-    base=TargetFeatureCRPM(torch.from_numpy(baselines).to(device), int(train_features.shape[1]), args.rank, len(train_targets)+1, len(batch_order), False)
+    base=TargetFeatureCRPM(torch.from_numpy(baselines), int(train_features.shape[1]), args.rank, len(train_targets)+1, len(batch_order), False)
     model = AmplitudeAwareHead(base, args.rank) if candidate.head == 'amplitude_aware_anchored_softplus' else AnchoredSoftplusHead(base)
-    model.to(device)
     opt=torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     ds=TensorDataset(torch.from_numpy(train_log), torch.from_numpy(train_features), torch.from_numpy(train_target_ids), torch.from_numpy(train_batch_ids))
     loader=DataLoader(ds, batch_size=args.batch_size, shuffle=True, generator=torch.Generator().manual_seed(seed))
-    weight_tensor=torch.from_numpy(de_weights.astype(np.float32)).to(device) if de_weights is not None and candidate.loss == 'train_delta_de_weighted_mse' else None
+    weight_tensor=torch.from_numpy(de_weights.astype(np.float32)) if de_weights is not None and candidate.loss == 'train_delta_de_weighted_mse' else None
     losses=[]; steps=0
     while steps < args.max_steps:
         for y, feat, tid, bid in loader:
-            y, feat, tid, bid = (x.to(device, non_blocking=True) for x in (y, feat, tid, bid))
             opt.zero_grad(set_to_none=True)
             pred=model(feat,bid,tid,allow_id=False)
             err=(pred-y)**2
             loss=torch.mean(err * weight_tensor) if weight_tensor is not None else torch.mean(err)
             loss.backward(); opt.step()
-            losses.append(float(loss.detach().cpu())); steps+=1
+            losses.append(float(loss.detach())); steps+=1
             if steps >= args.max_steps:
                 break
     with torch.no_grad():
-        pred_chunks = []
-        for start in range(0, len(val_features), args.eval_batch_size):
-            end = min(start + args.eval_batch_size, len(val_features))
-            pred_chunks.append(model(
-                torch.from_numpy(val_features[start:end]).to(device),
-                torch.from_numpy(val_batch_ids[start:end]).to(device),
-                None,
-                allow_id=False,
-            ).detach().cpu().numpy().astype(np.float32))
-        pred=np.concatenate(pred_chunks, axis=0) if pred_chunks else np.empty_like(val_log)
-        cond=model.condition(torch.from_numpy(np.asarray([fmap[t] for t in sorted(set(val.target_names_per_row)-{CONTROL})], dtype=np.float32)).to(device), None, allow_id=False).detach().cpu().numpy()
+        pred=model(torch.from_numpy(val_features), torch.from_numpy(val_batch_ids), None, allow_id=False).numpy().astype(np.float32)
+        cond=model.condition(torch.from_numpy(np.asarray([fmap[t] for t in sorted(set(val.target_names_per_row)-{CONTROL})], dtype=np.float32)), None, allow_id=False).numpy()
     target_means=[]
     for target in sorted(set(val.target_names_per_row)-{CONTROL}):
         mask=np.asarray([t==target for t in val.target_names_per_row], dtype=bool)
@@ -182,7 +168,6 @@ def train_and_eval(args: argparse.Namespace, candidate: Candidate, seed: int, tr
     return {
         'candidate_id': candidate.candidate_id,
         'seed': seed,
-        'device': str(device),
         'runtime_seconds': time.time()-t0,
         'status':'pass' if np.isfinite(pred).all() and float(pred.min()) >= 0 else 'failed',
         'prediction_finite': bool(np.isfinite(pred).all()),
@@ -310,17 +295,10 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument('--rank', type=int, default=12)
     ap.add_argument('--max-steps', type=int, default=192)
     ap.add_argument('--batch-size', type=int, default=64)
-    ap.add_argument('--eval-batch-size', type=int, default=64)
-    ap.add_argument('--device', choices=('auto', 'cpu', 'cuda'), default='auto')
     ap.add_argument('--learning-rate', type=float, default=1e-3)
     ap.add_argument('--weight-decay', type=float, default=1e-4)
     ap.add_argument('--seeds', default='20260907,20260908,20260909')
-    args = ap.parse_args()
-    if args.device == 'auto':
-        args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    if args.device == 'cuda' and not torch.cuda.is_available():
-        ap.error('device=cuda requested but CUDA is unavailable')
-    return args
+    return ap.parse_args()
 
 
 def main() -> int:
