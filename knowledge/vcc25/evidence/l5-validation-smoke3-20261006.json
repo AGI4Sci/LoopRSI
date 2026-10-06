@@ -1,0 +1,72 @@
+{
+  "artifact_note": "Final summary captured from rjob logs; container GPFS output path is not visible on login node.",
+  "best_candidate_on_smoke": "candidate_a_hash_embedding_anchor",
+  "candidate_diagnostics": {
+    "candidate_a_hash_embedding_anchor": {
+      "de_direction_agreement_top5pct_max": 0.7407356194690266,
+      "de_direction_agreement_top5pct_mean": 0.7382466814159292,
+      "de_direction_agreement_top5pct_min": 0.7356194690265486,
+      "delta_correlation_max": 0.43154498257654933,
+      "delta_correlation_mean": 0.42934549611031203,
+      "delta_correlation_min": 0.42764299987473486,
+      "predicted_to_true_delta_l2_ratio_mean": 0.6711898558577297
+    },
+    "candidate_b_amplitude_aware_hash_embedding": {
+      "de_direction_agreement_top5pct_max": 0.7390071902654868,
+      "de_direction_agreement_top5pct_mean": 0.7363108407079646,
+      "de_direction_agreement_top5pct_min": 0.7338910398230087,
+      "delta_correlation_max": 0.42534099834230804,
+      "delta_correlation_mean": 0.42333275246510227,
+      "delta_correlation_min": 0.4213127365083846,
+      "predicted_to_true_delta_l2_ratio_mean": 0.7146069661209467
+    },
+    "candidate_c_de_weighted_hash_embedding": {
+      "de_direction_agreement_top5pct_max": 0.740666482300885,
+      "de_direction_agreement_top5pct_mean": 0.738292772861357,
+      "de_direction_agreement_top5pct_min": 0.7358960176991151,
+      "delta_correlation_max": 0.43142707350606696,
+      "delta_correlation_mean": 0.42911801126695,
+      "delta_correlation_min": 0.42720087943364154,
+      "predicted_to_true_delta_l2_ratio_mean": 0.6681817969278608
+    },
+    "candidate_d_amplitude_de_weighted_hash_embedding": {
+      "de_direction_agreement_top5pct_max": 0.7389380530973452,
+      "de_direction_agreement_top5pct_mean": 0.7363799778761062,
+      "de_direction_agreement_top5pct_min": 0.7339601769911505,
+      "delta_correlation_max": 0.4255305320039713,
+      "delta_correlation_mean": 0.42337671825316464,
+      "delta_correlation_min": 0.42111172529371776,
+      "predicted_to_true_delta_l2_ratio_mean": 0.7031834857374277
+    }
+  },
+  "data_contract": {
+    "gene_count": 18080,
+    "gene_order_preserved": true,
+    "split_disjointness": true,
+    "test_expression_read": false,
+    "test_targets_total": 100,
+    "train_targets_total": 150,
+    "validation_targets_total": 50
+  },
+  "evaluation_authority": "smoke_only",
+  "job_id": "looprsi-l5-val-smoke3-1006-35412162",
+  "job_status": "Succeeded",
+  "limitations": "Subset diagnostic only; no official H1 pearson_delta and no L5 reward-memory update.",
+  "official_h1_metric": null,
+  "recorded_at": "2026-10-06",
+  "schema_version": "vcc25.l5-smoke-evidence/v1",
+  "scope": {
+    "max_rows_per_target": 32,
+    "max_steps": 64,
+    "seeds": [
+      20260907,
+      20260908,
+      20260909
+    ],
+    "train_targets": 32,
+    "validation_targets": 16
+  },
+  "selection_feedback_allowed": false,
+  "source_commit": "387af34",
+  "source_sha256": "c3e3cee238c00e583eecbb126def291bce6856b4a7c308c13a1e128ceeff4c4d"
+}
