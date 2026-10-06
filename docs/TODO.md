@@ -36,8 +36,8 @@
 
 - 知识库基础卡片已通过校验：9 PaperCard、9 CodeCard、9 ModelCard，共 27 张；其中 PerturBench 作为基础设施条目保留，不是本轮正式复现对象。
 - 正式复现目标为 8 个方法。统一预检入口已覆盖 8 个目标；当前清单见 `knowledge/vcc25/evidence/paper-reproduction-status-20260930.json`：Lingshu 为 `partial`，GEARS、Linear、PRESAGE、PRiMeFlow、scGenePT、scLAMBDA 因远端 GitHub HTTPS 拉取超时而缺上游代码副本，STATE 因缺 checkpoint 暂为 `blocked`。
-- 远端 LoopRSI 的 `reproduce-papers` 入口已逐项读取 8 组 PaperCard、CodeCard、ModelCard，并在独立实验目录运行受限源码探测；8 张逐篇 EvidenceCard 与汇总见 `artifacts/remote-looprsi-paper-reproduction-20260930/`。Lingshu 为 `partial`，引用远端既有完整验证原始产物；其余 7 项因各自的 GitHub `git ls-remote` 在 15 秒内超时而为 `blocked`。没有运行其他方法的训练或推理，不能把这次源码尝试称为完整论文复现。
-- 此前 `codex exec` 的模型服务超时只说明可选 Codex 决策后端不可用，不能作为 LoopRSI 启动阻塞；旧启动尝试日志保留在 `knowledge/vcc25/evidence/remote-agent-start-attempt-20260930.json` 供审计。`knowledge_vcc25` 现有五层入口仍使用 `RecordingDecisionBackend`，其固定预检决策不是逐篇复现或自主候选选择。
+- 当前尚未启动由远端分层 LoopAgent 执行的逐篇复现任务。此前的本机源码下载尝试已按要求停止；临时下载未传远端、未用于实验，也不构成复现证据。
+- 远端 Agent 启动尝试已提交，但模型服务连接超时，尚未读卡或执行任何论文复现命令，0/8 张逐篇 EvidenceCard；见 `knowledge/vcc25/evidence/remote-agent-start-attempt-20260930.json`。这是 Agent 运行平台阻塞，不是 8 篇论文各自的复现失败。
 - Lingshu 已有 CUDA smoke 和完整训练/验证证据，但这不代表其他论文已完成复现。
 - 现有验证结果可以作为 EvidenceCard 证据，不以“两个指标同时提升”作为建立 ModelCard 的前置条件。
-- 下一步是恢复远端官方源码的可达性，并接通方法专用的 H1 训练/推理执行和分层 Agent 对逐篇 EvidenceCard 的汇总选择。正式 `candidate_request` 尚未由 Agent 引用证据 `card_id` 生成；候选冻结、完整验证和唯一一次正式 VCC25 评测仍被门禁阻止。
+- 在论文复现扫查、EvidenceCard 汇总和候选请求生成完成前，不得启动唯一一次正式 VCC25 评测。
