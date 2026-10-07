@@ -1,0 +1,43 @@
+{
+  "schema_version": "vcc25.primeflow-offline-import-gate-evidence/v1",
+  "recorded_at": "2026-10-07",
+  "authority": "environment_probe_only",
+  "namespace": "ailab-deepdivegzy",
+  "charged_group": "deepdivegzy_gpu_pool",
+  "gpu_count": 1,
+  "image": "registry.h.pjlab.org.cn/ailab-deepdivegzy-deepdivegzy_gpu/slime:v0",
+  "successful_job": "looprsi-primeflow-packaged-import-20261007-p-8cf9b",
+  "source_revisions": {
+    "primeflow": "443295258e364e394b60de27a861d8d1cf3b1fa6",
+    "perturbench": "c84038bc1ea409aa54f3832cfa6f34f5059adf0c"
+  },
+  "source_archive_sha256": {
+    "primeflow": "88e7f5f9a1772d3cfd14b2171ad1b34fe8bbb37c90cd3a21efc7067945654aeb",
+    "perturbench": "13fc14e2d2d81cf00ec8e47e0ce8c7dd029bc0b8287f4f768e60edc37f2ab38e"
+  },
+  "probe_sha256": "37a1b05dca7ad909735acf7a1038480cccf2d7729e3cc8e51e72345747934de1",
+  "offline_package": {
+    "wheel_count": 126,
+    "approximate_size": "383M",
+    "delivery": "rjob --folder packaging service",
+    "network_install_on_gpu": false
+  },
+  "imports": {
+    "torch": {"ok": true, "version": "2.9.1+cu129"},
+    "anndata": {"ok": true, "version": "0.13.4"},
+    "perturbench": {"ok": true},
+    "primeflow": {"ok": true},
+    "primeflow.modelcore.train": {"ok": true}
+  },
+  "diagnostic_attempts": [
+    {"job": "looprsi-primeflow-packaged-import-20261007-p-b3371", "result": "anndata imported; missing httpx2 remained"},
+    {"job": "looprsi-primeflow-packaged-import-20261007-p-2be8b", "result": "huggingface-hub version conflict identified"},
+    {"job": "looprsi-primeflow-packaged-import-20261007-p-e4e2c", "result": "MLflow dependency closure remained incomplete"},
+    {"job": "looprsi-primeflow-packaged-import-20261007-p-6fa7a", "result": "Scanpy dependency closure remained incomplete"}
+  ],
+  "expression_matrix_read": false,
+  "final_test_expression_read": false,
+  "training_or_inference_run": false,
+  "official_score_claim": false,
+  "conclusion": "The self-contained offline PRiMeFlow/PerturBench Python environment and training-module import path are verified in a one-GPU public-pool job. This removes the environment/import blocker only; no H1 data loading, training, inference, checkpoint, or metric evidence was produced."
+}
