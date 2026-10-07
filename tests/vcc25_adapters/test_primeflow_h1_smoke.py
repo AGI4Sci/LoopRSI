@@ -29,6 +29,9 @@ class PrimeFlowH1SmokeTests(unittest.TestCase):
         self.assertIn("test=False", command)
         self.assertIn("model.dynamics_model.gene_embedding_parquet_filepath=null", command)
         self.assertIn("model/lr_scheduler=cosine_annealing_warm_restarts", command)
+        self.assertIn("~model.lr_scheduler.conf.warmup_epochs", command)
+        self.assertIn("~model.lr_scheduler.conf.warmup_start_lr", command)
+        self.assertIn("~model.lr_scheduler.conf.eta_min", command)
         self.assertFalse(any("adata_Test" in item or "final_test" in item for item in command))
 
 

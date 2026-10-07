@@ -52,6 +52,9 @@ def build_train_command(data: Path, split: Path, genes: Path, output: Path) -> L
         # is incompatible with the pinned Lightning runtime.  Use the upstream
         # PerturBench scheduler backed directly by torch for this bounded smoke.
         "model/lr_scheduler=cosine_annealing_warm_restarts",
+        "~model.lr_scheduler.conf.warmup_epochs",
+        "~model.lr_scheduler.conf.warmup_start_lr",
+        "~model.lr_scheduler.conf.eta_min",
         "trainer.devices=1", "trainer.num_nodes=1", "trainer.strategy=auto",
         "trainer.min_epochs=1", "trainer.max_epochs=1",
         "+trainer.limit_train_batches=1", "+trainer.limit_val_batches=1",
