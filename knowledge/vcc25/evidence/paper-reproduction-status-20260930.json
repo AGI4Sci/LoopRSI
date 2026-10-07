@@ -2,6 +2,7 @@
   "schema_version": "vcc25.paper-reproduction-status/v1",
   "authority": "reproduction_preflight",
   "created_at": "2026-09-30T17:00:00+08:00",
+  "updated_at": "2026-10-07T18:00:00+08:00",
   "test_expression_read": false,
   "status_meaning": {
     "reproduced": "可重复运行并有结果证据",
@@ -10,16 +11,16 @@
     "reference_only": "仅保留参考资料，当前没有可执行入口"
   },
   "papers": [
-    {"paper_id": "kb:paper:gears", "model_id": "kb:model:gears", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:linear-baseline", "model_id": "kb:model:linear-pseudobulk", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:lingshu-cell", "model_id": "kb:model:lingshu-vcc-85m", "status": "partial", "reason": "CUDA smoke and streamed validation evidence exist; autonomous paper reproduction card not yet finalized"},
-    {"paper_id": "kb:paper:presage", "model_id": "kb:model:presage", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:primeflow", "model_id": "kb:model:primeflow", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:scgenept", "model_id": "kb:model:scgenept-go-all", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
-    {"paper_id": "kb:paper:sclambda", "model_id": "kb:model:sclambda", "status": "blocked", "reason": "unified VCC25 preflight adapter exists; upstream source checkout could not be fetched because remote GitHub HTTPS connection timed out"},
+    {"paper_id": "kb:paper:gears", "model_id": "kb:model:gears", "status": "partial", "reason": "bounded 4-train/4-validation, 450-cell, 3-epoch run succeeded; checkpoint roundtrip and independent GPU-container torch.load verification succeeded, but this is not full H1 or official VCC25 reproduction", "evidence": ["knowledge/vcc25/evidence/gears-expanded-checkpoint-roundtrip-20261007.json"]},
+    {"paper_id": "kb:paper:linear-baseline", "model_id": "kb:model:linear-pseudobulk", "status": "blocked", "reason": "no executable H1 entry is wired yet; local environment also lacks Rscript, so the Linear baseline cannot currently run end to end"},
+    {"paper_id": "kb:paper:lingshu-cell", "model_id": "kb:model:lingshu-vcc-85m", "status": "partial", "reason": "CUDA smoke plus constrained 150-train/50-validation, 3-seed validation evidence exist; this is not a full paper reproduction or official VCC25 evaluation", "evidence": ["knowledge/vcc25/evidence/lingshu-v2-smoke-20260930.json", "knowledge/vcc25/evidence/stream-cuda-full-validation-20260930.json"]},
+    {"paper_id": "kb:paper:presage", "model_id": "kb:model:presage", "status": "blocked", "reason": "no H1 smoke, training, or inference evidence is available yet"},
+    {"paper_id": "kb:paper:primeflow", "model_id": "kb:model:primeflow", "status": "blocked", "reason": "no H1 smoke, training, or inference evidence is available yet; PerturBench remains a supporting dependency only"},
+    {"paper_id": "kb:paper:scgenept", "model_id": "kb:model:scgenept-go-all", "status": "blocked", "reason": "no H1 smoke, training, or inference evidence is available yet"},
+    {"paper_id": "kb:paper:sclambda", "model_id": "kb:model:sclambda", "status": "blocked", "reason": "no H1 smoke, training, or inference evidence is available yet"},
     {"paper_id": "kb:paper:state", "model_id": "kb:model:state-st-hvg-replogle", "status": "blocked", "reason": "adapter exists but required checkpoint is missing"}
   ],
   "infrastructure_note": "PerturBench is retained as a supporting dependency for PRiMeFlow, not counted as one of the eight formal reproduction targets.",
   "preflight_runs": [{"date": "2026-09-30", "remote_source_fetch": "blocked", "reason": "GitHub HTTPS port 443 connection timed out from the development node; all clone processes were confirmed exited", "gpu_used": false}],
-  "next_step": "Fetch pinned upstream sources through an approved route into the independent experiment directory, then run method-specific CPU-safe preflight before requesting any GPU allocation."
+  "next_step": "Keep the GEARS and Lingshu results labeled partial; next wire the smallest executable H1 smoke for Linear or PRESAGE/PRiMeFlow, then perform candidate freezing and split audit before any unified validation or formal VCC25 final evaluation. Do not read final-test expression or claim official scores."
 }
