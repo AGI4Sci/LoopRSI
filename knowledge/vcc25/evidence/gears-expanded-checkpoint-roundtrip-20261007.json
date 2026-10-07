@@ -27,10 +27,10 @@
   "checkpoint": {
     "local_ignored_directory": "models/vcc25/gears-h1-expanded450b-run18-20261007",
     "model_file": "model.pt",
-    "model_bytes": 26101619,
+    "model_bytes": 25974899,
     "model_sha256": "0e95d586d2a96e94a69cb7799e1a7f863d2762fbbda4c3016f49a2153c3354bb",
     "config_file": "config.pkl",
-    "config_bytes": 3860337,
+    "config_bytes": 3841443,
     "config_sha256": "d61fa51c42074ccf96e0c6857426a0422678e3de96d5e9e39b41e967565d1c78",
     "payload_decompressed": true,
     "torch_load_verified": true,
