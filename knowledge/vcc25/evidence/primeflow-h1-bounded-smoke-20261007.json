@@ -1,0 +1,50 @@
+{
+  "schema_version": "vcc25.primeflow-h1-bounded-smoke/v1",
+  "recorded_at": "2026-10-07",
+  "authority": "bounded_partial",
+  "job": "looprsi-primeflow-h1-smoke-20261007-pool26-1-ba6a3",
+  "job_status": "Succeeded",
+  "namespace": "ailab-deepdivegzy",
+  "charged_group": "deepdivegzy_gpu_pool",
+  "gpu_count": 1,
+  "image": "registry.h.pjlab.org.cn/ailab-deepdivegzy-deepdivegzy_gpu/slime:v0",
+  "source_revisions": {
+    "primeflow": "443295258e364e394b60de27a861d8d1cf3b1fa6",
+    "perturbench": "c84038bc1ea409aa54f3832cfa6f34f5059adf0c"
+  },
+  "scope": {
+    "train_conditions": ["ACAT2", "ACVR1B", "AKT2", "ARID1A"],
+    "validation_conditions": ["ACAT2", "ACVR1B", "AKT2", "ARID1A"],
+    "train_cells": 48,
+    "validation_cells": 16,
+    "genes": 18080,
+    "epochs": 1,
+    "train_batches": 1,
+    "validation_batches": 1,
+    "batch_size": 8,
+    "validation_source": "deterministic_internal_split_of_official_training",
+    "official_validation_expression_read": false,
+    "final_test_expression_read": false
+  },
+  "execution": {
+    "returncode": 0,
+    "trainer_stop_reason": "max_epochs=1 reached",
+    "train_loss_observed": 44.628,
+    "validation_loss_observed": 66.603,
+    "official_score_claim": false
+  },
+  "compatibility_changes": [
+    "Installed the complete offline PRiMeFlow/PerturBench dependency closure without replacing the container Torch runtime.",
+    "Used PerturBench's torch-backed cosine annealing warm-restarts scheduler because the upstream linear-warmup scheduler imports an obsolete pl_bolts Lightning API.",
+    "Disabled the unavailable ESM2 parquet input so the model used its supported learned gene embedding path.",
+    "Used a deterministic train-derived validation split because PerturBench removes unseen official-validation perturbations and leaves that split empty."
+  ],
+  "limitations": [
+    "This is a bounded execution smoke, not full H1 training or paper reproduction.",
+    "The validation cells are held out from the selected official-training cells, not the official VCC25 validation perturbations.",
+    "The observed losses are smoke diagnostics and are not official VCC25 metrics.",
+    "No checkpoint or inference artifact was retained by this smoke.",
+    "No official validation or final-test expression matrix was read."
+  ],
+  "selection_feedback_allowed": false
+}
