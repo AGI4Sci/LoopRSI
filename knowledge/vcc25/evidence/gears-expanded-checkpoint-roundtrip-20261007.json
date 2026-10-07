@@ -4,6 +4,8 @@
   "authority": "bounded_partial",
   "training_job": "looprsi-gears-expanded450b-1007-run18-88051805",
   "training_job_status": "Succeeded",
+  "checkpoint_verification_job": "looprsi-gears-verify-expanded450b-run18-79504192",
+  "checkpoint_verification_status": "Succeeded",
   "repository_commit": "d122fc0",
   "scope": {
     "train_conditions": ["ACAT2", "ACVR1B", "AKT2", "ARID1A"],
@@ -25,17 +27,24 @@
   "checkpoint": {
     "local_ignored_directory": "models/vcc25/gears-h1-expanded450b-run18-20261007",
     "model_file": "model.pt",
+    "model_bytes": 26101619,
+    "model_sha256": "0e95d586d2a96e94a69cb7799e1a7f863d2762fbbda4c3016f49a2153c3354bb",
     "config_file": "config.pkl",
+    "config_bytes": 3860337,
+    "config_sha256": "d61fa51c42074ccf96e0c6857426a0422678e3de96d5e9e39b41e967565d1c78",
     "payload_decompressed": true,
-    "torch_load_verified": false,
-    "verification_note": "Local Python environment lacks torch; remote job completed runner_exit=0 but no separate load-verification job was run.",
+    "torch_load_verified": true,
+    "tensor_count": 84,
+    "tensor_elements": 6487723,
+    "gene_count_from_config": 18080,
+    "all_tensors_finite": true,
     "official_score_claim": false
   },
   "limitations": [
     "This is bounded 4-train/4-validation, 450-cell, 3-epoch validation; not full H1 reproduction.",
     "No final-test expression matrix was read.",
     "No official VCC25 score is claimed.",
-    "A separate torch load verification remains pending."
+    "Checkpoint was loaded and validated in a separate GPU-container verification job."
   ],
   "selection_feedback_allowed": false
 }
