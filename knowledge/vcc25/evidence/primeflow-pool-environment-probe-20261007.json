@@ -1,0 +1,42 @@
+{
+  "schema_version": "vcc25.primeflow-environment-probe-evidence/v1",
+  "recorded_at": "2026-10-07",
+  "authority": "environment_probe_only",
+  "namespace": "ailab-deepdivegzy",
+  "charged_group": "deepdivegzy_gpu_pool",
+  "gpu_count": 1,
+  "image": "registry.h.pjlab.org.cn/ailab-deepdivegzy-deepdivegzy_gpu/slime:v0",
+  "source_revision": "443295258e364e394b60de27a861d8d1cf3b1fa6",
+  "attempts": [
+    {
+      "job": "looprsi-primeflow-env-probe-20261007-pool1-3-11b41",
+      "status": "failed",
+      "reason": "submission invoked the Python probe through bash; no model or data execution occurred"
+    },
+    {
+      "job": "looprsi-primeflow-env-probe-20261007-pool2-8-75742",
+      "status": "succeeded",
+      "assets_visible": {"train": true, "validation": true},
+      "runtime_modules": {"torch": true, "anndata": false, "perturbench": false, "primeflow": false}
+    },
+    {
+      "requested_job": "looprsi-primeflow-runtime-probe-20261007-pool3",
+      "status": "rejected_before_creation",
+      "gpu_count": 0,
+      "reason": "the public GPU pool quota group does not allow zero-GPU jobs"
+    },
+    {
+      "job": "looprsi-primeflow-runtime-probe-20261007-poo-bc92e",
+      "status": "succeeded",
+      "gpu_count": 1,
+      "python_version": "3.12.3",
+      "torch_version": "2.9.1+cu129",
+      "assets_visible": {"train": true, "validation": true},
+      "runtime_modules": {"torch": true, "anndata": false, "perturbench": false, "primeflow": false}
+    }
+  ],
+  "expression_matrix_read": false,
+  "final_test_expression_read": false,
+  "official_score_claim": false,
+  "conclusion": "The SSH-to-rjob pool execution path, Python 3.12 compatibility, Torch/CUDA runtime, and H1 train/validation visibility are verified. The public GPU pool requires at least one GPU per submitted job. The current image still lacks anndata, PerturBench, and PRiMeFlow, so no H1 training or inference smoke has run."
+}
