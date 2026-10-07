@@ -22,11 +22,12 @@ PACKAGES = (
     "tqdm", "lightning", "torchvision==0.24.1", "tensorboard",
     "lightning-utilities", "torchmetrics", "pytorch-lightning", "fsspec", "filelock",
     "sympy", "jinja2",
-    "hydra-core", "hydra-colorlog", "matplotlib", "seaborn",
+    "hydra-core", "hydra-colorlog", "colorlog", "matplotlib", "seaborn",
     "scikit-learn", "scikit-misc", "adjusttext", "pytest", "rich",
     "psycopg2-binary", "optuna", "ray", "python-dotenv", "geomloss",
     "pytorch-metric-learning", "pdex", "cell-eval==0.6.1", "lightning-bolts",
-    "ema-pytorch", "jax==0.6.1", "ott-jax", "torchdyn", "setuptools==81.0.0",
+    "ema-pytorch", "torchdyn", "torchcde", "torchdiffeq", "torchsde", "trampoline",
+    "setuptools==81.0.0",
     "huggingface-hub==1.33.0",
     "sqlparse",
     "httpx2==2.13.1", "httpcore2==2.13.1", "anyio", "idna", "truststore", "h11",
@@ -45,6 +46,7 @@ def build_resolved_install_command(wheelhouse: Path, target: Path) -> List[str]:
         sys.executable, "-m", "pip", "install", "--no-index",
         "--find-links", str(wheelhouse), "--target", str(target),
         "mlflow-skinny==3.16.1", "scanpy==1.12.4",
+        "jax==0.6.1", "jaxlib==0.6.1", "ott-jax",
     ]
 
 
