@@ -261,7 +261,11 @@ def main(argv: list[str] | None = None) -> int:
         torch.empty((0,), dtype=torch.float32),
         size=(len(pert_data.gene_names), len(pert_data.gene_names)),
     )
-    model.model_initialize(hidden_size=64, G_coexpress=empty_coexpress)
+    model.model_initialize(
+        hidden_size=64,
+        G_coexpress=empty_coexpress,
+        G_coexpress_weight=empty_coexpress,
+    )
     model.train(epochs=args.epochs)
     checkpoint_dir = output / "model"
     model.save_model(str(checkpoint_dir))
