@@ -1,0 +1,41 @@
+{
+  "schema_version": "vcc25.gears-checkpoint-roundtrip/v1",
+  "recorded_at": "2026-10-07",
+  "authority": "bounded_partial",
+  "training_job": "looprsi-gears-expanded450b-1007-run18-88051805",
+  "training_job_status": "Succeeded",
+  "repository_commit": "d122fc0",
+  "scope": {
+    "train_conditions": ["ACAT2", "ACVR1B", "AKT2", "ARID1A"],
+    "validation_conditions": ["ACLY", "ANXA6", "ARPC2", "CENPB"],
+    "genes": 18080,
+    "cells": 450,
+    "epochs": 3,
+    "prediction_keys": ["ACLY", "ANXA6", "ARPC2", "CENPB"],
+    "final_test_expression_read": false
+  },
+  "artifact_transfer": {
+    "channel": "rjob download-logs, then SSH/SCP to local host",
+    "compressed_payload_bytes": 24804928,
+    "log_archive_bytes": 24987584,
+    "chunk_count": 16150,
+    "all_chunks_present": true,
+    "payload_sha256": "de56f64e438dd3cae151f70fd15cab017346e642d2a1b6d8f9ac21c561b209df"
+  },
+  "checkpoint": {
+    "local_ignored_directory": "models/vcc25/gears-h1-expanded450b-run18-20261007",
+    "model_file": "model.pt",
+    "config_file": "config.pkl",
+    "payload_decompressed": true,
+    "torch_load_verified": false,
+    "verification_note": "Local Python environment lacks torch; remote job completed runner_exit=0 but no separate load-verification job was run.",
+    "official_score_claim": false
+  },
+  "limitations": [
+    "This is bounded 4-train/4-validation, 450-cell, 3-epoch validation; not full H1 reproduction.",
+    "No final-test expression matrix was read.",
+    "No official VCC25 score is claimed.",
+    "A separate torch load verification remains pending."
+  ],
+  "selection_feedback_allowed": false
+}
