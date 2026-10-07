@@ -236,9 +236,12 @@ def main(argv: list[str] | None = None) -> int:
         pickle.dump({**gears_split, "test": []}, stream)
     pert_data = PertData(str(data_root), default_pert_graph=bool(args.official_go_csv))
     pert_data.load(data_path=str(dataset))
-    if isinstance(pert_data.gene_names, list):
-        import pandas as pd
-        pert_data.gene_names = pd.Series(pert_data.gene_names)
+    import pandas as pd
+    # The pinned GEARS loader can drop ``gene_name`` metadata when loading
+    # the locally prepared H1 graph cache.  Restore the reviewed full gene
+    # space explicitly so GEARS does not construct a zero-gene model.
+    pert_data.gene_names = pd.Series(expected_genes)
+    pert_data.node_map = {gene: index for index, gene in enumerate(expected_genes)}
     (data_root / pert_data.dataset_name).mkdir(parents=True, exist_ok=True)
     pert_data.prepare_split(split="custom", split_dict_path=str(output / "split.pkl"))
     pert_data.split = "no_test"
