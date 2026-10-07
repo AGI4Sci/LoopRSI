@@ -12,6 +12,7 @@ from .protocol import (
 )
 from .lingshu import LingshuAdapter
 from .perturbench import PerturBenchAdapter
+from .primeflow import PrimeFlowAdapter
 from .scgenept import ScGenePTAdapter
 from .state import StateAdapter
 
@@ -24,7 +25,7 @@ def get_adapter(adapter_id: str) -> VCC25ModelAdapter:
         "vcc25.gears": GEARSAdapter,
         "vcc25.linear": lambda: ExternalPaperAdapter("linear_baseline", "vcc25.linear"),
         "vcc25.presage": lambda: ExternalPaperAdapter("presage", "vcc25.presage"),
-        "vcc25.primeflow": lambda: ExternalPaperAdapter("primeflow", "vcc25.primeflow"),
+        "vcc25.primeflow": PrimeFlowAdapter,
         "vcc25.scgenept": ScGenePTAdapter,
         "vcc25.sclambda": lambda: ExternalPaperAdapter("sclambda", "vcc25.sclambda"),
     }

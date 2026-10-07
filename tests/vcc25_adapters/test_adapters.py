@@ -7,6 +7,7 @@ from unittest.mock import patch
 from adapters.vcc25 import get_adapter
 from adapters.vcc25.lingshu import LingshuAdapter
 from adapters.vcc25.perturbench import PerturBenchAdapter
+from adapters.vcc25.primeflow import PrimeFlowAdapter
 from adapters.vcc25.state import StateAdapter
 from domain_knowledge import KnowledgeQuery, KnowledgeStore
 
@@ -62,6 +63,7 @@ class AdapterTests(unittest.TestCase):
         self.assertIsInstance(get_adapter("vcc25.lingshu"), LingshuAdapter)
         self.assertIsInstance(get_adapter("vcc25.state"), StateAdapter)
         self.assertIsInstance(get_adapter("vcc25.perturbench"), PerturBenchAdapter)
+        self.assertIsInstance(get_adapter("vcc25.primeflow"), PrimeFlowAdapter)
         with self.assertRaisesRegex(ValueError, "unknown adapter"):
             get_adapter("vcc25.shell")
 
@@ -185,6 +187,54 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(perturbench.command[0], "train")
         self.assertIn("model=latent_additive", perturbench.command)
         self.assertIn("hydra.run.dir=" + str(self.output.resolve()), perturbench.command)
+
+        primeflow = PrimeFlowAdapter().prepare(
+            "train",
+            MODELS["kb:model:primeflow"],
+            self._context(
+                inputs={
+                    "training_data": str(self.input_path),
+                    "split_csv": str(self.root / "split.csv"),
+                    "gene_features": str(self.root / "genes.csv"),
+                },
+                resources={"gpu_count": 1, "max_minutes": 30},
+            ),
+        )
+        self.assertEqual(primeflow.command[0], "primeflow.train")
+        self.assertIn("trainer.devices=1", primeflow.command)
+        self.assertIn("trainer.num_nodes=1", primeflow.command)
+        self.assertIn("trainer.max_epochs=1", primeflow.command)
+        self.assertIn("trainer.limit_train_batches=2", primeflow.command)
+        self.assertIn("trainer.limit_val_batches=2", primeflow.command)
+        self.assertIn("hydra.run.dir=" + str(self.output.resolve()), primeflow.command)
+        self.assertFalse(any("test" in item.lower() for item in primeflow.required_inputs))
+
+    def test_primeflow_accepts_only_bounded_training_inputs(self):
+        adapter = PrimeFlowAdapter()
+        model = MODELS["kb:model:primeflow"]
+        context = self._context(
+            inputs={
+                "training_data": str(self.input_path),
+                "split_csv": str(self.root / "split.csv"),
+                "gene_features": str(self.root / "genes.csv"),
+            },
+            resources={"gpu_count": 1, "max_minutes": 30},
+        )
+        with self.assertRaisesRegex(ValueError, "action"):
+            adapter.prepare("predict", model, context)
+        with self.assertRaisesRegex(ValueError, "final-test"):
+            adapter.prepare(
+                "train",
+                model,
+                self._context(
+                    inputs={
+                        "training_data": str(self.root / "final_test" / "adata_Test.h5ad"),
+                        "split_csv": str(self.root / "split.csv"),
+                        "gene_features": str(self.root / "genes.csv"),
+                    },
+                    resources={"gpu_count": 1, "max_minutes": 30},
+                ),
+            )
 
     def test_adapter_accepts_only_its_declared_actions_and_matching_model(self):
         adapter = LingshuAdapter(repository_dir=self.repo)

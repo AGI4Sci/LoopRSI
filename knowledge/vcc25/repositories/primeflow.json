@@ -7,10 +7,10 @@
   "sources": [{"url": "https://github.com/altoslabs/primeflow", "kind": "official_repository"}],
   "relations": ["kb:paper:primeflow", "kb:model:primeflow", "kb:repo:perturbench"],
   "review_status": "approved", "review_basis": "provisional_initial_release",
-  "official_url": "https://github.com/altoslabs/primeflow", "revision": "main-unpinned-at-card-seed",
+  "official_url": "https://github.com/altoslabs/primeflow", "revision": "443295258e364e394b60de27a861d8d1cf3b1fa6",
   "maintenance_status": "public", "licenses": {"code": "see upstream LICENSE"},
   "install": "Use an isolated environment and pin a reviewed commit before execution.",
   "entrypoints": ["primeflow training configuration", "primeflow.predict", "primeflow.predict_chunk"],
   "io_contract": {"input": "H1 approved training split", "output": "predicted expression in official gene order"},
-  "vcc25_adaptation": ["confirm source", "pin revision", "implement adapter", "validate H1 output"]
+  "vcc25_adaptation": ["bounded single-GPU train adapter implemented", "run H1 train/validation smoke", "implement prediction adapter after training smoke", "validate H1 output"]
 }
