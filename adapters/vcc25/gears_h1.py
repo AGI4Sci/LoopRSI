@@ -256,15 +256,12 @@ def main(argv: list[str] | None = None) -> int:
             edge for edge in pert_data.edge_list
             if edge[0] in pert_data.node_map and edge[1] in pert_data.node_map
         ]
-    empty_coexpress = torch.sparse_coo_tensor(
-        torch.empty((2, 0), dtype=torch.long),
-        torch.empty((0,), dtype=torch.float32),
-        size=(len(pert_data.gene_names), len(pert_data.gene_names)),
-    )
+    empty_coexpress = torch.empty((2, 0), dtype=torch.long)
+    empty_coexpress_weight = torch.empty((0,), dtype=torch.float32)
     model.model_initialize(
         hidden_size=64,
         G_coexpress=empty_coexpress,
-        G_coexpress_weight=empty_coexpress,
+        G_coexpress_weight=empty_coexpress_weight,
     )
     model.train(epochs=args.epochs)
     checkpoint_dir = output / "model"
