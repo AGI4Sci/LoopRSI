@@ -220,13 +220,13 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(source))
     from gears import GEARS, PertData
 
-    if args.compute_smoke_de:
-        if adata.n_obs > 500 or not args.shard_dir:
-            raise ValueError("smoke DE preparation requires at most 500 cells and shards")
+    if args.shard_dir and adata.n_obs <= 500:
         from gears.data_utils import get_DE_genes, get_dropout_non_zero_genes
 
         prepared = output / "prepared_dataset"
         (prepared / "data_pyg").mkdir(parents=True, exist_ok=True)
+        # Keep the full H1 gene space; GEARS needs the uns metadata but its
+        # GO graph and checkpoint must remain aligned to all 18,080 genes.
         adata = get_dropout_non_zero_genes(get_DE_genes(adata, skip_calc_de=False))
         adata.write_h5ad(prepared / "perturb_processed.h5ad")
         shutil.copyfile(dataset / "data_pyg" / "cell_graphs.pkl", prepared / "data_pyg" / "cell_graphs.pkl")
@@ -251,7 +251,14 @@ def main(argv: list[str] | None = None) -> int:
     else:
         pert_data.get_dataloader(batch_size=32)
     model = GEARS(pert_data, device="cuda:0")
-    model.model_initialize(hidden_size=64)
+    if hasattr(pert_data, "edge_list"):
+        pert_data.edge_list = [
+            edge for edge in pert_data.edge_list
+            if edge[0] in pert_data.node_map and edge[1] in pert_data.node_map
+        ]
+    import scipy.sparse
+    empty_coexpress = scipy.sparse.csr_matrix((len(pert_data.gene_names), len(pert_data.gene_names)))
+    model.model_initialize(hidden_size=64, G_coexpress=empty_coexpress)
     model.train(epochs=args.epochs)
     checkpoint_dir = output / "model"
     model.save_model(str(checkpoint_dir))
