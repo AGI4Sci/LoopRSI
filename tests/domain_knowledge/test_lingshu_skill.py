@@ -108,6 +108,53 @@ class LingshuSkillTests(unittest.TestCase):
         self.assertTrue(any("competition_test" in error for error in result.errors))
         self.assertTrue(skill.validate_proposal({"model_id": "kb:model:lingshu-vcc-85m"}, context).passed)
 
+    def test_l5_default_budget_renders_at_least_four_model_candidates(self):
+        """L5 skill should return >=4 model candidates with the default budget."""
+        skill = LingshuModelDesignInsightSkill(KNOWLEDGE_ROOT)
+        fragment = skill.inject({"task_id": "vcc25", "layer": "L5"})
+        self.assertIsNotNone(fragment)
+        model_lines = [line for line in fragment.content.splitlines() if line.startswith("card_id: kb:model:")]
+        self.assertGreaterEqual(len(model_lines), 4)
+
+    def test_l5_ranking_is_not_alphabetical(self):
+        """Ranking must not fall back to alphabetical order when readiness ties."""
+        store = KnowledgeStore.from_directory(KNOWLEDGE_ROOT)
+        models = store.query(KnowledgeQuery(
+            task_id="vcc25", layer="L5", text="",
+            asset_types=("model",), max_results=100,
+        ))
+        # state-st-hvg-replogle and scgenept-go-all are both finetune_required.
+        # state has compat_level=finetune_candidate (rank 2),
+        # scgenept has compat_level=future_finetune_candidate (rank 4).
+        # So state must rank before scgenept despite "scgenept" < "state" alphabetically.
+        ids = [m.id for m in models]
+        state_idx = ids.index("kb:model:state-st-hvg-replogle")
+        scgenept_idx = ids.index("kb:model:scgenept-go-all")
+        self.assertLess(state_idx, scgenept_idx)
+
+    def test_smoke_evidence_ranks_gears_above_linear_pseudobulk(self):
+        """gears and linear-pseudobulk are both train_required, but gears has
+        2 passing smoke evidence entries while linear-pseudobulk has 0.
+        gears must rank higher."""
+        store = KnowledgeStore.from_directory(KNOWLEDGE_ROOT)
+        models = store.query(KnowledgeQuery(
+            task_id="vcc25", layer="L5", text="",
+            asset_types=("model",), max_results=100,
+        ))
+        ids = [m.id for m in models]
+        gears_idx = ids.index("kb:model:gears")
+        linear_idx = ids.index("kb:model:linear-pseudobulk")
+        self.assertLess(gears_idx, linear_idx)
+
+    def test_l5_first_model_is_always_lingshu(self):
+        """The highest-ranked model (lingshu-vcc-85m) must always be first."""
+        store = KnowledgeStore.from_directory(KNOWLEDGE_ROOT)
+        models = store.query(KnowledgeQuery(
+            task_id="vcc25", layer="L5", text="",
+            asset_types=("model",), max_results=100,
+        ))
+        self.assertEqual(models[0].id, "kb:model:lingshu-vcc-85m")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,6 @@ import json
 import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Sequence, Tuple
-
 from .cards import (
     KnowledgeCard,
     KnowledgeQuery,
@@ -74,6 +73,22 @@ READINESS_ORDER = {
     "reference_only": 4,
     None: 5,
 }
+
+# Compatibility level ordering: more task-compatible cards rank higher.
+COMPATIBILITY_ORDER = {
+    "direct_task_candidate": 0,
+    "existing_internal_route": 1,
+    "finetune_candidate": 2,
+    "trainable_candidate": 3,
+    "future_finetune_candidate": 4,
+    "future_train_candidate": 5,
+    "reference_only": 6,
+    None: 7,
+}
+
+# Weight applied to token-overlap scoring by field.  Title matches are
+# worth more than tags matches, which are worth more than summary matches.
+_OVERLAP_WEIGHTS = {"title": 3, "tags": 2, "summary": 1}
 
 
 def _error(path: Path, field: str, message: str) -> KnowledgeValidationError:
@@ -179,6 +194,52 @@ def _tokens(text: str) -> Tuple[str, ...]:
     return tuple(re.findall(r"[a-z0-9_+-]+|[\u4e00-\u9fff]+", text.lower()))
 
 
+def _weighted_overlap(query_tokens: set, card: KnowledgeCard) -> float:
+    """Weighted token-overlap score: title > tags > summary.
+
+    A match in the title is worth 3, tags 2, summary 1.  The total is
+    negated so that higher overlap sorts first in the ascending tuple key.
+    """
+    if not query_tokens:
+        return 0.0
+    title = card.title.lower()
+    tags = " ".join(card.tags).lower()
+    summary = card.summary_plain.lower()
+    score = 0.0
+    for token in query_tokens:
+        if token in title:
+            score += _OVERLAP_WEIGHTS["title"]
+        if token in tags:
+            score += _OVERLAP_WEIGHTS["tags"]
+        if token in summary:
+            score += _OVERLAP_WEIGHTS["summary"]
+    return -score
+
+
+def _smoke_evidence_score(card: KnowledgeCard) -> int:
+    """Count of passing smoke-evidence entries (0 for non-model cards)."""
+    if card.asset_type != "model":
+        return 0
+    evidence = card.get("smoke_evidence", ())
+    return sum(
+        1
+        for item in evidence
+        if isinstance(item, Mapping)
+        and item.get("status") == "passed"
+        and item.get("authority") != "infrastructure_probe"
+    )
+
+
+def _compatibility_rank(card: KnowledgeCard) -> int:
+    """Numerical rank for vcc25_compatibility.level (lower = more compatible)."""
+    if card.asset_type != "model":
+        return COMPATIBILITY_ORDER[None]
+    compat = card.get("vcc25_compatibility", {})
+    if not isinstance(compat, Mapping):
+        return COMPATIBILITY_ORDER[None]
+    return COMPATIBILITY_ORDER.get(compat.get("level"), COMPATIBILITY_ORDER[None])
+
+
 class KnowledgeStore:
     """An immutable view of a validated on-disk knowledge tree."""
 
@@ -264,8 +325,10 @@ class KnowledgeStore:
             ranked.append(
                 (
                     layer_rank,
-                    -overlap,
+                    _weighted_overlap(query_tokens, card),
                     READINESS_ORDER[card.execution_readiness],
+                    -_smoke_evidence_score(card),
+                    _compatibility_rank(card),
                     card.id,
                     card,
                 )

@@ -255,6 +255,24 @@ class KnowledgeWorkerTests(unittest.TestCase):
         self.assertTrue(forwarded["selected_repository_id"].startswith("kb:repo:"))
         self.assertGreaterEqual(len(forwarded["rejected_alternatives"]), 1)
 
+    def test_l5_rejected_alternatives_grew_with_expanded_candidates(self):
+        """With expanded L5 candidates, rejected_alternatives should have >=3 entries."""
+        worker = self.make_worker()
+        for step, layer in enumerate(("L1", "L2", "L3", "L4", "L5"), start=1):
+            result = worker.step(layer, 0, step, {"task_id": "vcc25"})
+        coding = result.action["decision"]["coding_request"]
+        self.assertGreaterEqual(len(coding["rejected_alternatives"]), 3)
+
+    def test_l5_candidate_profiles_count_matches_rendered_models(self):
+        """candidate_profiles in the prompt should have >=4 entries with expanded budget."""
+        worker = self.make_worker()
+        for step, layer in enumerate(("L1", "L2", "L3", "L4"), start=1):
+            worker.step(layer, 0, step, {"task_id": "vcc25"})
+        worker.step("L5", 0, 5, {"task_id": "vcc25"})
+        l5_request = worker.backend.requests[-1]
+        prompt_data = json.loads(l5_request.prompt)
+        self.assertGreaterEqual(len(prompt_data["candidate_profiles"]), 4)
+
 
 if __name__ == "__main__":
     unittest.main()
