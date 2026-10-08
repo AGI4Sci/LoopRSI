@@ -5,6 +5,7 @@ from pathlib import Path
 
 from hier_loop.cli import main as cli_main
 from hier_loop.knowledge_experiment import ExperimentGateError, KnowledgeExperiment
+from hier_loop.layer_agent import StructuredDecisionBackend
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -93,6 +94,17 @@ class KnowledgeExperimentTests(unittest.TestCase):
             manifest = json.loads((workspace / "run_manifest.json").read_text())
             self.assertEqual(manifest["decision_backend"], "RecordingDecisionBackend")
             self.assertEqual(manifest["phase"], "preflight")
+
+    def test_structured_backend_can_be_selected_from_config(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            config = Path(temporary) / "structured.json"
+            raw = json.loads(CONFIG.read_text())
+            raw["decision_backend"] = "structured"
+            config.write_text(json.dumps(raw), encoding="utf-8")
+            experiment = KnowledgeExperiment.from_config(
+                config, Path(temporary) / "preflight"
+            )
+            self.assertIsInstance(experiment.backend, StructuredDecisionBackend)
 
     def test_archived_copy_uses_configured_source_revision_without_git(self):
         with tempfile.TemporaryDirectory() as temporary:

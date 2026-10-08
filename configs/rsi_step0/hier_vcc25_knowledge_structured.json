@@ -1,0 +1,13 @@
+{
+  "schema_version": "vcc25-knowledge-experiment/v1",
+  "experiment_id": "vcc25-knowledge-hier-loop-structured-preflight",
+  "task_plugin": "tasks/vcc25/task_plugin.yaml",
+  "knowledge_root": "knowledge/vcc25",
+  "decision_backend": "structured",
+  "decision_model": "gpt-6-astra",
+  "decision_schema": "hier_loop/schemas/layer_decision.schema.json",
+  "layers": ["L1", "L2", "L3", "L4", "L5"],
+  "source_checkouts": [],
+  "first_experiment": {"max_candidates": 1, "max_repairs": 1, "final_official_budget": 1},
+  "evaluation": {"reward_authority": "search_validation", "final_authority": "final_official", "final_selection_feedback_allowed": false}
+}

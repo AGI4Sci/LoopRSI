@@ -12,7 +12,7 @@ from ai4ai.plugin_manifest import load_task_plugin_manifest
 from .evaluation_authority import EvaluationRecord, promotion_eligible
 from .knowledge_bridge import KnowledgeBridge
 from .knowledge_worker import KnowledgeDrivenVcc25Worker
-from .layer_agent import LayerDecisionBackend, RecordingDecisionBackend
+from .layer_agent import LayerDecisionBackend, RecordingDecisionBackend, StructuredDecisionBackend, SiliconFlowDecisionBackend
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -75,11 +75,30 @@ class KnowledgeExperiment:
             raise ExperimentGateError("experiment config must be an object")
         configured_backend = config.get("decision_backend", "recording")
         if backend is None:
-            if configured_backend != "recording":
-                raise ExperimentGateError(
-                    "local preflight supports decision_backend=recording unless a backend is supplied"
+            if configured_backend == "recording":
+                backend = RecordingDecisionBackend()
+            elif configured_backend in {"structured", "structured_json"}:
+                schema = config.get("decision_schema", "hier_loop/schemas/layer_decision.schema.json")
+                schema_path = (path.parent / str(schema)).resolve()
+                if not schema_path.is_file():
+                    schema_path = (REPOSITORY_ROOT / str(schema)).resolve()
+                backend = StructuredDecisionBackend(
+                    schema_path,
+                    model=str(config.get("decision_model", "gpt-5.6-sol")),
                 )
-            backend = RecordingDecisionBackend()
+            elif configured_backend == "siliconflow":
+                schema = config.get("decision_schema", "hier_loop/schemas/layer_decision.schema.json")
+                schema_path = (path.parent / str(schema)).resolve()
+                if not schema_path.is_file():
+                    schema_path = (REPOSITORY_ROOT / str(schema)).resolve()
+                backend = SiliconFlowDecisionBackend(
+                    schema_path,
+                    model=str(config.get("decision_model", "deepseek-ai/DeepSeek-V4-Flash")),
+                )
+            else:
+                raise ExperimentGateError(
+                    "unsupported decision_backend; expected recording, structured, or siliconflow"
+                )
         return cls(config, path, Path(workspace), backend)
 
     def _validate_workspace_boundary(self) -> None:

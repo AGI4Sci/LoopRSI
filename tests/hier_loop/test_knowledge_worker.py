@@ -11,6 +11,7 @@ from hier_loop.layer_agent import (
     CodexJsonDecisionBackend,
     LayerDecisionError,
     RecordingDecisionBackend,
+    StructuredDecisionBackend,
 )
 
 
@@ -108,7 +109,10 @@ class KnowledgeWorkerTests(unittest.TestCase):
                 "direction": "compare train-only priors",
                 "rationale": "tests a bounded source of signal",
             }
-            return subprocess.CompletedProcess(command, 0, "progress\n" + json.dumps(payload) + "\n", "")
+            Path(command[command.index("--output-last-message") + 1]).write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+            return subprocess.CompletedProcess(command, 0, "progress\n", "")
 
         recording = RecordingDecisionBackend()
         worker = self.make_worker(recording)
@@ -127,10 +131,16 @@ class KnowledgeWorkerTests(unittest.TestCase):
                 "--ephemeral",
                 "--ignore-user-config",
                 "--skip-git-repo-check",
+                "--model",
+                "gpt-5.6-sol",
+                "--config",
+                "model_reasoning_effort=low",
                 "--sandbox",
                 "read-only",
                 "--output-schema",
                 str(L1_SCHEMA),
+                "--output-last-message",
+                command[command.index("--output-last-message") + 1],
                 "-",
             ],
         )
@@ -142,6 +152,9 @@ class KnowledgeWorkerTests(unittest.TestCase):
         self.assertEqual(kwargs["input"], request.prompt)
         self.assertTrue(kwargs["capture_output"])
         self.assertTrue(kwargs["text"])
+
+    def test_structured_backend_is_provider_agnostic_alias(self):
+        self.assertIs(StructuredDecisionBackend, CodexJsonDecisionBackend)
 
 
 if __name__ == "__main__":

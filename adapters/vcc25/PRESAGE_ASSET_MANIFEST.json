@@ -1,0 +1,32 @@
+{
+  "schema_version": "vcc25.presage-assets/v1",
+  "repository": "https://github.com/Genentech/PRESAGE",
+  "revision": "2c7b231c60cf110c4aab0acf8ecd2c2b3268fffb",
+  "source_archive": {
+    "relative_path": "sources/PRESAGE-2c7b231c60cf110c4aab0acf8ecd2c2b3268fffb.tar.gz",
+    "url": "https://github.com/Genentech/PRESAGE/archive/2c7b231c60cf110c4aab0acf8ecd2c2b3268fffb.tar.gz",
+    "sha256": "d8dd07e875277d1cd119ca1775e2e01ab7d9cc32fd6f406c041546df2f0a20c3",
+    "status": "staged_local"
+  },
+  "wheelhouse": {
+    "relative_path": "presage-wheelhouse",
+    "python": "3.11",
+    "cuda": "12.1",
+    "pytorch": "2.2.0",
+    "required_top_level": [
+      "anndata==0.11.4",
+      "numpy==1.26.4",
+      "pandas==2.2.3",
+      "scipy==1.15.2",
+      "scanpy==1.10.4",
+      "pytorch-lightning==2.5.1.post0",
+      "torch-geometric==2.5.2"
+    ],
+    "status": "pending_packaging"
+  },
+  "execution": {
+    "requires": ["official_h1_training_expression", "charged_single_gpu_pool"],
+    "runner": "run_presage_h1_smoke.py",
+    "final_test_expression_read": false
+  }
+}

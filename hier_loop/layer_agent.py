@@ -3,6 +3,10 @@ from __future__ import annotations
 
 import json
 import subprocess
+import tempfile
+import os
+import urllib.request
+import urllib.error
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol
@@ -249,19 +253,26 @@ def _parse_final_json_object(stdout: str) -> Mapping[str, Any]:
     return candidates[-1]
 
 
-class CodexJsonDecisionBackend:
-    """Read-only Codex backend for L1-L4/L5 structured planning decisions."""
+class StructuredDecisionBackend:
+    """Provider-agnostic read-only backend for structured layer decisions.
+
+    The default transport is the local ``codex`` JSON CLI, but the class is
+    intentionally named after the contract rather than the provider. Tests
+    and deployments may inject another runner with the same subprocess shape.
+    """
 
     def __init__(
         self,
         schema_path: str | Path,
         *,
         runner: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
-        timeout_seconds: float = 600.0,
+        timeout_seconds: float = 60.0,
+        model: str = "gpt-5.6-sol",
     ) -> None:
         self.schema_path = Path(schema_path).resolve()
         self.runner = runner
         self.timeout_seconds = timeout_seconds
+        self.model = model
 
     def _schema_for_layer(self, layer: str) -> Path:
         suffix = ".schema.json"
@@ -281,22 +292,106 @@ class CodexJsonDecisionBackend:
             "--ephemeral",
             "--ignore-user-config",
             "--skip-git-repo-check",
+            "--model",
+            self.model,
+            "--config",
+            "model_reasoning_effort=low",
             "--sandbox",
             "read-only",
             "--output-schema",
             str(schema_path),
+            "--output-last-message",
+            "{output_file}",
             "-",
         ]
-        completed = self.runner(
-            command,
-            input=request.prompt,
-            capture_output=True,
-            text=True,
-            check=False,
-            timeout=self.timeout_seconds,
+        with tempfile.NamedTemporaryFile(prefix="looprsi-decision-", suffix=".json", delete=False) as output:
+            output_path = Path(output.name)
+        command[command.index("{output_file}")] = str(output_path)
+        try:
+            try:
+                completed = self.runner(
+                    command,
+                    input=request.prompt,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    timeout=self.timeout_seconds,
+                )
+            except subprocess.TimeoutExpired as exc:
+                raise LayerDecisionError(
+                    f"structured decision timed out after {self.timeout_seconds:g}s"
+                ) from exc
+            if completed.returncode != 0:
+                raise LayerDecisionError(
+                    "structured decision failed: " + str(completed.stderr or completed.stdout)[-2000:]
+                )
+            if output_path.is_file() and output_path.read_text(encoding="utf-8").strip():
+                return _parse_final_json_object(output_path.read_text(encoding="utf-8"))
+            return _parse_final_json_object(completed.stdout)
+        finally:
+            output_path.unlink(missing_ok=True)
+
+
+# Backward-compatible name for existing callers and serialized experiments.
+CodexJsonDecisionBackend = StructuredDecisionBackend
+
+
+class SiliconFlowDecisionBackend:
+    """Structured decision backend using SiliconFlow's OpenAI-compatible API."""
+
+    def __init__(self, schema_path: str | Path, *, api_key: str | None = None,
+                 model: str = "deepseek-ai/DeepSeek-V4-Flash", timeout_seconds: float = 60.0,
+                 endpoint: str = "https://api.siliconflow.cn/v1/chat/completions") -> None:
+        self.schema_path = Path(schema_path).resolve()
+        self.api_key = api_key or os.environ.get("SILICONFLOW_API_KEY")
+        self.model = model
+        self.timeout_seconds = timeout_seconds
+        self.endpoint = endpoint
+        if not self.api_key:
+            raise LayerDecisionError("SILICONFLOW_API_KEY is required for siliconflow backend")
+
+    def _schema_for_layer(self, layer: str) -> dict[str, Any]:
+        suffix = ".schema.json"
+        if not self.schema_path.name.endswith(suffix):
+            raise LayerDecisionError(f"schema must end with {suffix}: {self.schema_path}")
+        path = self.schema_path.with_name(
+            f"{self.schema_path.name[:-len(suffix)]}.{layer}{suffix}"
         )
-        if completed.returncode != 0:
-            raise LayerDecisionError(
-                "Codex decision failed: " + str(completed.stderr or completed.stdout)[-2000:]
-            )
-        return _parse_final_json_object(completed.stdout)
+        if not path.is_file():
+            raise LayerDecisionError(f"missing structured schema for {layer}: {path}")
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def decide(self, request: LayerDecisionRequest) -> Mapping[str, Any]:
+        payload = {
+            "model": self.model,
+            "messages": [
+                {"role": "system", "content": "Return only JSON matching the supplied schema. Do not invent scores."},
+                {"role": "user", "content": request.prompt},
+            ],
+            "stream": False,
+            "temperature": 0,
+            "max_tokens": 2048,
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {"name": f"layer_{request.layer.lower()}_decision", "schema": self._schema_for_layer(request.layer)},
+            },
+        }
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        http_request = urllib.request.Request(
+            self.endpoint, data=body,
+            headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(http_request, timeout=self.timeout_seconds) as response:
+                raw = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")[-1000:]
+            raise LayerDecisionError(f"SiliconFlow request failed ({exc.code}): {detail}") from exc
+        except (urllib.error.URLError, TimeoutError) as exc:
+            raise LayerDecisionError(f"SiliconFlow request failed: {exc}") from exc
+        try:
+            content = raw["choices"][0]["message"]["content"]
+            return json.loads(content) if isinstance(content, str) else content
+        except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
+            raise LayerDecisionError("SiliconFlow returned no valid structured decision") from exc

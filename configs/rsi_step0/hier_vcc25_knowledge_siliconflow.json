@@ -1,0 +1,12 @@
+{
+  "schema_version": "vcc25-knowledge-experiment/v1",
+  "experiment_id": "vcc25-knowledge-hier-loop-siliconflow-preflight",
+  "task_plugin": "tasks/vcc25/task_plugin.yaml",
+  "knowledge_root": "knowledge/vcc25",
+  "decision_backend": "siliconflow",
+  "decision_model": "deepseek-ai/DeepSeek-V4-Flash",
+  "decision_schema": "hier_loop/schemas/layer_decision.schema.json",
+  "layers": ["L1", "L2", "L3", "L4", "L5"],
+  "source_checkouts": [],
+  "evaluation": {"reward_authority": "search_validation", "final_authority": "final_official", "final_selection_feedback_allowed": false}
+}
