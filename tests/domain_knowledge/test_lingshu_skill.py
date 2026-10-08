@@ -62,7 +62,14 @@ class LingshuSkillTests(unittest.TestCase):
         self.assertIn("asset_type: model", fragment.content)
         self.assertIn("execution_readiness:", fragment.content)
         self.assertIn("adapter_id:", fragment.content)
-        self.assertEqual(fragment.source, "knowledge:vcc25:kb:repo:lingshu-cell,kb:model:lingshu-vcc-85m")
+        # L5 now injects multiple model candidates for autonomous selection.
+        # The highest-ranked model (lingshu-vcc-85m) must always be present.
+        self.assertIn("kb:model:lingshu-vcc-85m", fragment.source)
+        self.assertIn("kb:repo:lingshu-cell", fragment.source)
+        # At least two model candidates should be returned for comparison.
+        model_ids = [part for part in fragment.source.split(":") if part.startswith("kb:model")]
+        model_lines = [line for line in fragment.content.splitlines() if line.startswith("card_id: kb:model:")]
+        self.assertGreaterEqual(len(model_lines), 2)
 
     def test_l5_targeted_gears_uses_matching_repository(self):
         skill = LingshuModelDesignInsightSkill(KNOWLEDGE_ROOT)

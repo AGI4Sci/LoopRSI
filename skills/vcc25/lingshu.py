@@ -38,15 +38,18 @@ class _KnowledgeSkill:
         if len(self._asset_types) > 1:
             models = self._store.query(KnowledgeQuery(
                 task_id="vcc25", layer=str(context["layer"]), text=text,
-                asset_types=("model",), max_results=1,
+                asset_types=("model",), max_results=int(context.get("candidate_limit", 3)),
             ))
             repositories = self._store.query(KnowledgeQuery(
                 task_id="vcc25", layer=str(context["layer"]), text=text,
                 asset_types=("repository",), max_results=20,
             ))
-            model = models[0] if models else None
-            repository = next((card for card in repositories if model and model.id in card.relations), None)
-            cards = (repository, model) if repository and model else ()
+            cards = tuple(
+                card
+                for model in models
+                for card in repositories
+                if model.id in card.relations
+            ) + tuple(models)
         else:
             cards = self._store.query(
                 KnowledgeQuery(

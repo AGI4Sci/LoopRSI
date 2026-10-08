@@ -49,6 +49,10 @@ _FIELDS_BY_TYPE = {
 }
 
 _CODING_FIELDS = {
+    "selected_model_id",
+    "selected_repository_id",
+    "selection_reason",
+    "rejected_alternatives",
     "candidate_variant",
     "allowed_paths",
     "hypothesis",
@@ -94,7 +98,50 @@ def validate_layer_decision(layer: str, value: Mapping[str, Any]) -> dict[str, A
             raise LayerDecisionError(f"coding_request.{field} must be a non-empty string list")
     if not isinstance(coding.get("hypothesis"), str) or not coding["hypothesis"].strip():
         raise LayerDecisionError("coding_request.hypothesis must be a non-empty string")
+    for field in ("selected_model_id", "selected_repository_id", "selection_reason"):
+        if not isinstance(coding.get(field), str) or not coding[field].strip():
+            raise LayerDecisionError(f"coding_request.{field} must be a non-empty string")
+    rejected = coding.get("rejected_alternatives")
+    if not isinstance(rejected, list) or not all(isinstance(item, str) and item.strip() for item in rejected):
+        raise LayerDecisionError("coding_request.rejected_alternatives must be a string list")
     return decision
+
+
+def _extract_candidate_profiles(knowledge: KnowledgeInjection) -> list[dict[str, Any]]:
+    """Parse structured per-model comparison data from rendered knowledge content.
+
+    The L5 skill injects rendered card text.  We parse each model block to
+    extract the fields the decision agent needs for autonomous comparison:
+    card_id, execution_readiness, adapter_id, compatibility level, and
+    resource_profile summary.
+    """
+    profiles: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+    for line in knowledge.content.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("card_id: "):
+            card_id = stripped[len("card_id: "):].strip()
+            if card_id.startswith("kb:model:"):
+                if current is not None:
+                    profiles.append(current)
+                current = {"card_id": card_id}
+            else:
+                if current is not None:
+                    profiles.append(current)
+                current = None
+        elif current is not None:
+            if stripped.startswith("execution_readiness: "):
+                current["execution_readiness"] = stripped[len("execution_readiness: "):].strip()
+            elif stripped.startswith("adapter_id: "):
+                current["adapter_id"] = stripped[len("adapter_id: "):].strip()
+            elif stripped.startswith("compatibility: "):
+                current["compatibility"] = stripped[len("compatibility: "):].strip()
+            elif stripped.startswith("smoke_evidence: "):
+                evidence = stripped[len("smoke_evidence: "):].strip()
+                current.setdefault("evidence_summary", []).append(evidence)
+    if current is not None:
+        profiles.append(current)
+    return profiles
 
 
 def build_layer_prompt(
@@ -124,6 +171,16 @@ def build_layer_prompt(
         "prior_decisions": list(prior_decisions),
         "context": dict(context),
     }
+    if layer == "L5":
+        profiles = _extract_candidate_profiles(knowledge)
+        if profiles:
+            payload["candidate_profiles"] = profiles
+            payload["instruction"] = (
+                "Compare the supplied model candidates and select exactly one. "
+                "Populate selected_model_id, selected_repository_id, selection_reason, "
+                "and rejected_alternatives. Use only the supplied knowledge and prior "
+                "decisions. Do not invent evaluation scores or claim experimental results."
+            )
     return json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2, default=str)
 
 
@@ -133,6 +190,76 @@ class RecordingDecisionBackend:
     def __init__(self) -> None:
         self.requests: list[LayerDecisionRequest] = []
         self.prompts: list[str] = []
+
+    @staticmethod
+    def _extract_candidates(request: LayerDecisionRequest) -> tuple[list[str], list[str]]:
+        """Parse model and repository card IDs from the injected knowledge content.
+
+        Returns (model_ids, repository_ids) in the order they appear in the
+        knowledge fragment, mirroring the KnowledgeStore ranking.
+        """
+        model_ids: list[str] = []
+        repo_ids: list[str] = []
+        for line in request.knowledge.content.splitlines():
+            stripped = line.strip()
+            if not stripped.startswith("card_id: "):
+                continue
+            card_id = stripped[len("card_id: "):].strip()
+            if card_id.startswith("kb:model:"):
+                model_ids.append(card_id)
+            elif card_id.startswith("kb:repo:"):
+                repo_ids.append(card_id)
+        return model_ids, repo_ids
+
+    def _build_l5_coding_request(self, request: LayerDecisionRequest) -> dict[str, Any]:
+        """Build an L5 coding_request that reflects the injected candidates.
+
+        Selects the first-ranked model and its related repository from the
+        knowledge fragment, and populates rejected_alternatives with the
+        remaining model candidates so the decision is auditable.
+        """
+        model_ids, repo_ids = self._extract_candidates(request)
+        selected_model = model_ids[0] if model_ids else "kb:model:lingshu-vcc-85m"
+        selected_repo = repo_ids[0] if repo_ids else "kb:repo:lingshu-cell"
+        rejected = model_ids[1:] if len(model_ids) > 1 else []
+        return {
+            "selected_model_id": selected_model,
+            "selected_repository_id": selected_repo,
+            "selection_reason": (
+                "selected the highest-ranked task-compatible candidate "
+                "from the injected knowledge cards"
+            ),
+            "rejected_alternatives": rejected,
+            "candidate_variant": "autonomous_research_candidate",
+            "allowed_paths": ["crpm", "scripts", "tests"],
+            "hypothesis": "a train-only target prior improves same-contract validation PCC",
+            "activation_diagnostics": [
+                "prior_coverage",
+                "prediction_delta_norm",
+                "test_expression_not_read",
+            ],
+            "train_command": [
+                "python3",
+                "tasks/vcc25/implementation/official_h1_autonomous_research_loop.py",
+                "--output-dir",
+                "{smoke_output_dir}",
+                "--n-train-targets",
+                "8",
+                "--n-val-targets",
+                "4",
+            ],
+            "validation_command": [
+                "python3",
+                "tasks/vcc25/implementation/official_h1_autonomous_research_loop.py",
+                "--output-dir",
+                "{validation_output_dir}",
+            ],
+            "expected_artifacts": [
+                "proposal.json",
+                "lineage_summary.json",
+                "activation_diagnostics.json",
+            ],
+        }
 
     def decide(self, request: LayerDecisionRequest) -> Mapping[str, Any]:
         self.requests.append(request)
@@ -165,41 +292,7 @@ class RecordingDecisionBackend:
             "L5": {
                 "layer": "L5",
                 "decision_type": "coding_request",
-                "coding_request": {
-                    "candidate_variant": "autonomous_research_candidate",
-                    "allowed_paths": [
-                        "crpm",
-                        "scripts",
-                        "tests",
-                    ],
-                    "hypothesis": "a train-only target prior improves same-contract validation PCC",
-                    "activation_diagnostics": [
-                        "prior_coverage",
-                        "prediction_delta_norm",
-                        "test_expression_not_read",
-                    ],
-                    "train_command": [
-                        "python3",
-                        "tasks/vcc25/implementation/official_h1_autonomous_research_loop.py",
-                        "--output-dir",
-                        "{smoke_output_dir}",
-                        "--n-train-targets",
-                        "8",
-                        "--n-val-targets",
-                        "4",
-                    ],
-                    "validation_command": [
-                        "python3",
-                        "tasks/vcc25/implementation/official_h1_autonomous_research_loop.py",
-                        "--output-dir",
-                        "{validation_output_dir}",
-                    ],
-                    "expected_artifacts": [
-                        "proposal.json",
-                        "lineage_summary.json",
-                        "activation_diagnostics.json",
-                    ],
-                },
+                "coding_request": self._build_l5_coding_request(request),
             },
         }
         return decisions[request.layer]

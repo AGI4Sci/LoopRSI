@@ -12,6 +12,8 @@ from hier_loop.layer_agent import (
     LayerDecisionError,
     RecordingDecisionBackend,
     StructuredDecisionBackend,
+    build_layer_prompt,
+    validate_layer_decision,
 )
 
 
@@ -54,6 +56,13 @@ class KnowledgeWorkerTests(unittest.TestCase):
         self.assertTrue(coding["train_command"])
         self.assertTrue(coding["validation_command"])
         self.assertTrue(coding["expected_artifacts"])
+
+    def test_l5_includes_multiple_model_candidates_for_selection(self):
+        worker = self.make_worker()
+        result = worker.step("L5", 0, 1, {"task_id": "vcc25"})
+        content = result.action["knowledge"]["content"]
+        model_lines = [line for line in content.splitlines() if line.startswith("card_id: kb:model:")]
+        self.assertGreaterEqual(len(model_lines), 2)
 
     def test_every_action_contains_knowledge_provenance(self):
         worker = self.make_worker()
@@ -155,6 +164,96 @@ class KnowledgeWorkerTests(unittest.TestCase):
 
     def test_structured_backend_is_provider_agnostic_alias(self):
         self.assertIs(StructuredDecisionBackend, CodexJsonDecisionBackend)
+
+    # -- autonomous model selection tests ------------------------------------
+
+    def test_l5_prompt_contains_candidate_profiles(self):
+        """L5 prompt must include structured candidate_profiles for comparison."""
+        worker = self.make_worker()
+        worker.step("L1", 0, 1, {"task_id": "vcc25"})
+        worker.step("L2", 0, 2, {"task_id": "vcc25"})
+        worker.step("L3", 0, 3, {"task_id": "vcc25"})
+        worker.step("L4", 0, 4, {"task_id": "vcc25"})
+        result = worker.step("L5", 0, 5, {"task_id": "vcc25"})
+        prompt_text = result.action.get("knowledge", {}).get("content", "")
+        # The prompt is stored in backend.requests; verify it has candidate_profiles
+        backend = worker.backend
+        l5_request = backend.requests[-1]
+        prompt_data = json.loads(l5_request.prompt)
+        self.assertIn("candidate_profiles", prompt_data)
+        self.assertGreaterEqual(len(prompt_data["candidate_profiles"]), 2)
+        first = prompt_data["candidate_profiles"][0]
+        self.assertIn("card_id", first)
+        self.assertIn("execution_readiness", first)
+        self.assertIn("adapter_id", first)
+        self.assertIn("compatibility", first)
+
+    def test_l5_decision_populates_selected_model_and_rejected(self):
+        """RecordingDecisionBackend must populate selected_model_id and rejected_alternatives."""
+        worker = self.make_worker()
+        for step, layer in enumerate(("L1", "L2", "L3", "L4", "L5"), start=1):
+            result = worker.step(layer, 0, step, {"task_id": "vcc25"})
+        coding = result.action["decision"]["coding_request"]
+        self.assertTrue(coding["selected_model_id"].startswith("kb:model:"))
+        self.assertTrue(coding["selected_repository_id"].startswith("kb:repo:"))
+        self.assertTrue(coding["selection_reason"])
+        self.assertIsInstance(coding["rejected_alternatives"], list)
+        # Since we inject >=2 models, at least one should be rejected
+        self.assertGreaterEqual(len(coding["rejected_alternatives"]), 1)
+        for alt in coding["rejected_alternatives"]:
+            self.assertTrue(alt.startswith("kb:model:"))
+
+    def test_l5_selected_model_is_highest_ranked(self):
+        """The selected model must match the first model card in the knowledge content."""
+        worker = self.make_worker()
+        for step, layer in enumerate(("L1", "L2", "L3", "L4"), start=1):
+            worker.step(layer, 0, step, {"task_id": "vcc25"})
+        result = worker.step("L5", 0, 5, {"task_id": "vcc25"})
+        content = result.action["knowledge"]["content"]
+        model_lines = [line for line in content.splitlines() if line.startswith("card_id: kb:model:")]
+        first_model_id = model_lines[0][len("card_id: "):].strip()
+        coding = result.action["decision"]["coding_request"]
+        self.assertEqual(coding["selected_model_id"], first_model_id)
+
+    def test_l5_schema_requires_selection_fields(self):
+        """The L5 JSON schema must require selected_model_id and rejected_alternatives."""
+        schema_path = ROOT / "hier_loop" / "schemas" / "layer_decision.L5.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        required = schema["properties"]["coding_request"]["required"]
+        self.assertIn("selected_model_id", required)
+        self.assertIn("selected_repository_id", required)
+        self.assertIn("selection_reason", required)
+        self.assertIn("rejected_alternatives", required)
+
+    def test_validate_layer_decision_rejects_missing_selection_fields(self):
+        """validate_layer_decision must reject L5 decisions without selected_model_id."""
+        worker = self.make_worker()
+        for step, layer in enumerate(("L1", "L2", "L3", "L4"), start=1):
+            worker.step(layer, 0, step, {"task_id": "vcc25"})
+        result = worker.step("L5", 0, 5, {"task_id": "vcc25"})
+        coding = dict(result.action["decision"]["coding_request"])
+        del coding["selected_model_id"]
+        del coding["rejected_alternatives"]
+        bad_decision = {
+            "layer": "L5",
+            "decision_type": "coding_request",
+            "coding_request": coding,
+        }
+        with self.assertRaises(LayerDecisionError):
+            validate_layer_decision("L5", bad_decision)
+
+    def test_l5_decision_is_forwarded_with_selected_model_id(self):
+        """The execution worker must receive the selected_model_id in the forwarded decision."""
+        execution = Vcc25Worker({"worker": {"mode": "offline", "trial_defaults": {"require_knowledge_selection": True}}})
+        worker = KnowledgeDrivenVcc25Worker(
+            KnowledgeBridge(MANIFEST), RecordingDecisionBackend(), execution_worker=execution
+        )
+        for step, layer in enumerate(("L1", "L2", "L3", "L4", "L5"), start=1):
+            result = worker.step(layer, 0, step, {"task_id": "vcc25"})
+        forwarded = result.action["knowledge_decision"]["coding_request"]
+        self.assertTrue(forwarded["selected_model_id"].startswith("kb:model:"))
+        self.assertTrue(forwarded["selected_repository_id"].startswith("kb:repo:"))
+        self.assertGreaterEqual(len(forwarded["rejected_alternatives"]), 1)
 
 
 if __name__ == "__main__":
