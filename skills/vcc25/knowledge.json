@@ -1,0 +1,297 @@
+{
+  "benchmark": {
+    "internal_protocol": {
+      "comparable_to_official_h1": false,
+      "genes": 512,
+      "split": "heldout_guide"
+    },
+    "official_h1": {
+      "evaluator": "Cell-Eval 0.8.2",
+      "genes": 18080,
+      "heldout_targets": 100,
+      "output": "h5ad"
+    }
+  },
+  "bottleneck": "test-time available target biological information",
+  "candidate_f_failures": {
+    "amplitude_wrong_targets": 48,
+    "de_ranking_wrong_targets": 12,
+    "direction_wrong_targets": 40,
+    "median_delta_norm_ratio": 0.278,
+    "spearman_deg": -0.1552319059
+  },
+  "legal_information_sources": {
+    "gene_symbol_hash_index": "available_but_weak",
+    "lingshu_clue_csv": "available_but_not_mapped",
+    "lingshu_gene_embeddings": "available_300_of_300_but_no_stable_gain",
+    "new_validated_mechanism_source": "unavailable",
+    "official_split_metadata": "available_identity_only"
+  },
+  "references": {
+    "candidate_r_three_seed_ensemble_pearson_delta": 0.09667230970226229,
+    "candidate_g_three_seed_ensemble_pearson_delta": 0.0926758799981326,
+    "dtac_candidate_f_official_h1_pearson_delta": 0.0290700679,
+    "dtac_old_official_h1_pearson_delta": -0.001745,
+    "lingshu_local_confidence": "medium",
+    "lingshu_local_pearson_delta": 0.2480813158,
+    "lingshu_paper_pearson_delta": 0.306
+  },
+  "rejected_candidates": {
+    "candidate_p_genomewide_signature_transport": {
+      "external_artifact_sha256": "931fffd3dd03f548184fbff9a50e5ac1b0c43d33085005a1c103391c8eaddc4b",
+      "forbidden_claim": "Do not promote Candidate P or infer that target coverage alone improves H1; the signed DEG-set representation was nearly indistinguishable from shuffled controls.",
+      "gain_vs_shuffled_context": 0.0003599378913582,
+      "gain_vs_shuffled_target": 0.000334665133857,
+      "promotion_margin": -0.0070441373286747,
+      "promotion_reference": 0.608694,
+      "protocol": "vcc-h1-candidate-p-genomewide-signature-transport-v1",
+      "shuffled_context_delta_correlation": 0.6012899247799671,
+      "shuffled_target_delta_correlation": 0.6013151975374683,
+      "status": "rejected",
+      "target_coverage": 0.74,
+      "test_expression_used": false,
+      "validation_delta_correlation": 0.6016498626713253
+    },
+    "candidate_o_target_complete": {
+      "contexts": [
+        "Replogle K562 essential day6",
+        "Replogle RPE1 day7"
+      ],
+      "external_artifact_sha256": "0b6d03f27c7a36d814e4942c66b64375f6c4e55e03ecf9c8c904ab799efe81e5",
+      "forbidden_claim": "Do not promote candidate O or run official H1; same-target external responses beat both shuffled controls but failed the fixed nested gate at only 36 percent validation coverage.",
+      "gain_vs_shuffled_context": 0.0020433098878592,
+      "gain_vs_shuffled_target": 0.0021411528347832,
+      "information_policy": "vcc_official",
+      "promotion_margin": -0.0044998240066291,
+      "promotion_reference": 0.608694,
+      "protocol": "vcc-h1-candidate-o-target-complete-nested-gate-v1",
+      "shuffled_context_delta_correlation": 0.6021508661055117,
+      "shuffled_target_delta_correlation": 0.6020530231585877,
+      "status": "rejected",
+      "target_coverage": 0.36,
+      "test_expression_used": false,
+      "validation_delta_correlation": 0.6041941759933709
+    },
+    "candidate_n_multicontext": {
+      "contexts": [
+        "Replogle K562 essential day6",
+        "Replogle RPE1 day7"
+      ],
+      "external_artifact_sha256": "750227a8d6fb723cd53a7620781cb4d9ee13e384fc82b9015f72221b39ff3bed",
+      "forbidden_claim": "Do not promote candidate N or run official H1; its two-context shared encoder did not beat the fixed nested gate and was nearly indistinguishable from shuffled controls.",
+      "gain_vs_shuffled_context": 0.0000687876427724,
+      "gain_vs_shuffled_target": 0.0001951414964051,
+      "promotion_margin": -0.0045002161185345,
+      "promotion_reference": 0.608694,
+      "protocol": "vcc-h1-candidate-n-multicontext-nested-gate-v1",
+      "shuffled_context_delta_correlation": 0.6041249962386931,
+      "shuffled_target_delta_correlation": 0.6039986423850604,
+      "status": "rejected",
+      "test_expression_used": false,
+      "validation_delta_correlation": 0.6041937838814655
+    },
+    "candidate_cc_gat_full_gene": {
+      "forbidden_claim": "Do not promote candidate_cc_gat or tune it on official test expression; a new proposal must add information and pass multifold falsification.",
+      "promotion_margin": -0.10944446502775074,
+      "promotion_reference": 0.608694,
+      "proposal_sha256": "6403ba3bb3842d8192e698e5a675f189a45a2d2431e47bba13510754fb499d05",
+      "protocol": "vcc-h1-cc-gat-validation-v1",
+      "random_graph_delta_correlation": 0.4992429774985016,
+      "random_graph_margin": 6.557473747614839e-06,
+      "source_sha256": "ef85c35b165e888157bd4af981cb33a8c6ecb3ca5639e1a41e96f544f95eac31",
+      "status": "rejected",
+      "target_coverage": {
+        "test": "100/100",
+        "train": "150/150",
+        "validation": "50/50"
+      },
+      "test_expression_used": false,
+      "validation_delta_correlation": 0.4992495349722492
+    },
+    "candidate_h_multifold": {
+      "forbidden_claim": "Do not present candidate H as an official H1 improvement or rerun its selected configuration unchanged.",
+      "promotion_margin": -0.013398642032232067,
+      "promotion_reference": 0.608694,
+      "protocol": "vcc-h1-candidate-h-multifold-promotion-v1",
+      "status": "rejected",
+      "test_expression_used": false,
+      "validation_delta_correlation": 0.5952953579677679
+    },
+    "candidate_i_pathway_basis": {
+      "forbidden_claim": "Do not promote candidate I or run official H1; it did not beat the fixed multifold promotion reference.",
+      "go_target_coverage": 0.9767441860465116,
+      "promotion_margin": -0.007771185643908773,
+      "promotion_reference": 0.608694,
+      "protocol": "vcc-h1-candidate-i-pathway-basis-v1",
+      "shuffled_go_delta_correlation": 0.597395918768341,
+      "shuffled_go_margin": 0.0035268955877502117,
+      "source_sha256": "af1a14f83b1744156c9f28801e0143b57981db58e6d2ee562fd4d4fe1f58817c",
+      "status": "rejected",
+      "test_expression_used": false,
+      "validation_delta_correlation": 0.6009228143560912
+    },
+    "candidate_rndp_full_gene": {
+      "forbidden_claim": "Do not promote RNDP or tune it on official test expression; a new proposal must add information and pass multifold falsification.",
+      "promotion_margin": -0.018273125426691683,
+      "promotion_reference": 0.608694,
+      "proposal_sha256": "e16d601e35100e2e55e4dc2c8de73c1cade0a3aa61199510984c0eff3c41bbe0",
+      "protocol": "vcc-h1-rndp-validation-v1",
+      "random_graph_delta_correlation": 0.6018465499293557,
+      "random_graph_margin": -0.011425675356047438,
+      "source_sha256": "f1c1f82e9d81d9fec1e9730d6f97284e3a72f0447ff76b406be09d8dceddf9d3",
+      "status": "rejected",
+      "target_coverage": {
+        "test": "100/100",
+        "train": "150/150",
+        "validation": "50/50"
+      },
+      "test_expression_used": false,
+      "validation_delta_correlation": 0.5904208745733083
+    },
+    "candidate_rndp_round_0": {
+      "failure_category": "target_graph_identity_contract",
+      "forbidden_claim": "Do not promote RNDP until a legal full-gene target-node mapping passes validation.",
+      "reason": "held-out perturbation targets are not guaranteed to be nodes in the 512-gene prepared panel",
+      "status": "rejected",
+      "test_expression_used": false
+    }
+  },
+  "research_guidance": [
+    "do not compare internal 512-gene scores with official H1 scores",
+    "avoid repeating optimizer, amplitude, response-head, or local-interpolation families without new information",
+    "prioritize legal target biological information and unseen-target mechanism inference",
+    "require official H1 export and Cell-Eval before claiming Lingshu-aligned improvement",
+    "use multifold multi-seed validation and beat 0.608694 before spending an official H1 test run",
+    "seek new train-only unseen-target information or a materially different DE-ranking mechanism instead of replaying candidate H",
+    "graph candidates must prove complete perturbation-target node coverage before activation or official H1 execution",
+    "reject graph candidates that do not beat a degree-matched randomized-graph control",
+    "treat target-node coverage as a wiring prerequisite, not evidence that a graph is informative",
+    "prioritize target representations that add train-only biological information and validate across folds and seeds",
+    "measure delta amplitude, DE direction, and Pearson-Delta separately before official H1 execution",
+    "require the next proposal to use the immutable official-target GO-BP representation and report train, validation, and test target coverage",
+    "derive DEG ranking weights and direction objectives from training expression only and report their contribution separately",
+    "compare learned temperature-based neighborhoods against shuffled-context and degree-matched random controls",
+    "fit any global direction or amplitude calibration on validation only and freeze it before official test inference",
+    "require multifold by three-seed stability above 0.608694 before official H1 promotion",
+    "do not transfer K562 essential response deltas directly without a cell-context alignment mechanism; the exclusion-safe linear external basis was indistinguishable from shuffled target mapping",
+    "retain train-only cross-context anchors as a weakly informative component, but do not promote the tested 35-anchor linear or random-Fourier mappings without materially new context information",
+    "do not promote direct K562 plus RPE1 shared response encoding; candidate N gained less than 0.0002 over shuffled controls and retained substantial outer-fold instability",
+    "obtain a verified third cell context with useful shared perturbations and explicit cell-state covariates before further multi-context model tuning",
+    "same-target external K562 plus RPE1 responses are weakly informative, but candidate O covered only 36 percent of validation targets and remained 0.0044998240 below promotion; prioritize materially higher exact-target coverage or a transferable context-conditioned model",
+    "do not continue direct gene-wise same-target transport from K562 GWPS: candidate Q reached 94 percent validation coverage but gained less than 0.0015 over shuffled controls and remained 0.0071682623 below promotion; use response decomposition or a genuinely cell-state-conditioned model",
+    "after promotion, execute the complete 100-target by 18080-gene official H1 protocol and canonical Cell-Eval before making a benchmark claim"
+  ],
+  "schema_version": "vcc25-lingshu-knowledge/v2",
+  "source_provenance": {
+    "candidate_cc_gat_full_gene_validation": {
+      "job": null,
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_cc_gat_validation_20260913/local_seed_20260907.json",
+      "sha256": "ef85c35b165e888157bd4af981cb33a8c6ecb3ca5639e1a41e96f544f95eac31"
+    },
+    "cell_eval_commit": "6928cf8bd7a706040ccfd13119e4085726dee64a",
+    "hf_revision": "b77f980",
+    "lingshu_commit": "0cbde2feb6639f9411399794cf5e1c4831eb6c93",
+    "report_47": "Agent\u62a5\u544a/47-2026-09-09-VCC\u79d1\u5b66\u6536\u675f\u4e0eLingshu\u5bf9\u9f50\u8bc4\u4f30\u8fde\u7eed\u62a5\u544a.md",
+    "report_47_sha256": "ec766545391e54b3f6f656847dd6ad5e21515f315ec70e2bf5e23ba481723d9a",
+    "report_48": "Agent\u62a5\u544a/48-2026-09-09-VCC\u76ee\u6807\u4fe1\u606f\u5c31\u7eea\u5ba1\u8ba1\u4e0e\u81ea\u4e3b\u79d1\u7814\u72b6\u6001\u7cfb\u7edf\u5316\u62a5\u544a.md",
+    "report_48_sha256": "e1c5e41f0b53691cdb1c7056be52981282ca8b3fcd7fc0be50cea2b4af9d7d50",
+    "rndp_full_gene_validation": {
+      "job": "vcc-rndp-val-full-v3-20260913-73261827",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_rndp_validation_20260913/result.json",
+      "sha256": "f1c1f82e9d81d9fec1e9730d6f97284e3a72f0447ff76b406be09d8dceddf9d3"
+    },
+    "official_go_pca_multifold_validation": {
+      "job": "vcc-go-pca-multifold-20260913-v3-43650625",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_go_pca_multifold_20260913/result.json",
+      "sha256": "c4eafe1425cded4ae9fb0b880b93666fddde45d4cf3471157d28c0bac6d6e447"
+    },
+    "pathway_conditioned_delta_validation": {
+      "job": "vcc-pathway-delta-multifold-20260913-72373886",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_pathway_delta_multifold_20260913/result.json",
+      "sha256": "8320334bb12f39936d95cbc80c7be6cad6094b4a3d2470eee61d39fa4b7cfaf9"
+    },
+    "pathway_boundary_validation": {
+      "job": "vcc-pathway-boundary-final-20260913-36156454",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_pathway_boundary_final_20260913/result.json",
+      "sha256": "6921cff6128d73505fa8e5a5624e1ea14950706e11375e4a9a8eeb6c94018320"
+    },
+    "candidate_i_pathway_basis_validation": {
+      "job": "vcc-candidate-i-pathway-basis-20260913-18835550",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_i_pathway_basis_20260913/result.json",
+      "sha256": "af1a14f83b1744156c9f28801e0143b57981db58e6d2ee562fd4d4fe1f58817c"
+    },
+    "candidate_j_replogle_external_basis_validation": {
+      "job": "vcc-candidate-j-external-basis-v4-20260913-2-46143",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_j_external_20260913/result.json",
+      "sha256": "f4d0ca028c30dc2a1ff89e78b39a1effcb0e94d5b6af0e703560869b9cfe7125"
+    },
+    "candidate_k_context_alignment_validation": {
+      "job": "vcc-candidate-k-context-align-20260913-83871336",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_k_context_alignment_20260913/result.json",
+      "sha256": "ab94b6b21908db1544f92d4543ff56f126035df8c7ec3566c33e613a4f47ac33"
+    },
+    "candidate_l_nonlinear_response_validation": {
+      "job": "vcc-candidate-l-nonlinear-20260913-17814186",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_l_nonlinear_20260913/result.json",
+      "sha256": "7b339ae49c7056ae561a1a83050f7391828c6928184aac125858b0c2e2ce0a10"
+    },
+    "candidate_n_multicontext_nested_validation": {
+      "job": "vcc-candidate-n-multicontext-v2-20260913-55457660",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_n_multicontext_20260913/result.json",
+      "sha256": "c71dce0c3523be1460599299df6a48746397c340cdaa93b981815d7b600250c8"
+    },
+    "candidate_o_target_complete_nested_validation": {
+      "job": "vcc-candidate-o-target-complete-final-202609-fd3bf",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_o_target_complete_20260914/result.json",
+      "sha256": "acb517a4328a3f0e76c5d8998f510c66b255b2095568034910d53a82a7d778a2"
+    },
+    "candidate_p_genomewide_signature_validation": {
+      "job": "vcc-candidate-p-genomewide-validation-202609-75398",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_p_genomewide_20260914/result.json",
+      "sha256": "b0bdd54a3f16e0922b8ecbbc1fc6b046e7ee1a0b1656575ed2b167c88740f372"
+    },
+    "candidate_q_quantitative_gwps_validation": {
+      "artifact": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_q_quantitative_20260914/h1_official_replogle_gwps_quantitative_delta.npz",
+      "artifact_sha256": "d3202c7f7a35c701cb5c131be6afaa1c7cebe5b8cc29df163ef8b4b7b7d48812",
+      "job": "vcc-candidate-q-quant-gwps-20260914-5721069",
+      "result": "/mnt/shared-storage-gpfs2/beam-gpfs02/zhangzhicheng/naturebench/lingshu_cell_h1/runs/vcc25_candidate_q_quantitative_20260914/result.json",
+      "sha256": "124bafb9f32d193a16287401d7e590560f2bd73c7ed06cf234d98a0eefd5cbfd",
+      "source_sha256": "d3269d9c863d96555eba768b42ab330cc1b57493cd33b4ac8fe7fbab8278f104"
+    },
+    "candidate_r_decomposed_gwps_official": {
+      "validation_job": "vcc-candidate-r-decomp-gwps-20260914-38288583",
+      "official_job": "vcc-candidate-r-canonical-resume-20260914-98470554",
+      "ensemble_job": "vcc-candidate-r-ensemble-final-20260914-20270625",
+      "report": "tasks/vcc25/implementation/reports/official_h1_candidate_r_decomposed_gwps_20260914.json",
+      "validation_sha256": "5d77f6b9c3355488bd268c6371b9b574c12cdd4baa23fd209ce47a0b09b146d2",
+      "ensemble_prediction_sha256": "204a49388e1b701443bb9c58c2dde71cd0174d0982df4bbe3c6f6814bcec7f47",
+      "ensemble_aggregate_sha256": "4d9dcd64558eeb735b629e93f6214ca1276e2fb91c255aea57d5255c0d24f5d3"
+    }
+  },
+  "validated_findings": [
+    "train-derived dense global response basis carries transferable signal",
+    "current target-to-coefficient mappings are unstable for unseen targets",
+    "local interpolation and projection did not beat the dense basis",
+    "simple amplitude calibration and response-head changes did not solve DE-gene selection",
+    "gene embedding coverage does not establish sufficient mechanism information",
+    "candidate G three-seed ensembling improves official H1 Pearson-Delta to 0.0926758799981326",
+    "train-target-only PCA plus direction loss reached validation delta correlation 0.5952953579677679 but failed the 0.608694 promotion reference",
+    "the candidate H DE reliability gate selected gate_power=0, so this gate must not be promoted without new validation evidence",
+    "amplitude calibration changed validation MSE but did not provide a stable Pearson-Delta gain",
+    "full-gene RNDP reached validation delta correlation 0.5904208746, below random-graph control 0.6018465499 and promotion reference 0.608694",
+    "full-gene candidate_cc_gat reached validation delta correlation 0.4992495350, versus shuffled-context control 0.4992429775 and promotion reference 0.608694",
+    "official-target GO-BP covered 97.67% of targets but GO-PCA trailed non-GO PCA by 0.0005238938; simple GO feature concatenation failed the multifold promotion gate",
+    "pathway-conditioned delta transfer reached 0.5989443735, improving 0.0036490173 over embedding-only and 0.0026506684 over shuffled GO, but remained 0.0097496265 below the 0.608694 promotion reference",
+    "a single predeclared boundary extension reached 0.6057826299 at k=150, scale=1.5, and GO-only similarity, but remained 0.0029113701 below promotion; do not continue tuning this validation split",
+    "candidate I information-content GO pathway basis reached 0.6009228144 on new three-fold by three-seed validation, beating shuffled GO by 0.0035268956 but remaining 0.0077711856 below promotion",
+    "candidate I selected de_strength=0, so the tested train-only DE weighting did not improve the selected pathway-basis model",
+    "candidate J exclusion-safe Replogle K562 external basis reached 0.5982758052, only 0.0000445092 above shuffled external mapping and 0.0104181948 below promotion; direct cross-cell-line linear transfer is rejected",
+    "candidate K used 35 train-only shared perturbations for K562-to-H1 response-coordinate alignment and reached 0.6064472040, beating shuffled feature and context controls but remaining 0.0022467960 below promotion",
+    "candidate L fixed nonlinear random-Fourier response encoder reached 0.6056901851, below candidate K and 0.0030038149 below promotion; nonlinearity alone did not solve cross-context transfer",
+    "candidate N used exclusion-safe K562 and RPE1 contexts and reached nested multifold delta correlation 0.6041937839, only 0.0001951415 above shuffled targets and 0.0000687876 above shuffled contexts, remaining 0.0045002161 below promotion",
+    "candidate O used VCC-official same-target K562 and RPE1 responses for 36 percent of validation targets and reached 0.6041941760, beating shuffled-target by 0.0021411528 and shuffled-context by 0.0020433099 but remaining 0.0044998240 below promotion",
+    "candidate P increased exact validation target coverage to 74 percent using genome-wide signed DEG sets, but reached only 0.6016498627 and gained less than 0.00036 over either shuffled control; preserve quantitative pseudobulk magnitude before testing target-complete transport",
+    "candidate Q used quantitative K562 GWPS pseudobulk with 136 train anchors and 94 percent validation coverage, reached 0.6015257377, beat shuffled targets by 0.0014864474 and shuffled context by 0.0013372592, but remained 0.0071682623 below promotion; target coverage and magnitude preservation alone do not solve cell-context transfer",
+    "candidate R decomposed K562 GWPS response into context template and target residual, passed validation at 0.6125796297, and improved official H1 three-seed ensemble Pearson-Delta from 0.0926758800 to 0.0966723097; the 4.31 percent relative gain is real but remains far below Lingshu local 0.2480813158"
+  ]
+}

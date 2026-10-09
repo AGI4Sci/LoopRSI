@@ -1,0 +1,307 @@
+{
+  "db_pcpd_postmortem": {
+    "alignment": {
+      "classifier_free_guidance": "no",
+      "external_graph_prior": "proposed but unsupported in executable approximation",
+      "masked_discrete_generation": "no",
+      "raw_count_tokenization": "no",
+      "sampling_time_biological_prior": "no",
+      "target_specific_conditioning": "partial",
+      "whole_transcriptome": "yes for output space"
+    },
+    "lesson": "The proposal borrowed broad biological-structure language but did not transfer the coupled Lingshu generative mechanism. Future proposals need mechanism-alignment scoring before selection.",
+    "observed_candidate": "DB-PCPD graph-conditioned delta candidate",
+    "result": {
+      "pearson_delta": 0.04218323697336018
+    }
+  },
+  "example_research_questions": [
+    "Can a condition-aware generative model better use target-to-gene priors than the current deterministic backbone?",
+    "Does classifier-free guidance improve perturbation signal after a clean target-specific prior is available?",
+    "Can the model separately represent H1 global context and target-specific residual?"
+  ],
+  "historical_evidence": {
+    "autonomous_skill_v1": "DB-PCPD-inspired graph-delta candidate reached Pearson-Delta 0.042183; broad biological-structure wording was insufficient to transfer Lingshu mechanisms.",
+    "autonomous_skill_v2": "Minimal masked-generative candidate reached Pearson-Delta 0.0000699; surface-level raw token, mask, condition, and CFG mechanisms did not create target-specific perturbation learning.",
+    "autonomous_skill_v6_gfect": {
+      "candidate": "standalone GFECT effect-signature transport",
+      "failure_lesson": "The main official trial used shuffled_target_control=true, so it evaluated a negative-control behavior rather than the primary learned target-to-effect mechanism.",
+      "finding": "GFECT improved over prior autonomous Lingshu-skill candidates but remains far below Lingshu reference.",
+      "next_implication": "Separate primary candidate from falsification controls; do not merely tune GFECT scalars; consider stronger target-to-gene signal, perturbation-conditioned objective, gene-position conditioning, generation/sampling, or model-family change.",
+      "pearson_delta": 0.06674556678161025,
+      "proximity_target": 0.192,
+      "reference_pearson_delta": 0.24,
+      "status": "best_autonomous_so_far_but_far_from_reference"
+    },
+    "autonomous_skill_v7_ps_de_vae": {
+      "candidate": "standalone PS-DE-VAE control-regulatory-profile model",
+      "failure_lesson": "Control-only regulatory profiles describe baseline co-expression, not intervention-aware target-to-gene perturbation effects. Model sophistication cannot compensate for missing target-specific perturbation signal.",
+      "finding": "A richer VAE/contrastive/FiLM/gene-position decoder did not improve when its target-specific signal came only from control-derived co-expression/regulatory profiles.",
+      "next_implication": "Avoid another control-coexpression or PS-DE-VAE dimensional tweak; choose a materially different direction or add a genuinely intervention-aware target-to-gene signal and objective.",
+      "pearson_delta": -0.0003576368337962776,
+      "proximity_target": 0.192,
+      "reference_pearson_delta": 0.24,
+      "status": "official_run_completed_far_below_reference"
+    },
+    "binary_lingshu_clue": "failed as isolated component ablation only",
+    "cm4ai_direction": "highest-priority provenance-safe target-to-gene prior pending controlled validation",
+    "current_reliable_representation": "150-target H1 global prior + small external GWPS residual correction",
+    "external_gwps_residual": "weak_secondary_correction",
+    "global_context": "supported",
+    "simple_distribution_statistics": "rejected",
+    "target_specific_response": "main_remaining_bottleneck"
+  },
+  "insights": [
+    {
+      "idea": "Perturbation-conditioned generation",
+      "minimal_experiment": "Compare a small condition-aware generative objective with deterministic pseudobulk prediction under the same VCC25 validation protocol.",
+      "risks": "May overfit weak target identity signals; needs strict split and leakage controls.",
+      "solves": "Allows full expression profiles to be generated under explicit perturbation conditions.",
+      "suitable_data": "Single-cell count data with target/cell/batch condition metadata and official gene ordering.",
+      "why_worth_considering": "The task has cell-level heterogeneity and large target-specific residuals that are poorly represented by a deterministic target mean alone."
+    },
+    {
+      "idea": "Condition token or prefix conditioning",
+      "minimal_experiment": "Change only the condition representation and compare against shuffled-target and no-condition controls.",
+      "risks": "Generic target identity is insufficient for unseen target residual if no target-to-gene biology is available.",
+      "solves": "Reduces ambiguity between observed state and perturbation intent.",
+      "suitable_data": "Datasets with reliable target_gene, cell_type, control, and batch metadata.",
+      "why_worth_considering": "Separating condition from expression can expose target and context information without collapsing them into target mean deltas."
+    },
+    {
+      "idea": "Whole-transcriptome modeling",
+      "minimal_experiment": "Full-gene representation versus compact representation with identical split, seeds, and evaluator.",
+      "risks": "Noise and compute can dominate if target-specific signal is weak.",
+      "solves": "Preserves gene-specific response and makes the official 18,080-gene output a native modeling object.",
+      "suitable_data": "Tasks with fixed full-gene panel and enough compute for high-dimensional modeling.",
+      "why_worth_considering": "Perturbation effects can appear outside HVG-selected or low-dimensional summary features."
+    },
+    {
+      "idea": "Masked discrete diffusion or masked generative modeling",
+      "minimal_experiment": "A small masked-token baseline with documented tokenizer contract and finite-loss smoke before any H200 scale-up, plus an explicit perturbation-conditioned objective and shuffled-target/no-condition negative control.",
+      "risks": "Original Lingshu training workflow is missing; a new implementation must be reported as a new model family, not as Lingshu reproduction. A reconstruction-only objective or train-count-profile predictor is a known failure mode.",
+      "solves": "Avoids treating every gene response as independent regression.",
+      "suitable_data": "Raw or discretized expression representation with stable tokenizer vocabulary.",
+      "why_worth_considering": "Masked-token objectives can model gene-gene dependence and support conditional generation."
+    },
+    {
+      "idea": "Classifier-free guidance",
+      "minimal_experiment": "Guidance on/off with fixed model and shuffled-condition negative control.",
+      "risks": "Can distort response amplitude or DE direction if guidance scale is not validation-calibrated. Formal CFG syntax is not meaningful unless conditional and neutral paths differ through learned perturbation signal.",
+      "solves": "Tests whether condition signal is usable at inference time.",
+      "suitable_data": "Generative models with conditional and less-conditional training/inference paths.",
+      "why_worth_considering": "May amplify weak perturbation condition signal relative to global H1 context."
+    },
+    {
+      "idea": "Biological prior injection",
+      "minimal_experiment": "Add or replace exactly one target-specific prior source while keeping H1 global prior, split, seeds, model, and evaluator fixed.",
+      "risks": "Leakage, context mismatch, and confounding if multiple priors change at once.",
+      "solves": "Supplies target-to-affected-gene structure unavailable from target identity.",
+      "suitable_data": "Provenance-safe signed target-to-gene perturbation signatures or regulatory priors.",
+      "why_worth_considering": "Current target-specific residual is not identifiable from GO or generic embeddings alone."
+    }
+  ],
+  "latest_iteration_status": {
+    "continue_iteration": true,
+    "last_completed_official_run": {
+      "candidate": "standalone PS-DE-VAE control-regulatory-profile model",
+      "failure_lesson": "Control-only regulatory profiles describe baseline co-expression, not intervention-aware target-to-gene perturbation effects. Model sophistication cannot compensate for missing target-specific perturbation signal.",
+      "finding": "A richer VAE/contrastive/FiLM/gene-position decoder did not improve when its target-specific signal came only from control-derived co-expression/regulatory profiles.",
+      "next_implication": "Avoid another control-coexpression or PS-DE-VAE dimensional tweak; choose a materially different direction or add a genuinely intervention-aware target-to-gene signal and objective.",
+      "pearson_delta": -0.0003576368337962776,
+      "proximity_target": 0.192,
+      "reference_pearson_delta": 0.24,
+      "status": "official_run_completed_far_below_reference"
+    },
+    "previous_best_autonomous": {
+      "candidate": "standalone GFECT effect-signature transport",
+      "note": "Best autonomous result so far, but v6 main run accidentally used shuffled_target_control=true.",
+      "pearson_delta": 0.06674556678161025
+    },
+    "skill_version": "v8",
+    "stop_reason": null
+  },
+  "lingshu_reference_result": {
+    "meaning": "Original Lingshu reference result, not the current project best and not a proposal admission gate.",
+    "metric": "Pearson-Delta",
+    "value_approx": 0.24
+  },
+  "masked_gen_v2_postmortem": {
+    "alignment": {
+      "biological_prior": "none",
+      "classifier_free_guidance": "partial: formal CFG expression but no meaningful learned conditional contrast",
+      "control_conditioning": "partial: neutral control path exists only formally",
+      "masked_generation": "partial: smoke mask exists; full run did not perform iterative masked generation",
+      "perturbation_objective": "missing",
+      "raw_count_tokenization": "partial: clipped count tokens 0..255",
+      "target_conditioning": "partial: condition labels present but no learned target-to-gene effect",
+      "whole_transcriptome": "yes for output space"
+    },
+    "lesson": "Surface implementation of raw-count tokens, masks, condition labels, and CFG is insufficient. The next proposal must specify how target-conditioned perturbation response is learned or sampled.",
+    "observed_candidate": "minimal autonomous masked-generative candidate",
+    "result": {
+      "pearson_delta": 6.99e-05
+    }
+  },
+  "mechanism_alignment_checklist": {
+    "approximation_gap": "Which Lingshu mechanisms are missing and why might the candidate still inherit useful behavior?",
+    "biological_prior": "Is any target-to-gene prior provenance-safe and gene-position-specific?",
+    "cfg_or_control_contrast": "Does inference use conditional vs neutral-control contrast, or is CFG absent?",
+    "count_token_contract": "Does it use raw-count tokens, a documented tokenizer, or a clearly different continuous contract?",
+    "evidence": "Which VCC25 historical evidence supports the mechanism, and what negative control can falsify it?",
+    "generative_objective": "Does it include conditional generation/masked-token modeling, or only regression?",
+    "target_specific_conditioning": "What target/cell/control condition is used and where does it enter?",
+    "whole_transcriptome": "Does the proposal preserve audited 18,080 gene positions?"
+  },
+  "mechanism_attribution": [
+    "whole-transcriptome modeling over the full gene panel",
+    "raw-count discrete gene tokenization",
+    "explicit perturbation/cell/control condition tokens",
+    "masked discrete generative modeling",
+    "classifier-free guidance comparing target-conditioned and neutral-control paths",
+    "inference-time target-to-gene biological prior injection",
+    "sequence compression / long-sequence handling for whole-gene transformers"
+  ],
+  "purpose": "Provide transferable Lingshu-Cell model design insights for autonomous VCC25 H1 hypothesis generation without requiring a Lingshu implementation.",
+  "schema_version": "vcc25-lingshu-model-design-insight/v1",
+  "skill_v3_core_mechanism_requirement": {
+    "central_mechanism": "control/context expression + perturbation target condition + target-specific gene-level signal when available -> learn or sample perturbed whole-transcriptome expression",
+    "convergence_target": {
+      "meaning": "Approximately 80 percent of Lingshu reference, used as research convergence target rather than promotion gate.",
+      "metric": "Pearson-Delta",
+      "target": 0.192
+    },
+    "must_specify": [
+      "perturbation-conditioned objective",
+      "control or neutral contrast",
+      "gene-position target effect",
+      "generation or sampling semantics",
+      "classifier-free guidance semantics when claimed",
+      "approximation gap from Lingshu reference mechanisms"
+    ]
+  },
+  "skill_v4_proposal_to_implementation_integrity": {
+    "failure_mode": "Heuresis implementation request collapsed the new mechanism into a patch on Candidate G/R with a DE-gene mask.",
+    "implementation_requirements": [
+      "Create a new standalone candidate identity and runner for a novel proposal.",
+      "Do not modify Candidate G/R or Candidate R-specific files as the primary implementation for a novel proposal.",
+      "Use shared task infrastructure only as infrastructure, not as model reuse.",
+      "The formal VCC25 execution baseline now provides a generic autonomous candidate route. New proposals should use candidate_variant = autonomous_research_candidate and candidate-local allowed_paths only. Do not include tasks/vcc25/official_h1_adapter.py, controller_bash/scripts/task_contract.py, or controller_bash/scripts/run_trials.py unless the user explicitly reopens execution-layer work.",
+      "If a historical component is agent-selected, label it explicitly and state the approximation gap.",
+      "Stop with an unsupported-component blocker rather than silently falling back to historical candidate routes."
+    ],
+    "lesson": "A mechanism-level Skill can improve proposal quality, but the implementation request must preserve standalone autonomous candidate identity instead of projecting the idea onto historical candidate-specific code.",
+    "observed_iteration": "autonomous iteration v3",
+    "required_provenance_statement": {
+      "candidate_origin": "autonomous_research",
+      "historical_candidate_files_modified": false,
+      "historical_candidate_reuse": false,
+      "research_seed": "lingshu_skill",
+      "standalone_candidate": true
+    },
+    "researchstudio_candidate": "Target-Forced Disentangled Conditional Transport (TF-DCT)",
+    "run_status": "stopped before H200"
+  },
+  "skill_v5_target_specific_signal_lesson": {
+    "classification": "autonomous_approximation_failure_not_lingshu_failure",
+    "main_lesson": "Target identity tokens, random stable target hashes, and generic labels are not target-specific biological information. They can name an unseen target but do not say which genes or pathways that target should affect.",
+    "mechanism_gap": {
+      "masked_discrete_generation": "missing",
+      "meaningful_cfg": "missing",
+      "perturbation_conditioned_objective": "partial",
+      "raw_count_discrete_tokenization": "missing",
+      "sampling_time_gene_level_guidance": "missing",
+      "target_specific_biological_signal": "missing",
+      "whole_transcriptome_output": "present"
+    },
+    "observed_candidate": "standalone DSACT continuous conditional-transport candidate",
+    "observed_iteration": "autonomous iteration v4",
+    "requirements_for_next_proposals": [
+      "Do not spend another iteration on small DSACT-style transport tweaks unless the proposal adds a materially different target-specific signal or a materially different objective.",
+      "If target conditioning is used, specify the inference-available signal: target-to-gene prior, regulatory or pathway neighborhood, provenance-safe perturbation signature, raw-count condition-token mechanism, or another concrete biological source.",
+      "If no new biological signal is used, explain why the objective can generalize target-specific effects to unseen targets rather than memorizing training target labels.",
+      "Actively consider a different model family, representation, training objective, conditioning path, generation process, or biological information source when the current family remains near zero Pearson-Delta."
+    ],
+    "result": {
+      "pearson_delta": 0.007962451502680778
+    }
+  },
+  "skill_v6_proposal_collision_lesson": {
+    "critic_verdict": "abandon / hard_floor",
+    "main_lesson": "Co-expression or gene geometry may describe baseline cellular structure, but perturbation prediction needs a mechanism for how target intervention changes gene expression.",
+    "observed_candidate": "Control-Derived Co-Expression Gated Perturbation Delta Predictor",
+    "observed_iteration": "autonomous iteration v5",
+    "reason": "The selected idea was too close to an existing control-derived co-expression / gene-geometry residual-flow family, and naive co-expression was judged to capture stable baseline relationships rather than intervention-specific target effects.",
+    "requirements_for_next_proposals": [
+      "Do not treat raw control co-expression around a target gene as sufficient target-specific perturbation information.",
+      "If structural context is used, distinguish baseline correlation from intervention effect.",
+      "If claiming Lingshu inheritance, identify where target-specific perturbation signal enters the objective, conditioning path, sampling path, or output residual.",
+      "Avoid minor tweaks of the abandoned co-expression-gated delta family unless the proposal adds a materially different intervention-aware signal or a new model family/objective."
+    ],
+    "status": "proposal_level_abandon_before_h200"
+  },
+  "skill_v7_v8_result_classification": {
+    "gfect": {
+      "observed_iteration": "autonomous iteration v6",
+      "pearson_delta": 0.06674556678161025,
+      "status": "contaminated_control_run",
+      "reason": "The successful official run used shuffled_target_control=true, so it is not the normal primary best."
+    },
+    "ps_de_vae": {
+      "observed_iteration": "autonomous iteration v7",
+      "pearson_delta": -0.0003576368337962776,
+      "status": "valid_scientific_result",
+      "lesson": "A more complex latent/generative architecture did not help because its conditioning was still control-derived rather than intervention-aware."
+    },
+    "iffm": {
+      "observed_iteration": "autonomous iteration v8",
+      "status": "attempted_no_valid_scientific_result",
+      "lesson": "No valid official score was produced; do not classify it as a model-performance failure."
+    }
+  },
+  "skill_v9_intervention_fingerprint_direction": {
+    "classification": "data_audit_before_h200",
+    "main_question": "For each training perturbation target, what train-only target-to-gene intervention fingerprint can be estimated, denoised, reliability-weighted, and tested for cross-target accessibility?",
+    "mechanism_alignment_requirements": [
+      "State the target-specific intervention signal.",
+      "State whether the signal is learned from perturbation response, external target-to-gene evidence, or a train-only contrast.",
+      "Explain how validation/test leakage is avoided.",
+      "Explain how the signal affects gene-wise Delta prediction.",
+      "Include a negative control that tests whether the model uses the intervention signal rather than baseline expression reconstruction.",
+      "Explain why the mechanism is materially different from DB-PCPD, masked-gen, DSACT, GFECT, PS-DE-VAE, and IFFM."
+    ],
+    "h200_gate": "Only run official H200 after a lightweight data audit and candidate smoke confirm that the candidate is learning target-specific intervention response.",
+    "avoid_repeating": [
+      "another VAE/flow/transformer whose conditioning is still only target ID",
+      "control-derived regulatory profiles without intervention contrast",
+      "hidden-size, rank, or decoder-depth tuning",
+      "using a shuffled negative control as the primary candidate behavior"
+    ]
+  },
+  "source_provenance": {
+    "hf_repo": "bibona/lingshu-cell",
+    "hf_revision": "b77f980",
+    "lingshu_commit": "0cbde2feb6639f9411399794cf5e1c4831eb6c93",
+    "release_evidence": [
+      "dense gene-1-token tokenizer",
+      "patch-dense transformer config",
+      "target/cell condition prefix",
+      "gene embedding condition/fusion switches",
+      "classifier-free guidance inference",
+      "clue-based prior injection"
+    ],
+    "training_workflow_status": "INFERENCE_ONLY"
+  },
+  "usage_principles": [
+    "Use Lingshu ideas as priors, not predetermined answers.",
+    "Allow ResearchStudio to adopt, modify, combine, or abandon each idea.",
+    "Require one-variable controlled experiments and negative controls before candidate promotion.",
+    "Do not inject Lingshu checkpoint, source implementation, clue CSV, or original training loop.",
+    "Require mechanism_alignment for proposals seeded by Lingshu Skills.",
+    "Do not use Lingshu reference Pearson-Delta as acceptance_criteria; use task-local validation gates instead.",
+    "If a proposal introduces graph/PPI reasoning, require evidence that it supplies target-specific gene effects rather than generic similarity.",
+    "If one or two iterations show no improvement, reassess representation, objective, conditioning, generation, biological signal, and model family instead of making small edits to the same architecture.",
+    "Use Lingshu reference Pearson-Delta around 0.24 only as a research convergence reference; do not use it as a hard proposal admission gate.",
+    "Before the next H200 scientific run, require ResearchStudio to identify or audit a target-specific intervention fingerprint instead of proposing another architecture-only variant."
+  ]
+}
