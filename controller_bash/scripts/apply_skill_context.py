@@ -32,6 +32,32 @@ def evidence_from(context: dict) -> tuple[dict, ...]:
     return tuple(records)
 
 
+def compile_skill_constraints(actions: tuple[dict, ...] | list[dict]) -> dict:
+    """Turn bounded Skill actions into machine-checkable proposal constraints."""
+    controls: list[str] = []
+    required_gates: list[str] = []
+    acceptance = {"test_expression_used": False}
+    for action in actions:
+        if not isinstance(action, dict):
+            continue
+        control = action.get("control")
+        protocol = action.get("protocol")
+        if control and control not in controls:
+            controls.append(str(control))
+        if protocol and protocol not in required_gates:
+            required_gates.append(str(protocol))
+        if action.get("type") in {"falsification_gate", "preflight_gate", "stability_gate", "evaluation_gate"}:
+            if protocol and protocol not in required_gates:
+                required_gates.append(str(protocol))
+    return {
+        "controls": controls,
+        "acceptance": {
+            **acceptance,
+            "required_gates": required_gates,
+        },
+    }
+
+
 def skills_for_task(task_name: str) -> list[object]:
     manifest_path = ROOT / "tasks" / task_name / "task_plugin.yaml"
     if manifest_path.is_file():
@@ -50,11 +76,14 @@ def main() -> int:
     router = SkillRouter(skills)
     hook = SkillStageHook(router)
     injections = []
+    all_actions = []
     for skill in skills:
         state, qa = hook.inject("qa_to_idea_card", skill.manifest.skill_id, state)
         injections.append({"stage": qa.stage, **qa.result.to_dict()})
+        all_actions.extend(qa.result.next_actions)
         state, proposal = hook.inject("idea_card_to_heuresis", skill.manifest.skill_id, state)
         injections.append({"stage": proposal.stage, **proposal.result.to_dict()})
+        all_actions.extend(proposal.result.next_actions)
     original_hash = digest(context)
     augmented = dict(context)
     augmented["skill_injections"] = injections
@@ -63,6 +92,7 @@ def main() -> int:
         "augmented_context_sha256": digest(augmented),
         "mode": "additive",
     }
+    augmented["heuresis_constraints"] = compile_skill_constraints(all_actions)
     args.context.write_text(json.dumps(augmented, indent=2, ensure_ascii=False), encoding="utf-8")
     print(args.context)
     return 0

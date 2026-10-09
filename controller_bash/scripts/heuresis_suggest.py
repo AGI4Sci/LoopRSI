@@ -209,6 +209,13 @@ Required JSON shape:
 Context JSON:
 {json.dumps(context, ensure_ascii=False)}
 
+Machine-checkable skill constraints:
+- If `context.heuresis_constraints` is present, every proposal must copy its
+  `controls` into `mechanism_alignment.required_controls` and its
+  `acceptance.required_gates` into `mechanism_alignment.required_gates`.
+- Preserve `acceptance.test_expression_used=false` as a hard acceptance rule;
+  never use official test expression for training or selection.
+
 Mechanism-alignment guidance:
 - If the context includes Lingshu-Cell or Lingshu Skill knowledge, treat the
   Lingshu reference Pearson-Delta (~0.24) as reference evidence only. Do not use
@@ -238,7 +245,29 @@ def proposal_contract_error(context: dict, proposal: dict) -> str | None:
         validate_proposal(proposal, load_task_spec(path), path)
     except Exception as exc:  # noqa: BLE001 - turn validation into retry feedback
         return f"{type(exc).__name__}: {str(exc)[:1800]}"
-    return feature_coverage_error(context, proposal)
+    return skill_constraint_error(context, proposal) or feature_coverage_error(context, proposal)
+
+
+def skill_constraint_error(context: dict, proposal: dict) -> str | None:
+    """Fail closed when a proposal drops constraints emitted by Skills."""
+    constraints = context.get("heuresis_constraints") or {}
+    if not constraints:
+        return None
+    required_controls = set(constraints.get("controls") or [])
+    required_gates = set(((constraints.get("acceptance") or {}).get("required_gates") or []))
+    for index, item in enumerate(proposal.get("experiment_proposals") or []):
+        alignment = item.get("mechanism_alignment") or {}
+        controls = set(alignment.get("required_controls") or [])
+        gates = set(alignment.get("required_gates") or [])
+        missing_controls = sorted(required_controls - controls)
+        missing_gates = sorted(required_gates - gates)
+        if missing_controls or missing_gates or alignment.get("test_expression_used") is not False:
+            return (
+                f"SkillConstraintError: experiment_proposals[{index}] is missing "
+                f"required_controls={missing_controls} required_gates={missing_gates} "
+                "or test_expression_used=false"
+            )
+    return None
 
 
 def feature_coverage_error(context: dict, proposal: dict) -> str | None:
