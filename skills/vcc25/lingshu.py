@@ -1,137 +1,67 @@
-"""Manifest-declared knowledge skills for the VCC25 hierarchy."""
+"""VCC25/Lingshu domain adapters built on generic research skills."""
+from __future__ import annotations
 
-from pathlib import Path
-from typing import Any, Mapping, Optional, Tuple
-
-from ai4ai.plugin_protocols import PromptFragment, ValidationResult
-from domain_knowledge import KnowledgeQuery, KnowledgeStore, KnowledgeValidationError
-from domain_knowledge.render import render_cards
-from domain_knowledge.store import assert_safe_knowledge
+from ai4ai.contracts import SkillManifest
+from skills.research_base import ResearchKnowledgeSkill
 
 
-DEFAULT_KNOWLEDGE_ROOT = Path(__file__).resolve().parents[2] / "knowledge" / "vcc25"
+class LingshuAlignmentSkill(ResearchKnowledgeSkill):
+    expected_task = "vcc25"
+    knowledge_filename = "knowledge.json"
+    source = "validated_lingshu_alignment_reports"
+    next_actions = (
+        {"type": "planner_input", "priority": "new_target_biological_information"},
+        {"type": "representation_gate", "protocol": "official_target_go_bp_features"},
+        {"type": "objective_gate", "protocol": "train_only_de_direction_and_ranking"},
+        {"type": "neighborhood_gate", "protocol": "learned_attention_vs_shuffled_and_random_controls"},
+        {"type": "calibration_gate", "protocol": "validation_only_direction_amplitude_calibration"},
+        {"type": "falsification_gate", "control": "degree_matched_random_graph"},
+        {"type": "stability_gate", "protocol": "multifold_multi_seed_validation"},
+        {"type": "evaluation_gate", "protocol": "official_h1_cell_eval"},
+    )
+    manifest = SkillManifest(
+        skill_id="vcc25.lingshu_alignment", version="1.2.0", kind="scientific_knowledge",
+        capabilities=("benchmark_alignment", "failure_memory", "research_prioritization"),
+        input_schema="ai4ai/skill-context/v1", output_schema="ai4ai/skill-result/v1",
+        entrypoint="skills.vcc25.lingshu:LingshuAlignmentSkill",
+        context_requirements=("research_state.task_id",),
+        provenance={"owner": "vcc25", "source": "validated_lingshu_alignment_reports"},
+    )
 
 
-class _KnowledgeSkill:
-    _skill_id = ""
-    _layers: Tuple[str, ...] = ()
-    _asset_types: Tuple[str, ...] = ()
-    _priority = 50
-
-    def __init__(self, knowledge_root: Optional[Path] = None) -> None:
-        self._root = Path(knowledge_root) if knowledge_root is not None else DEFAULT_KNOWLEDGE_ROOT
-        self._store = KnowledgeStore.from_directory(self._root)
-
-    @property
-    def skill_id(self) -> str:
-        return self._skill_id
-
-    def can_activate(self, context: Mapping[str, Any]) -> bool:
-        return context.get("task_id") == "vcc25" and context.get("layer") in self._layers
-
-    def inject(self, context: Mapping[str, Any]) -> Optional[PromptFragment]:
-        if not self.can_activate(context):
-            return None
-        assert_safe_knowledge(context, "skill_context")
-        # L5 (multi-asset) needs a larger budget to show multiple model
-        # candidates for autonomous comparison; planning layers (L1-L4)
-        # stay at the leaner default.
-        default_budget = 2400 if len(self._asset_types) > 1 else 1200
-        budget = int(context.get("token_budget", default_budget))
-        text = str(context.get("query", context.get("text", "")))
-        if len(self._asset_types) > 1:
-            # Query all L5-eligible models so the decision agent can compare
-            # the full candidate space.  The token budget in render_cards
-            # controls how many cards actually fit in the prompt — we do not
-            # pre-truncate with max_results here.
-            models = self._store.query(KnowledgeQuery(
-                task_id="vcc25", layer=str(context["layer"]), text=text,
-                asset_types=("model",), max_results=50,
-            ))
-            repositories = self._store.query(KnowledgeQuery(
-                task_id="vcc25", layer=str(context["layer"]), text=text,
-                asset_types=("repository",), max_results=20,
-            ))
-            repo_by_id = {r.id: r for r in repositories}
-            # Interleave model+repository pairs so that each model is rendered
-            # immediately after its related repository.  This ensures that
-            # models (the primary decision candidates) are rendered before the
-            # token budget is exhausted by repositories alone.
-            cards = []
-            seen_repos = set()
-            for model in models:
-                repo = repo_by_id.get(model.id.replace("kb:model:", "kb:repo:"))
-                # Fall back to relation lookup if the ID heuristic fails.
-                if repo is None:
-                    repo = next(
-                        (r for r in repositories if model.id in r.relations),
-                        None,
-                    )
-                if repo is not None and repo.id not in seen_repos:
-                    cards.append(repo)
-                    seen_repos.add(repo.id)
-                cards.append(model)
-            # Append any remaining repos that were not related to a model.
-            for repo in repositories:
-                if repo.id not in seen_repos:
-                    cards.append(repo)
-            cards = tuple(cards)
-        else:
-            cards = self._store.query(
-                KnowledgeQuery(
-                    task_id="vcc25",
-                    layer=str(context["layer"]),
-                    text=text,
-                    asset_types=self._asset_types,
-                    max_results=10,
-                )
-            )
-        rendered = render_cards(cards, token_budget=budget)
-        if not rendered.card_ids:
-            return None
-        return PromptFragment(
-            skill_id=self.skill_id,
-            stage=str(context["layer"]),
-            content=rendered.content,
-            priority=self._priority,
-            token_budget=rendered.estimated_tokens,
-            activation_reason=f"VCC25 {context['layer']} domain knowledge",
-            source="knowledge:vcc25:" + ",".join(rendered.card_ids),
-            content_hash=rendered.content_hash,
-        )
-
-    def validate_proposal(
-        self,
-        proposal: Mapping[str, Any],
-        context: Mapping[str, Any],
-    ) -> ValidationResult:
-        try:
-            assert_safe_knowledge(proposal, "proposal")
-            assert_safe_knowledge(context, "proposal_context")
-        except KnowledgeValidationError as exc:
-            return ValidationResult(passed=False, errors=(str(exc),))
-        return ValidationResult(
-            passed=True,
-            checks=({"check": "restricted_identifiers", "passed": True},),
-        )
+class LingshuDataProcessingInsightSkill(ResearchKnowledgeSkill):
+    expected_task = "vcc25"
+    knowledge_filename = "lingshu_data_processing_knowledge.json"
+    source = "lingshu_release_and_vcc25_data_processing_audits"
+    next_actions = (
+        {"type": "planner_input", "priority": "target_specific_gene_level_representation"},
+        {"type": "preflight_gate", "protocol": "gene_order_raw_count_and_leakage_audit"},
+        {"type": "ablation_gate", "protocol": "single_data_processing_variable_only"},
+    )
+    manifest = SkillManifest(
+        skill_id="vcc25.lingshu_data_processing_insight", version="0.1.0", kind="research_knowhow",
+        capabilities=("data_representation_insight", "hypothesis_generation", "failure_memory"),
+        input_schema="ai4ai/skill-context/v1", output_schema="ai4ai/skill-result/v1",
+        entrypoint="skills.vcc25.lingshu:LingshuDataProcessingInsightSkill",
+        context_requirements=("research_state.task_id",),
+        provenance={"owner": "vcc25", "source": "lingshu_release_and_vcc25_data_processing_audits"},
+    )
 
 
-class LingshuAlignmentSkill(_KnowledgeSkill):
-    _skill_id = "vcc25.lingshu.alignment"
-    _layers = ("L1", "L2")
-    _asset_types = ("paper",)
-    _priority = 70
-
-
-class LingshuDataProcessingInsightSkill(_KnowledgeSkill):
-    _skill_id = "vcc25.lingshu.data_processing"
-    _layers = ("L3", "L4")
-    _asset_types = ("paper",)
-    _priority = 65
-
-
-class LingshuModelDesignInsightSkill(_KnowledgeSkill):
-    _skill_id = "vcc25.lingshu.model_design"
-    _layers = ("L5",)
-    _asset_types = ("repository", "model")
-    _priority = 80
+class LingshuModelDesignInsightSkill(ResearchKnowledgeSkill):
+    expected_task = "vcc25"
+    knowledge_filename = "lingshu_model_design_knowledge.json"
+    source = "lingshu_release_and_vcc25_model_design_audits"
+    next_actions = (
+        {"type": "planner_input", "priority": "condition_aware_full_gene_hypotheses"},
+        {"type": "design_gate", "protocol": "do_not_copy_lingshu_or_claim_lingshu_training"},
+        {"type": "falsification_gate", "protocol": "shuffled_condition_or_prior_control"},
+    )
+    manifest = SkillManifest(
+        skill_id="vcc25.lingshu_model_design_insight", version="0.1.0", kind="research_knowhow",
+        capabilities=("model_design_insight", "hypothesis_generation", "ablation_design"),
+        input_schema="ai4ai/skill-context/v1", output_schema="ai4ai/skill-result/v1",
+        entrypoint="skills.vcc25.lingshu:LingshuModelDesignInsightSkill",
+        context_requirements=("research_state.task_id",),
+        provenance={"owner": "vcc25", "source": "lingshu_release_and_vcc25_model_design_audits"},
+    )
