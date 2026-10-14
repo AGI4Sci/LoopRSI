@@ -76,6 +76,7 @@ class EvaluatorRequest:
     required_metrics: tuple[str, ...] = ()
     existing_evaluator_artifact: str | None = None
     existing_cell_eval_artifact: str | None = None
+    evaluation_contract_id: str = "vcc25-eval-v1"
 
 
 @dataclass(frozen=True)
@@ -87,6 +88,7 @@ class EvaluatorResult:
     metric_completeness: bool = False
     validation: Mapping[str, Any] = field(default_factory=dict)
     metadata: Mapping[str, Any] = field(default_factory=dict)
+    evaluation_contract_id: str = "vcc25-eval-v1"
 
 
 class ResearchSkill(Protocol):

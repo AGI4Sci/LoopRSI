@@ -7,6 +7,7 @@ from skills.research_base import ResearchKnowledgeSkill
 
 class LingshuAlignmentSkill(ResearchKnowledgeSkill):
     expected_task = "vcc25"
+    supported_layers = ("L1", "L2")
     knowledge_filename = "knowledge.json"
     source = "validated_lingshu_alignment_reports"
     next_actions = (
@@ -20,7 +21,7 @@ class LingshuAlignmentSkill(ResearchKnowledgeSkill):
         {"type": "evaluation_gate", "protocol": "official_h1_cell_eval"},
     )
     manifest = SkillManifest(
-        skill_id="vcc25.lingshu_alignment", version="1.2.0", kind="scientific_knowledge",
+        skill_id="vcc25.lingshu.alignment", version="1.2.0", kind="scientific_knowledge",
         capabilities=("benchmark_alignment", "failure_memory", "research_prioritization"),
         input_schema="ai4ai/skill-context/v1", output_schema="ai4ai/skill-result/v1",
         entrypoint="skills.vcc25.lingshu:LingshuAlignmentSkill",
@@ -31,6 +32,7 @@ class LingshuAlignmentSkill(ResearchKnowledgeSkill):
 
 class LingshuDataProcessingInsightSkill(ResearchKnowledgeSkill):
     expected_task = "vcc25"
+    supported_layers = ("L3", "L4")
     knowledge_filename = "lingshu_data_processing_knowledge.json"
     source = "lingshu_release_and_vcc25_data_processing_audits"
     next_actions = (
@@ -39,7 +41,7 @@ class LingshuDataProcessingInsightSkill(ResearchKnowledgeSkill):
         {"type": "ablation_gate", "protocol": "single_data_processing_variable_only"},
     )
     manifest = SkillManifest(
-        skill_id="vcc25.lingshu_data_processing_insight", version="0.1.0", kind="research_knowhow",
+        skill_id="vcc25.lingshu.data_processing", version="0.1.0", kind="research_knowhow",
         capabilities=("data_representation_insight", "hypothesis_generation", "failure_memory"),
         input_schema="ai4ai/skill-context/v1", output_schema="ai4ai/skill-result/v1",
         entrypoint="skills.vcc25.lingshu:LingshuDataProcessingInsightSkill",
@@ -50,6 +52,7 @@ class LingshuDataProcessingInsightSkill(ResearchKnowledgeSkill):
 
 class LingshuModelDesignInsightSkill(ResearchKnowledgeSkill):
     expected_task = "vcc25"
+    supported_layers = ("L5",)
     knowledge_filename = "lingshu_model_design_knowledge.json"
     source = "lingshu_release_and_vcc25_model_design_audits"
     next_actions = (
@@ -58,7 +61,7 @@ class LingshuModelDesignInsightSkill(ResearchKnowledgeSkill):
         {"type": "falsification_gate", "protocol": "shuffled_condition_or_prior_control"},
     )
     manifest = SkillManifest(
-        skill_id="vcc25.lingshu_model_design_insight", version="0.1.0", kind="research_knowhow",
+        skill_id="vcc25.lingshu.model_design", version="0.1.0", kind="research_knowhow",
         capabilities=("model_design_insight", "hypothesis_generation", "ablation_design"),
         input_schema="ai4ai/skill-context/v1", output_schema="ai4ai/skill-result/v1",
         entrypoint="skills.vcc25.lingshu:LingshuModelDesignInsightSkill",

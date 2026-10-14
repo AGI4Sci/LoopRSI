@@ -38,12 +38,12 @@ class OfficialH1Evaluator:
     def evaluate(self, request: EvaluatorRequest) -> EvaluatorResult:
         validation = self.validate_input(request)
         if not validation.passed:
-            return EvaluatorResult(request.task_id, "invalid", validation=validation.__dict__)
+            return EvaluatorResult(request.task_id, "invalid", validation=validation.__dict__, evaluation_contract_id=request.evaluation_contract_id)
         contract = json.loads(Path(request.contract_artifact).read_text(encoding="utf-8"))
         gates = contract.get("gates") or {}
         contract_ok = contract.get("status") == "ready" and all(gates.values())
         if not contract_ok:
-            return EvaluatorResult(request.task_id, "invalid", validation={"contract": contract})
+            return EvaluatorResult(request.task_id, "invalid", validation={"contract": contract}, evaluation_contract_id=request.evaluation_contract_id)
 
         metrics: dict[str, float] = {}
         fresh_metadata: dict[str, Any] = {}
@@ -82,6 +82,7 @@ class OfficialH1Evaluator:
             metric_completeness=complete,
             validation={"contract": "ready", "cell_eval_replay": bool(request.existing_cell_eval_artifact), "official_result_replay": bool(request.existing_evaluator_artifact)},
             metadata={**({"cell_eval_execution": "fresh_process", **fresh_metadata} if fresh_agg else {"cell_eval_execution": "reused_existing_artifact"}), "scientific_execution": False},
+            evaluation_contract_id=request.evaluation_contract_id,
         )
 
     def _run_fresh_cell_eval(self, request: EvaluatorRequest) -> tuple[Path, dict[str, Any]]:

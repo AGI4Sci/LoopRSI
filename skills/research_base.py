@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from ai4ai.contracts import SkillContext, SkillResult
+from ai4ai.plugin_protocols import PromptFragment, ValidationResult
 from ai4ai.skill import Skill
 
 
@@ -27,6 +28,60 @@ class ResearchKnowledgeSkill(Skill):
     next_actions: tuple[dict[str, Any], ...] = ()
 
     _knowledge_loads = 0
+
+    def __init__(self, knowledge_root: str | Path | None = None) -> None:
+        # ``knowledge_root`` is retained as a compatibility hook for the
+        # original ResearchSkill protocol.  The new SkillContext API uses the
+        # package-owned knowledge files by default.
+        self.knowledge_root = Path(knowledge_root) if knowledge_root else None
+
+    @property
+    def skill_id(self) -> str:
+        return self.manifest.skill_id
+
+    def can_activate(self, context: dict[str, Any]) -> bool:
+        return context.get("task_id") == self.expected_task and context.get("layer") in self.layers
+
+    @property
+    def layers(self) -> tuple[str, ...]:
+        return tuple(getattr(self, "supported_layers", ("L1", "L2", "L3", "L4", "L5")))
+
+    def inject(self, context: dict[str, Any]) -> PromptFragment | None:
+        if not self.can_activate(context):
+            return None
+        from domain_knowledge import KnowledgeQuery, KnowledgeStore
+        from domain_knowledge.render import render_cards
+        from domain_knowledge.store import assert_safe_knowledge
+
+        root = self.knowledge_root or Path(__file__).resolve().parents[1] / "knowledge" / "vcc25"
+        assert_safe_knowledge(context, "research_skill_context")
+        store = KnowledgeStore.from_directory(root)
+        layer = context["layer"]
+        asset_types = ("paper",) if layer in {"L1", "L2"} else (("model", "repository") if layer == "L5" else ("paper", "repository", "model"))
+        cards = list(store.query(KnowledgeQuery(task_id=self.expected_task, layer=layer, text=str(context.get("query", "")), asset_types=asset_types, max_results=100)))
+        if layer == "L5" and int(context.get("token_budget", 1200)) >= 1500:
+            # L5 needs both executable model facts and the repository that
+            # supplies the implementation. Preserve repository-before-model
+            # provenance for the legacy ResearchSkill contract.
+            related = []
+            for card in cards[:2]:
+                for relation in card.relations:
+                    if relation.startswith("kb:repo:"):
+                        related.extend(store.query(KnowledgeQuery(task_id=self.expected_task, layer=layer, text=relation.split(":")[-1], asset_types=("repository",), max_results=1)))
+            seen = set()
+            cards = [card for card in related + cards if not (card.id in seen or seen.add(card.id))]
+        rendered = render_cards(cards, int(context.get("token_budget", 1200)))
+        if not rendered.card_ids:
+            return None
+        return PromptFragment(self.skill_id, layer, rendered.content, token_budget=int(context.get("token_budget", 1200)), source=f"knowledge:vcc25:{','.join(rendered.card_ids)}", content_hash=rendered.content_hash)
+
+    def validate_proposal(self, proposal: dict[str, Any], context: dict[str, Any]) -> ValidationResult:
+        from domain_knowledge.store import assert_safe_knowledge
+        try:
+            assert_safe_knowledge(proposal, "research_skill_proposal")
+        except Exception as exc:
+            return ValidationResult(False, errors=(str(exc),))
+        return ValidationResult(True)
 
     @staticmethod
     @lru_cache(maxsize=128)

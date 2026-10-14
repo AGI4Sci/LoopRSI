@@ -53,6 +53,7 @@ def dispatch_native_protocol(
         config=dict(package.get("evaluator_config") or {}),
         required_metrics=tuple(package.get("required_metrics") or ()),
         existing_evaluator_artifact=package.get("official_result_artifact"),
+        evaluation_contract_id=str(package.get("evaluation_contract_id") or package.get("contract_id") or "vcc25-eval-v1"),
         existing_cell_eval_artifact=package.get("cell_eval_artifact"),
     )
     evaluator_input = evaluator.validate_input(evaluator_request)
@@ -79,6 +80,7 @@ def dispatch_native_protocol(
             "validation": dict(normalized.validation),
             "metadata": dict(normalized.metadata),
             "archive_record": dict(evaluator.archive_record(normalized)),
+            "evaluation_contract_id": normalized.evaluation_contract_id,
         },
     }
     return _with_archive_and_lineage(payload, "native_protocol")
