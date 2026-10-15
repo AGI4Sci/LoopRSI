@@ -9,7 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from ai4ai.contracts import SkillContext, SkillResult
+from ai4ai.contracts import ResearchState, SkillContext, SkillResult
 from ai4ai.plugin_protocols import PromptFragment, ValidationResult
 from ai4ai.skill import Skill
 
@@ -34,6 +34,14 @@ class ResearchKnowledgeSkill(Skill):
         # original ResearchSkill protocol.  The new SkillContext API uses the
         # package-owned knowledge files by default.
         self.knowledge_root = Path(knowledge_root) if knowledge_root else None
+
+    def query_cards(self, query: "KnowledgeQuery") -> tuple[Any, ...]:
+        """Stable multi-card retrieval hook shared by every task skill."""
+        from domain_knowledge import KnowledgeQueryService
+
+        root = self.knowledge_root or Path(__file__).resolve().parents[1] / "knowledge" / query.task_id
+        service = KnowledgeQueryService({query.task_id: root})
+        return service.query(query)
 
     @property
     def skill_id(self) -> str:
@@ -99,7 +107,22 @@ class ResearchKnowledgeSkill(Skill):
     def knowledge_cache_stats(cls) -> dict[str, int]:
         return {"loads": ResearchKnowledgeSkill._knowledge_loads}
 
-    def run(self, context: SkillContext) -> SkillResult:
+    def run(self, context: SkillContext | dict[str, Any]) -> SkillResult:
+        # Accept the historical mapping form at the boundary, then use one
+        # canonical SkillContext internally for all task implementations.
+        if isinstance(context, dict):
+            state = context.get("research_state", context)
+            context = SkillContext(
+                ResearchState(
+                    task_id=str(state.get("task_id", "")),
+                    question=str(state.get("question", "")),
+                    evidence=tuple(state.get("evidence", ())),
+                    open_hypotheses=tuple(state.get("open_hypotheses", ())),
+                    rejected_hypotheses=tuple(state.get("rejected_hypotheses", ())),
+                    blockers=tuple(state.get("blockers", ())),
+                ),
+                constraints=dict(context.get("constraints", {})),
+            )
         if context.research_state.task_id != self.expected_task:
             return SkillResult(
                 self.manifest.skill_id,

@@ -9,6 +9,25 @@ class KnowledgeValidationError(ValueError):
     """Raised when knowledge cannot safely satisfy the public contract."""
 
 
+@dataclass(frozen=True)
+class EvidenceRecord:
+    """Structured validation/provenance record, not a searchable card."""
+
+    id: str
+    status: str
+    authority: str
+    data: Mapping[str, Any] = field(repr=False)
+
+    @classmethod
+    def from_mapping(cls, value: Mapping[str, Any], fallback_id: str) -> "EvidenceRecord":
+        return cls(
+            id=str(value.get("id", fallback_id)),
+            status=str(value.get("status", "unknown")),
+            authority=str(value.get("authority", "unknown")),
+            data=_freeze(dict(value)),
+        )
+
+
 def _freeze(value: Any) -> Any:
     if isinstance(value, dict):
         return MappingProxyType({key: _freeze(item) for key, item in value.items()})
@@ -67,6 +86,18 @@ class KnowledgeQuery:
     readiness: Tuple[str, ...] = ()
     max_results: int = 5
     approved_only: bool = True
+
+    def for_layer(self, layer: str, **changes: Any) -> "KnowledgeQuery":
+        """Return a copy with a layer-specific retrieval constraint."""
+        if layer not in {"L1", "L2", "L3", "L4", "L5"}:
+            raise KnowledgeValidationError(f"unknown layer {layer!r}")
+        values = {
+            "task_id": self.task_id, "layer": layer, "text": self.text,
+            "asset_types": self.asset_types, "readiness": self.readiness,
+            "max_results": self.max_results, "approved_only": self.approved_only,
+        }
+        values.update(changes)
+        return KnowledgeQuery(**values)
 
 
 @dataclass(frozen=True)

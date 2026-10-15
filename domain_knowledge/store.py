@@ -10,6 +10,7 @@ from .cards import (
     KnowledgeValidationError,
     VCC25EvaluationContract,
 )
+from .evidence import EvidenceStore
 
 
 CARD_DIRECTORIES = {
@@ -250,6 +251,7 @@ class KnowledgeStore:
     ) -> None:
         self._cards = tuple(cards)
         self.evaluation_contract = evaluation_contract
+        self.evidence = EvidenceStore(())
 
     @classmethod
     def from_directory(cls, root: Path) -> "KnowledgeStore":
@@ -285,7 +287,9 @@ class KnowledgeStore:
                 if relation not in known_ids:
                     raise _error(raw_paths[card.id], "relations", f"unknown card id {relation!r}")
 
-        return cls(cards, VCC25EvaluationContract.from_mapping(contract_value))
+        store = cls(cards, VCC25EvaluationContract.from_mapping(contract_value))
+        store.evidence = EvidenceStore.from_directory(root)
+        return store
 
     def validate(self) -> Tuple[str, ...]:
         return ()
