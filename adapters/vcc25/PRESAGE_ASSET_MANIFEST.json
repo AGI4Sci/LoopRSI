@@ -3,13 +3,13 @@
   "repository": "https://github.com/Genentech/PRESAGE",
   "revision": "2c7b231c60cf110c4aab0acf8ecd2c2b3268fffb",
   "source_archive": {
-    "relative_path": "sources/PRESAGE-2c7b231c60cf110c4aab0acf8ecd2c2b3268fffb.tar.gz",
+    "relative_path": "archive/assets/sources/PRESAGE-2c7b231c60cf110c4aab0acf8ecd2c2b3268fffb.tar.gz",
     "url": "https://github.com/Genentech/PRESAGE/archive/2c7b231c60cf110c4aab0acf8ecd2c2b3268fffb.tar.gz",
     "sha256": "d8dd07e875277d1cd119ca1775e2e01ab7d9cc32fd6f406c041546df2f0a20c3",
     "status": "staged_local"
   },
   "wheelhouse": {
-    "relative_path": "presage-wheelhouse",
+    "relative_path": "archive/assets/wheelhouse",
     "python": "3.11",
     "cuda": "12.1",
     "pytorch": "2.2.0",
